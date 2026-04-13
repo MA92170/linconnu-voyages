@@ -111,11 +111,10 @@
         <p>&copy; 2024 L'INCONNU — Conciergerie Privée</p>
     </footer>
 
-    <script>
+   <script>
     document.getElementById('travelForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Empêche le rechargement de la page
+        e.preventDefault();
 
-        // Récupération des valeurs
         const q1 = document.getElementById('q1').value;
         const q2 = document.getElementById('q2').value;
         const q3 = document.getElementById('q3').value;
@@ -124,7 +123,6 @@
         const q6 = document.getElementById('q6').value;
         const q7 = document.getElementById('q7').value;
 
-        // Préparation du message
         const message = "NOUVELLE DEMANDE L'INCONNU\n\n" +
                         "• Dernière destination : " + q1 + "\n" +
                         "• Prochaine envie : " + q2 + "\n" +
@@ -134,15 +132,19 @@
                         "• Lieu : " + q6 + "\n" +
                         "• Vibe : " + q7;
 
-        // Encodage propre du texte pour l'URL
         const encodedText = encodeURIComponent(message);
-        
-        // Construction du lien WhatsApp
-        const whatsappUrl = "https://wa.me/33617572361?text=" + encodedText;
+        const phoneNumber = "33617572361";
 
-        // REDIRECTION : On utilise window.location.href au lieu de window.open 
-        // pour éviter que le navigateur ne bloque une "pop-up"
-        window.location.href = whatsappUrl;
+        // Détection du support (Mobile vs Desktop)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // On choisit le bon préfixe selon le support
+        const baseUrl = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send";
+        
+        const finalUrl = baseUrl + "?phone=" + phoneNumber + "&text=" + encodedText;
+
+        // Redirection
+        window.location.href = finalUrl;
     });
 </script>
 </body>
