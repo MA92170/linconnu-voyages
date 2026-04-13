@@ -112,34 +112,38 @@
     </footer>
 
     <script>
-        document.getElementById('travelForm').addEventListener('submit', function(e) {
-            // On laisse Formspree gérer l'envoi par mail normalement
-            // Mais on prépare aussi le message WhatsApp
-            
-            const q1 = document.getElementById('q1').value;
-            const q2 = document.getElementById('q2').value;
-            const q3 = document.getElementById('q3').value;
-            const q4 = document.getElementById('q4').value;
-            const q5 = document.getElementById('q5').value;
-            const q6 = document.getElementById('q6').value;
-            const q7 = document.getElementById('q7').value;
+    document.getElementById('travelForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Empêche le rechargement de la page
 
-            const text = `*Nouvelle Demande L'INCONNU*%0A%0A` +
-                         `• *Dernière destination :* ${q1}%0A` +
-                         `• *Envies :* ${q2}%0A` +
-                         `• *Style :* ${q3}%0A` +
-                         `• *Éco-sensibilité :* ${q4}%0A` +
-                         `• *Activité :* ${q5}%0A` +
-                         `• *Cadre :* ${q6}%0A` +
-                         `• *Vibe :* ${q7}`;
+        // Récupération des valeurs
+        const q1 = document.getElementById('q1').value;
+        const q2 = document.getElementById('q2').value;
+        const q3 = document.getElementById('q3').value;
+        const q4 = document.getElementById('q4').value;
+        const q5 = document.getElementById('q5').value;
+        const q6 = document.getElementById('q6').value;
+        const q7 = document.getElementById('q7').value;
 
-            const whatsappUrl = `https://wa.me/33617572361?text=${text}`;
-            
-            // On ouvre WhatsApp dans un nouvel onglet juste après l'envoi du formulaire
-            setTimeout(() => {
-                window.open(whatsappUrl, '_blank');
-            }, 1000);
-        });
-    </script>
+        // Préparation du message
+        const message = "NOUVELLE DEMANDE L'INCONNU\n\n" +
+                        "• Dernière destination : " + q1 + "\n" +
+                        "• Prochaine envie : " + q2 + "\n" +
+                        "• Style : " + q3 + "\n" +
+                        "• Eco : " + q4 + "\n" +
+                        "• Rythme : " + q5 + "\n" +
+                        "• Lieu : " + q6 + "\n" +
+                        "• Vibe : " + q7;
+
+        // Encodage propre du texte pour l'URL
+        const encodedText = encodeURIComponent(message);
+        
+        // Construction du lien WhatsApp
+        const whatsappUrl = "https://wa.me/33617572361?text=" + encodedText;
+
+        // REDIRECTION : On utilise window.location.href au lieu de window.open 
+        // pour éviter que le navigateur ne bloque une "pop-up"
+        window.location.href = whatsappUrl;
+    });
+</script>
 </body>
 </html>
