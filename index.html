@@ -3,207 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Inconnu — Voyage Sur-Mesure</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <title>L'Inconnu | Expérience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Outfit:wght@200;400&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{
-            --ink:#0a0a0a; --white:#faf9f6; --gold:#b8974a;
-            --gold-light:#e8d9b0; --muted:#6b6b6b; --border:#d4cfc5; --bg-soft:#f4f1eb;
-        }
-        body{ font-family:'Outfit',sans-serif; background:var(--ink); color:var(--white); overflow-x:hidden; }
-
-        /* HERO */
-        .hero{ position:relative; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
-        .hero-bg{ position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat; filter:brightness(0.35) saturate(0.7); z-index:0; }
-        .hero-content{position:relative;z-index:2}
-        .hero-title{ font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(4rem,12vw,9rem); color:var(--white); margin-bottom:2.5rem; }
-
-        .cta-btn{ display:inline-flex;align-items:center;gap:1rem; font-size:11px; letter-spacing:0.35em; text-transform:uppercase; color:var(--white); border:1px solid rgba(255,255,255,0.3); padding:1.4rem 3rem; background:transparent; cursor:pointer; transition:0.6s; }
-        .cta-btn:hover{ background:var(--white); color:var(--ink); }
-
-        /* QUIZ OVERLAY */
-        #quiz-overlay{ display:none;position:fixed;inset:0;z-index:100; background:var(--white);color:var(--ink); overflow-y:auto; }
-        .progress-wrap{position:sticky;top:0;z-index:10;background:var(--white);padding:0}
-        .progress-track{height:2px;background:#e0dbd2;width:100%}
-        .progress-fill{height:100%;background:var(--ink);transition:width 0.5s;width:0%}
-
-        .quiz-header{ position:sticky;top:2px;z-index:10; display:flex;justify-content:space-between;align-items:center; padding:1.5rem 3rem; background:var(--white); border-bottom:1px solid var(--bg-soft); }
-        .quiz-logo{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.4rem; }
-        
-        .quiz-container { display: flex; min-height: calc(100vh - 80px); }
-        .quiz-image-side { flex: 1; background-size: cover; background-position: center; transition: 0.8s; }
-        .quiz-body{ flex: 1; max-width: 600px; padding: 5rem 3rem; display:flex; flex-direction:column; justify-content:center; }
-
-        /* STEPS */
-        .step{display:none}
-        .step.active{display:block; animation:fadeUp 0.6s ease}
-        .step-title{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.5rem; margin-bottom:2.5rem; }
-
-        .field-group{margin-bottom:2rem}
-        .field-label{ display:block; font-size:9px; letter-spacing:0.4em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
-        
-        input[type=text], input[type=date], input[type=number], textarea { 
-            width:100%; font-family:'Outfit',sans-serif; font-size:1.2rem; border:none; border-bottom:1px solid var(--border); padding:0.8rem 0; outline:none; background:transparent; color:var(--ink);
+        :root {
+            --bg: #0a0a0a;
+            --text: #faf9f6;
+            --gold: #b8974a;
+            --border: rgba(255,255,255,0.1);
         }
 
-        /* NAVIGATION */
-        .quiz-nav{ position:fixed;bottom:0;left:0;right:0;z-index:20; background:var(--white); border-top:1px solid var(--bg-soft); padding:1.5rem 3rem; display:flex; justify-content:space-between; }
-        .nav-prev{ font-size:10px; text-transform:uppercase; color:var(--muted); background:none; border:none; cursor:pointer; opacity:0; pointer-events:none; }
-        .nav-prev.show{opacity:1; pointer-events:auto}
-        .nav-next{ font-size:10px; text-transform:uppercase; color:var(--white); background:var(--ink); padding:1rem 2.5rem; cursor:pointer; border:none; }
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Outfit', sans-serif; overflow: hidden;
+        }
 
-        #success-screen{ display:none;position:fixed;inset:0;z-index:200; background:var(--ink); flex-direction:column; align-items:center; justify-content:center; color:white; }
-        
-        @keyframes fadeUp{ from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:translateY(0)} }
+        /* Conteneur Principal */
+        .quiz-wrapper {
+            height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+
+        .step { display: none; width: 100%; max-width: 500px; text-align: center; }
+        .step.active { display: block; animation: fadeIn 0.8s ease forwards; }
+
+        h2 { 
+            font-family: 'Cormorant Garamond', serif; font-style: italic; 
+            font-size: 2.5rem; font-weight: 400; margin-bottom: 2rem; 
+        }
+
+        /* Inputs Style */
+        input {
+            width: 100%; background: transparent; border: none;
+            border-bottom: 1px solid var(--border); color: white;
+            padding: 15px 0; font-size: 1.2rem; text-align: center;
+            outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--gold); }
+
+        /* Grille pour les âges générés */
+        #age-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 15px; margin-top: 20px;
+        }
+        .age-input { font-size: 1rem !important; border-bottom: 1px solid var(--gold) !important; }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed; bottom: 50px; display: flex; gap: 40px;
+            align-items: center;
+        }
+        button {
+            background: none; border: 1px solid var(--border); color: white;
+            padding: 12px 30px; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 10px; transition: 0.3s;
+        }
+        button:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-next { background: var(--text); color: var(--bg); border: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-        <h1 class="hero-title">L'Inconnu</h1>
-        <button class="cta-btn" onclick="openQuiz()"><span>Commencer l'expérience</span></button>
-    </div>
-</section>
-
-<div id="quiz-overlay">
-    <div class="progress-wrap"><div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div></div>
-    <div class="quiz-header">
-        <span class="quiz-logo">L'Inconnu</span>
-        <span id="stepCounter">01 / 04</span>
-        <button onclick="closeQuiz()">Fermer ×</button>
-    </div>
-
-    <div class="quiz-container">
-        <div class="quiz-image-side" id="quizImage"></div>
-        <div class="quiz-body">
-            <form id="quizForm">
-                <div class="step active" data-step="1" data-img="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1">
-                    <h2 class="step-title">Quand commence<br>votre évasion ?</h2>
-                    <div class="field-group">
-                        <label class="field-label">Date de départ</label>
-                        <input type="date" id="f_date_dep" name="date_depart">
-                    </div>
-                </div>
-
-                <div class="step" data-step="2" data-img="https://images.unsplash.com/photo-1499678329028-101435549a4e">
-                    <h2 class="step-title">Et votre retour ?</h2>
-                    <div class="field-group">
-                        <label class="field-label">Date de retour</label>
-                        <input type="date" id="f_date_ret" name="date_retour">
-                    </div>
-                </div>
-
-                <div class="step" data-step="3" data-img="https://images.unsplash.com/photo-1511632765486-a01980e01a18">
-                    <h2 class="step-title">Qui participe à<br>ce secret ?</h2>
-                    <div class="field-group">
-                        <label class="field-label">Nombre de voyageurs</label>
-                        <input type="number" id="f_nb" name="nb_personnes" min="1" max="10" placeholder="ex. 2" oninput="generateAgeFields(this.value)">
-                    </div>
-                    <div id="age-fields-container"></div>
-                </div>
-
-                <div class="step" data-step="4" data-img="https://images.unsplash.com/photo-1554224155-1696413565d3">
-                    <h2 class="step-title">Quel est votre budget ?</h2>
-                    <div class="field-group">
-                        <label class="field-label">Budget total — <span id="budgetDisplay">2 500 €</span></label>
-                        <input type="range" name="budget" min="500" max="10000" step="100" value="2500" oninput="document.getElementById('budgetDisplay').textContent=this.value+' €'">
-                    </div>
-                </div>
-            </form>
+<div class="quiz-wrapper">
+    <form id="voyageForm">
+        
+        <div class="step active" data-step="1">
+            <h2>Quand commence<br>le mystère ?</h2>
+            <input type="date" name="date_depart" required>
         </div>
-    </div>
 
-    <div class="quiz-nav">
-        <button class="nav-prev" id="prevBtn" onclick="goStep(-1)">← Précédent</button>
-        <button class="nav-next" id="nextBtn" onclick="goStep(1)">Continuer</button>
-        <button class="nav-next" id="submitBtn" onclick="submitForm()" style="display:none">Finaliser ✦</button>
-    </div>
-</div>
+        <div class="step" data-step="2">
+            <h2>Quand souhaitez-vous<br>revenir ?</h2>
+            <input type="date" name="date_retour" required>
+        </div>
 
-<div id="success-screen">
-    <h2 style="font-family:'Cormorant Garamond', serif; font-size: 3rem; font-style: italic;">Votre voyage prend forme</h2>
-    <button onclick="window.location.reload()" style="margin-top:2rem; background:none; border:1px solid white; color:white; padding:1rem 2rem; cursor:pointer;">Retour</button>
+        <div class="step" data-step="3">
+            <h2>Combien de voyageurs<br>êtes-vous ?</h2>
+            <input type="number" id="nb_voyageurs" name="nb_voyageurs" min="1" max="10" placeholder="Nombre" oninput="updateAgeFields(this.value)" required>
+            <div id="age-grid"></div>
+        </div>
+
+        <div class="step" data-step="4">
+            <h2>Presque terminé...</h2>
+            <p>Nous préparons votre itinéraire secret.</p>
+        </div>
+
+    </form>
+
+    <div class="nav-buttons">
+        <button id="prevBtn" onclick="changeStep(-1)" style="visibility: hidden;">Précédent</button>
+        <button class="btn-next" id="nextBtn" onclick="changeStep(1)">Continuer</button>
+    </div>
 </div>
 
 <script>
-let currentStep = 1;
-const totalSteps = 4;
+    let currentStep = 1;
+    const totalSteps = 4;
 
-function openQuiz(){
-    document.getElementById('quiz-overlay').style.display='block';
-    updateUI();
-}
+    function changeStep(dir) {
+        // Validation avant d'avancer
+        if (dir === 1 && !validateStep()) return;
 
-function closeQuiz(){ document.getElementById('quiz-overlay').style.display='none'; }
+        // Cacher l'étape actuelle
+        document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+        
+        // Changer d'étape
+        currentStep += dir;
+        if (currentStep > totalSteps) {
+            alert("Formulaire envoyé ! (Simulé)");
+            return;
+        }
 
-function updateUI(){
-    const steps = document.querySelectorAll('.step');
-    const activeStep = steps[currentStep-1];
-    
-    // Update Counter & Image
-    document.getElementById('stepCounter').textContent = `0${currentStep} / 0${totalSteps}`;
-    document.getElementById('quizImage').style.backgroundImage = `url('${activeStep.dataset.img}?auto=format&fit=crop&q=80&w=1000')`;
-    document.getElementById('progress-fill').style.width = ((currentStep-1)/(totalSteps-1)*100) + '%';
-
-    // Buttons visibility
-    document.getElementById('prevBtn').classList.toggle('show', currentStep > 1);
-    document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'block' : 'none';
-    document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
-}
-
-function goStep(dir){
-    if(dir === 1 && !validateCurrentStep()) return;
-    document.querySelectorAll('.step')[currentStep-1].classList.remove('active');
-    currentStep += dir;
-    document.querySelectorAll('.step')[currentStep-1].classList.add('active');
-    updateUI();
-}
-
-// FONCTION GÉNÉRATION DES ÂGES
-function generateAgeFields(count) {
-    const container = document.getElementById('age-fields-container');
-    container.innerHTML = "";
-    const num = parseInt(count);
-    if(isNaN(num) || num < 1) return;
-
-    const label = document.createElement('label');
-    label.className = "field-label";
-    label.textContent = "Âge de chaque voyageur";
-    label.style.marginTop = "1rem";
-    container.appendChild(label);
-
-    const grid = document.createElement('div');
-    grid.style.display = "grid"; grid.style.gridTemplateColumns = "repeat(4, 1fr)"; grid.style.gap = "10px";
-
-    for(let i=1; i<=num; i++){
-        const input = document.createElement('input');
-        input.type = "number"; input.placeholder = `V.${i}`;
-        input.name = `age_${i}`;
-        input.required = true;
-        input.style.borderBottom = "1px solid var(--border)";
-        input.style.padding = "5px";
-        input.style.textAlign = "center";
-        grid.appendChild(input);
+        // Afficher la nouvelle étape
+        document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+        
+        // Gérer l'affichage du bouton retour
+        document.getElementById('prevBtn').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+        document.getElementById('nextBtn').innerText = currentStep === totalSteps ? 'Finaliser' : 'Continuer';
     }
-    container.appendChild(grid);
-}
 
-function validateCurrentStep(){
-    const current = document.querySelector('.step.active');
-    const inputs = current.querySelectorAll('input[required], input[type="date"]');
-    for(let input of inputs) {
-        if(!input.value) { alert("Veuillez remplir les informations."); return false; }
+    function updateAgeFields(val) {
+        const grid = document.getElementById('age-grid');
+        grid.innerHTML = ""; // Reset
+        const count = parseInt(val);
+        
+        if (count > 0) {
+            for (let i = 1; i <= count; i++) {
+                const input = document.createElement('input');
+                input.type = "number";
+                input.placeholder = "Âge " + i;
+                input.name = "age_voyageur_" + i;
+                input.className = "age-input";
+                input.required = true;
+                grid.appendChild(input);
+            }
+        }
     }
-    return true;
-}
 
-function submitForm() {
-    document.getElementById('quiz-overlay').style.display = 'none';
-    document.getElementById('success-screen').style.display = 'flex';
-}
+    function validateStep() {
+        const activeStep = document.querySelector(`[data-step="${currentStep}"]`);
+        const inputs = activeStep.querySelectorAll('input');
+        for (let input of inputs) {
+            if (!input.checkValidity()) {
+                input.reportValidity();
+                return false;
+            }
+        }
+        return true;
+    }
 </script>
+
 </body>
 </html>
