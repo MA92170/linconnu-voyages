@@ -3,149 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Inconnu | Conciergerie de Voyages Mystères</title>
+    <title>L'Inconnu | Expérience de Voyage Sur-Mesure</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
-        .hero-gradient {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=2000');
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2000');
             background-size: cover; background-position: center;
         }
-        .form-input { 
-            width: 100%; border-bottom: 1px solid #e2e8f0; border-top: 0; border-left: 0; border-right: 0;
-            padding: 1rem 0; outline: none; transition: border-color 0.3s; background: transparent;
-        }
-        .form-input:focus { border-color: #0f172a; }
+        #quiz-overlay { display: none; position: fixed; inset: 0; background: white; z-index: 50; overflow-y: auto; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .progress-bar { height: 4px; background: #e2e8f0; width: 100%; position: sticky; top: 0; z-index: 60; }
+        .progress-fill { height: 100%; background: #0f172a; transition: width 0.3s ease; width: 0%; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50">
 
-    <nav class="flex justify-between items-center px-8 py-6 absolute w-full z-10 text-white">
-        <div class="text-2xl font-bold tracking-tighter serif italic">L'INCONNU</div>
-    </nav>
-
-    <header class="h-screen flex items-center justify-center text-center text-white hero-gradient px-4">
-        <div class="max-w-3xl">
-            <h1 class="text-5xl md:text-7xl mb-6 italic font-bold">L'art de l'imprévisible.</h1>
-            <p class="text-lg md:text-xl mb-10 font-light tracking-wide italic">Confiez-nous vos désirs, nous dessinons votre horizon.</p>
-            <a href="#experience-form" class="bg-white text-slate-900 px-10 py-4 rounded-full font-semibold uppercase tracking-widest hover:bg-slate-100 transition duration-300">Commencer l'expérience</a>
-        </div>
-    </header>
-
-    <section id="experience-form" class="py-24 px-6 max-w-2xl mx-auto">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl mb-4">Votre Profil de Voyageur</h2>
-            <p class="text-slate-500 italic">Pour créer l'exceptionnel, nous avons besoin de vous comprendre.</p>
-        </div>
-
-        <form id="travelForm" action="https://formspree.io/f/xdaynpav" method="POST" class="space-y-12">
-            <div>
-                <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Mémoire de voyage</label>
-                <input type="text" name="derniere_destination" id="q1" placeholder="Quelle fut votre dernière destination marquante ?" class="form-input" required>
-            </div>
-
-            <div>
-                <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Aspirations</label>
-                <input type="text" name="envies_prochaines" id="q2" placeholder="De quoi rêvez-vous pour votre prochaine escale ?" class="form-input" required>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Esprit d'aventure</label>
-                    <select name="sentiers_battus" id="q3" class="form-input">
-                        <option value="Standard">Confort classique</option>
-                        <option value="Hors-piste">Sortir des sentiers battus</option>
-                        <option value="Exploration">Immersion totale / Sauvage</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Engagement</label>
-                    <select name="eco_tourisme" id="q4" class="form-input">
-                        <option value="Peu sensible">Le luxe avant tout</option>
-                        <option value="Sensible">Éco-responsabilité bienvenue</option>
-                        <option value="Prioritaire">Éco-tourisme engagé uniquement</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Rythme</label>
-                    <select name="rythme" id="q5" class="form-input">
-                        <option value="Farniente">L'art du farniente</option>
-                        <option value="Rando">L'appel de la randonnée</option>
-                        <option value="Equilibre">Un équilibre subtil</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Environnement</label>
-                    <select name="paysage" id="q6" class="form-input">
-                        <option value="Plage">L'infini de la Plage</option>
-                        <option value="Montagne">La majesté de la Montagne</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <label class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400">Atmosphère</label>
-                <select name="atmosphere" id="q7" class="form-input">
-                    <option value="Culture">Soif de Culture & Histoire</option>
-                    <option value="Evasion">Besoin de pure Évasion</option>
-                </select>
-            </div>
-
-            <input type="hidden" name="_replyto" value="marcfornareso@gmail.com">
-
-            <div class="pt-8 text-center">
-                <button type="submit" class="w-full bg-slate-900 text-white py-5 rounded-full uppercase tracking-widest font-bold hover:shadow-xl transition duration-300">
-                    Découvrir ma proposition mystère
-                </button>
-                <p class="mt-4 text-xs text-slate-400">Une copie sera envoyée par Email et WhatsApp.</p>
-            </div>
-        </form>
+    <section class="h-screen flex flex-col items-center justify-center text-center text-white hero-bg px-4">
+        <h1 class="text-6xl md:text-8xl mb-8 serif italic font-bold">L'Inconnu</h1>
+        <p class="text-xl mb-12 font-light tracking-[0.3em] uppercase">L'excellence du voyage imprévu</p>
+        <button onclick="openQuiz()" class="border border-white px-12 py-5 rounded-full hover:bg-white hover:text-black transition duration-500 uppercase tracking-widest text-sm">
+            Commencer l'expérience
+        </button>
     </section>
 
-    <footer class="py-12 text-center text-slate-400 text-[10px] uppercase tracking-widest border-t border-slate-100">
-        <p>&copy; 2024 L'INCONNU — Conciergerie Privée</p>
-    </footer>
-
-   <script>
-    document.getElementById('travelForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const q1 = document.getElementById('q1').value;
-        const q2 = document.getElementById('q2').value;
-        const q3 = document.getElementById('q3').value;
-        const q4 = document.getElementById('q4').value;
-        const q5 = document.getElementById('q5').value;
-        const q6 = document.getElementById('q6').value;
-        const q7 = document.getElementById('q7').value;
-
-        const message = "NOUVELLE DEMANDE L'INCONNU\n\n" +
-                        "• Dernière destination : " + q1 + "\n" +
-                        "• Prochaine envie : " + q2 + "\n" +
-                        "• Style : " + q3 + "\n" +
-                        "• Eco : " + q4 + "\n" +
-                        "• Rythme : " + q5 + "\n" +
-                        "• Lieu : " + q6 + "\n" +
-                        "• Vibe : " + q7;
-
-        const encodedText = encodeURIComponent(message);
-        const phoneNumber = "33617572361";
-
-        // Détection du support (Mobile vs Desktop)
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    <div id="quiz-overlay">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
         
-        // On choisit le bon préfixe selon le support
-        const baseUrl = isMobile ? "https://wa.me/" : "https://web.whatsapp.com/send";
-        
-        const finalUrl = baseUrl + "?phone=" + phoneNumber + "&text=" + encodedText;
+        <div class="max-w-2xl mx-auto px-6 py-20">
+            <button onclick="closeQuiz()" class="absolute top-8 right-8 text-slate-400 hover:text-black uppercase text-xs tracking-widest">Fermer ×</button>
+            
+            <form id="travelForm" action="https://formspree.io/f/mqakvjje" method="POST">
+                
+                <div class="step active" data-step="1">
+                    <h2 class="text-3xl serif mb-10">Informations Pratiques</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Dates de départ souhaitées</label>
+                            <input type="date" name="date_depart" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Budget Total : <span id="budgetVal">2500</span>€</label>
+                            <input type="range" name="budget" min="100" max="5000" step="100" value="2500" oninput="document.getElementById('budgetVal').innerText=this.value" class="w-full accent-black">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Nombre de voyageurs</label>
+                            <input type="text" name="nb_personnes" placeholder="Ex: 2 adultes" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Pays à éviter absolument</label>
+                            <textarea name="pays_eviter" rows="2" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black" required></textarea>
+                        </div>
+                        <div class="flex gap-8">
+                            <label class="text-sm"><input type="checkbox" name="passeport" value="Oui" required> Passeport valide</label>
+                            <label class="text-sm"><input type="checkbox" name="resident_ue" value="Oui" required> Résident UE</label>
+                        </div>
+                    </div>
+                </div>
 
-        // Redirection
-        window.location.href = finalUrl;
-    });
-</script>
+                <div class="step" data-step="2">
+                    <h2 class="text-3xl serif mb-10">Votre trajet en avion</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Souhaitez-vous sortir de l'UE ?</label>
+                            <div class="flex gap-6">
+                                <label><input type="radio" name="sortir_ue" value="Oui" required> Oui</label>
+                                <label><input type="radio" name="sortir_ue" value="Non"> Non</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Temps de vol max : <span id="volVal">5</span>h</label>
+                            <input type="range" name="temps_vol" min="1" max="15" value="5" oninput="document.getElementById('volVal').innerText=this.value" class="w-full accent-black">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Classe de voyage</label>
+                            <select name="classe" class="w-full border-b border-slate-200 py-3 outline-none">
+                                <option value="Economy">Economy</option>
+                                <option value="Business">Business Class</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Bagages en soute</label>
+                            <input type="text" name="bagages" placeholder="Non, ou nombre de bagages" class="w-full border-b border-slate-200 py-3 outline-none" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" data-step="3">
+                    <h2 class="text-3xl serif mb-10">Séjour & Hébergement</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Type de logement</label>
+                            <div class="flex gap-6">
+                                <label><input type="radio" name="type_logement" value="Hotel" required> Hôtel</label>
+                                <label><input type="radio" name="type_logement" value="Airbnb"> Airbnb</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Catégorie de standing</label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <label class="border p-4 text-center rounded"><input type="radio" name="standing" value="Standard" required><br>Standard</label>
+                                <label class="border p-4 text-center rounded"><input type="radio" name="standing" value="Premium"><br>Premium</label>
+                                <label class="border p-4 text-center rounded"><input type="radio" name="standing" value="Luxe"><br>Luxe</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-sm"><input type="checkbox" name="all_inclusive" value="Oui"> Option All-Inclusive si possible</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" data-step="4">
+                    <h2 class="text-3xl serif mb-10">Activités & Loisirs</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Votre humeur</label>
+                            <div class="flex gap-6">
+                                <label><input type="radio" name="humeur" value="Détente" required> Détente</label>
+                                <label><input type="radio" name="humeur" value="Découverte"> Découverte</label>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="flex justify-between items-center border-b pb-2">
+                                <span>Visites culturelles</span>
+                                <input type="checkbox" name="activite_culture" value="Oui">
+                            </label>
+                            <label class="flex justify-between items-center border-b pb-2">
+                                <span>Randonnées</span>
+                                <input type="checkbox" name="activite_rando" value="Oui">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-16 flex justify-between">
+                    <button type="button" id="prevBtn" onclick="nextStep(-1)" class="text-slate-400 uppercase tracking-widest text-xs hidden">Précédent</button>
+                    <button type="button" id="nextBtn" onclick="nextStep(1)" class="bg-black text-white px-10 py-4 ml-auto uppercase tracking-widest text-xs">Suivant</button>
+                    <button type="submit" id="submitBtn" class="bg-black text-white px-10 py-4 ml-auto uppercase tracking-widest text-xs hidden">Finaliser l'expérience</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function openQuiz() {
+            document.getElementById('quiz-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            updateProgress();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quiz-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateProgress() {
+            const percent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+
+        function nextStep(n) {
+            const steps = document.querySelectorAll('.step');
+            
+            // Validation simple avant de passer
+            if (n === 1) {
+                const inputs = steps[currentStep-1].querySelectorAll('input[required], textarea[required], select[required]');
+                let valid = true;
+                inputs.forEach(input => { if(!input.value || (input.type === 'checkbox' && !input.checked)) valid = false; });
+                if(!valid) { alert("Veuillez remplir tous les champs obligatoires."); return; }
+            }
+
+            steps[currentStep-1].classList.remove('active');
+            currentStep += n;
+            steps[currentStep-1].classList.add('active');
+
+            document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'block' : 'none';
+            document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+            
+            updateProgress();
+        }
+
+        document.getElementById('travelForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            let data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            // LOGIQUE GÉNÉRATEUR AUTOMATIQUE (POUR TOI SEUL)
+            let suggestions = "";
+            if(data.budget > 3000) suggestions = "Maldives, Bora Bora, Tokyo";
+            else if(data.temps_vol < 5) suggestions = "Marrakech, Rome, Lisbonne";
+            else suggestions = "New York, Bali, Islande";
+
+            const message = `*DEMANDE L'INCONNU*%0A` +
+                            `• Budget: ${data.budget}€ / Pers: ${data.nb_personnes}%0A` +
+                            `• Destination évitée: ${data.pays_eviter}%0A` +
+                            `• Vol: ${data.temps_vol}h (${data.classe})%0A` +
+                            `• Logement: ${data.type_logement} (${data.standing})%0A%0A` +
+                            `*CONSEIL IA (POUR MARC)*: ${suggestions}`;
+
+            // Envoi WhatsApp
+            window.open(`https://wa.me/33617572361?text=${message}`, '_blank');
+            
+            // Envoi Formspree (Mail)
+            this.submit();
+        });
+    </script>
 </body>
 </html>
