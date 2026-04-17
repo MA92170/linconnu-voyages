@@ -3,260 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Inconnu | Expérience de Voyage</title>
+    <title>L'Inconnu | Votre Voyage Mystère</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; }
         .serif { font-family: 'Playfair Display', serif; }
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2000');
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2000');
             background-size: cover; background-position: center;
         }
         #quiz-overlay { display: none; position: fixed; inset: 0; background: white; z-index: 50; overflow-y: auto; }
         .step { display: none; }
         .step.active { display: block; animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        .progress-bar { height: 3px; background: #f1f5f9; width: 100%; position: sticky; top: 0; z-index: 60; }
+        .progress-bar { height: 4px; background: #f1f5f9; width: 100%; position: sticky; top: 0; z-index: 60; }
         .progress-fill { height: 100%; background: #000; transition: width 0.4s ease; width: 0%; }
 
+        /* Cartes Visuelles */
         .visual-card {
-            cursor: pointer; position: relative; overflow: hidden; border-radius: 12px;
-            transition: all 0.3s ease; border: 2px solid #f1f5f9;
+            cursor: pointer; position: relative; border-radius: 16px; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 2px solid transparent;
         }
-        .visual-card.selected { border-color: #000; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .visual-card img { height: 160px; w-full: 100%; object-fit: cover; transition: transform 0.5s; }
-        .visual-card:hover img { transform: scale(1.05); }
+        .visual-card.selected { border-color: #000; transform: scale(1.02); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .visual-card img { height: 180px; width: 100%; object-fit: cover; filter: brightness(0.9); transition: 0.5s; }
+        .visual-card:hover img { filter: brightness(1.1); }
+        
+        /* Sliders */
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 2px; background: #e2e8f0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: #000; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
-        input[type="range"] { -webkit-appearance: none; width: 100%; height: 2px; background: #e2e8f0; outline: none; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: #000; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-        #transition-screen { display: none; position: fixed; inset: 0; background: white; z-index: 100; align-items: center; justify-content: center; text-align: center; }
+        #transition-screen { display: none; position: fixed; inset: 0; background: #fff; z-index: 100; align-items: center; justify-content: center; text-align: center; }
+        .tag-pill { cursor: pointer; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 30px; transition: 0.2s; font-size: 0.8rem; }
+        .tag-pill.selected { background: #000; color: #fff; border-color: #000; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body>
 
     <section class="h-screen flex flex-col items-center justify-center text-center text-white hero-bg px-4">
-        <h1 class="text-6xl md:text-8xl mb-8 serif italic font-bold">L'Inconnu</h1>
-        <p class="text-xl mb-12 font-light tracking-[0.3em] uppercase">L'excellence du voyage imprévu</p>
-        <button onclick="openQuiz()" class="border border-white px-12 py-5 rounded-full hover:bg-white hover:text-black transition duration-500 uppercase tracking-widest text-sm">
-            Commencer l'expérience
+        <h1 class="text-7xl md:text-9xl mb-8 serif italic font-bold">L'Inconnu</h1>
+        <p class="text-lg md:text-xl mb-12 font-light tracking-[0.4em] uppercase">Osez l'imprévu, nous gérons l'excellence</p>
+        <button onclick="openQuiz()" class="bg-white text-black px-14 py-6 rounded-full hover:bg-black hover:text-white transition duration-500 uppercase tracking-widest text-xs font-bold shadow-2xl">
+            Concevoir mon mystère
         </button>
     </section>
 
     <div id="transition-screen">
         <div class="max-w-md px-6">
-            <div class="mb-8 inline-block animate-bounce italic serif text-4xl text-slate-300">L'I</div>
-            <p id="transition-text" class="text-lg serif italic text-slate-800"></p>
+            <div class="mb-8 inline-block animate-pulse serif text-5xl text-slate-200">L'I</div>
+            <p id="transition-text" class="text-xl serif italic text-slate-800"></p>
         </div>
     </div>
 
     <div id="quiz-overlay">
         <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
         
-        <div class="max-w-4xl mx-auto px-6 py-12">
-            <button onclick="closeQuiz()" class="fixed top-6 right-6 text-slate-400 hover:text-black uppercase text-[10px] tracking-widest z-50">Quitter ×</button>
+        <div class="max-w-5xl mx-auto px-6 py-12">
+            <button onclick="closeQuiz()" class="fixed top-8 right-8 text-slate-400 hover:text-black uppercase text-[10px] tracking-[0.3em] font-bold z-50">Fermer ×</button>
             
             <form id="travelForm" action="https://formspree.io/f/mqakvjje" method="POST">
                 
                 <div class="step active" data-step="1">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">01. Temporalité & Budget</span>
-                    <h2 class="text-4xl serif mt-4 mb-12 italic">Dessinons les contours de votre départ</h2>
+                    <span class="text-[10px] font-bold tracking-[0.4em] text-slate-300 uppercase">01 / Logistique</span>
+                    <h2 class="text-5xl serif mt-6 mb-16 italic">Le point de départ.</h2>
                     
-                    <div class="grid md:grid-cols-2 gap-16">
-                        <div class="space-y-10">
+                    <div class="grid md:grid-cols-2 gap-20">
+                        <div class="space-y-12">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold mb-4">Dates de séjour</label>
-                                <input type="text" id="date_range" name="dates_sejour" placeholder="Sélectionner vos dates" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black bg-transparent text-lg" required>
-                                <p id="nights-count" class="text-xs text-slate-400 mt-2 italic"></p>
+                                <label class="block text-[10px] uppercase font-black mb-4 tracking-widest">Dates de l'évasion</label>
+                                <input type="text" id="date_range" name="dates_sejour" placeholder="Quand partez-vous ?" class="w-full border-b-2 border-slate-100 py-4 outline-none focus:border-black bg-transparent text-xl serif italic" required>
+                                <p id="nights-count" class="text-xs text-slate-400 mt-3 italic"></p>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase font-bold mb-4">Budget Total : <span id="budgetVal" class="text-xl">2500</span>€</label>
-                                <input type="range" name="budget" id="budgetRange" min="100" max="10000" step="100" value="2500" class="mb-4">
-                                <div id="budget-feedback" class="text-xs italic text-slate-500">Une base solide pour une belle évasion.</div>
+                                <label class="block text-[10px] uppercase font-black mb-6 tracking-widest">Budget Total : <span id="budgetVal" class="text-2xl">3000</span>€</label>
+                                <input type="range" name="budget" id="budgetRange" min="500" max="15000" step="100" value="3000" class="mb-4">
+                                <p id="budget-feedback" class="text-xs italic text-slate-500"></p>
                             </div>
                         </div>
-                        <div class="space-y-10">
+                        <div class="space-y-12">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold mb-4">Nombre de voyageurs</label>
-                                <input type="text" name="nb_personnes" placeholder="Ex: 2 adultes" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black" required>
+                                <label class="block text-[10px] uppercase font-black mb-4 tracking-widest">Nombre de voyageurs</label>
+                                <input type="text" name="nb_personnes" id="nb_pers" placeholder="Ex: 2 adultes" class="w-full border-b-2 border-slate-100 py-4 outline-none focus:border-black text-lg" required>
+                                <p id="price-per-person" class="text-[10px] text-slate-400 mt-2 uppercase tracking-widest"></p>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase font-bold mb-4">Résidence</label>
-                                <div class="flex items-center gap-4">
-                                    <label class="text-sm"><input type="radio" name="resident_ue" value="Oui" checked class="mr-2"> Résident UE</label>
-                                    <label class="text-sm"><input type="radio" name="resident_ue" value="Non" class="mr-2"> Hors UE</label>
-                                </div>
+                                <label class="block text-[10px] uppercase font-black mb-4 tracking-widest">Villes déjà visitées (À exclure)</label>
+                                <textarea name="blacklist" placeholder="Ex: Londres, Rome, Lisbonne..." class="w-full border-b-2 border-slate-100 py-2 outline-none focus:border-black text-sm italic resize-none" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="step" data-step="2">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">02. Le Ciel</span>
-                    <h2 class="text-4xl serif mt-4 mb-12 italic">Votre rapport à l'horizon</h2>
+                    <span class="text-[10px] font-bold tracking-[0.4em] text-slate-300 uppercase">02 / Ambiance</span>
+                    <h2 class="text-5xl serif mt-6 mb-16 italic">L'horizon que vous visez.</h2>
                     
-                    <div class="grid md:grid-cols-2 gap-16">
-                        <div class="space-y-10">
-                            <label class="block text-[10px] uppercase font-bold mb-4">Périmètre</label>
-                            <div class="flex gap-4">
-                                <label class="flex-1 cursor-pointer">
-                                    <input type="radio" name="sortir_ue" value="Non" class="hidden peer" checked onchange="togglePassport(this.value)">
-                                    <div class="p-4 border text-center rounded-lg peer-checked:bg-black peer-checked:text-white transition">Europe</div>
-                                </label>
-                                <label class="flex-1 cursor-pointer">
-                                    <input type="radio" name="sortir_ue" value="Oui" class="hidden peer" onchange="togglePassport(this.value)">
-                                    <div class="p-4 border text-center rounded-lg peer-checked:bg-black peer-checked:text-white transition">Monde entier</div>
-                                </label>
-                            </div>
-                            <div id="passport-box" class="hidden animate-pulse p-4 bg-slate-50 rounded-lg">
-                                <label class="text-sm cursor-pointer"><input type="checkbox" name="passeport" value="Oui" class="mr-2"> Je confirme avoir un passeport valide</label>
-                            </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="visual-card" onclick="selectVisual(this, 'cadre', 'Plage')">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800">
+                            <div class="p-6 text-center font-bold text-xs uppercase tracking-widest">L'infini de la Mer</div>
+                            <input type="radio" name="cadre" value="Plage" class="hidden" required>
                         </div>
-                        <div class="space-y-10">
-                            <label class="block text-[10px] uppercase font-bold mb-4">Confort en vol</label>
-                            <div class="flex gap-4">
-                                <label class="flex-1 cursor-pointer">
-                                    <input type="radio" name="classe" value="Economy" class="hidden peer" checked>
-                                    <div class="p-4 border text-center rounded-lg peer-checked:bg-black peer-checked:text-white transition">Economy</div>
-                                </label>
-                                <label class="flex-1 cursor-pointer">
-                                    <input type="radio" name="classe" value="Business" class="hidden peer">
-                                    <div class="p-4 border text-center rounded-lg peer-checked:bg-black peer-checked:text-white transition">Business</div>
-                                </label>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold mb-3">Temps de vol max : <span id="volVal">5</span>h</label>
-                                <input type="range" name="temps_vol" min="1" max="15" value="5" oninput="document.getElementById('volVal').innerText=this.value">
-                            </div>
+                        <div class="visual-card" onclick="selectVisual(this, 'cadre', 'Montagne')">
+                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800">
+                            <div class="p-6 text-center font-bold text-xs uppercase tracking-widest">La pureté des Sommets</div>
+                            <input type="radio" name="cadre" value="Montagne" class="hidden">
+                        </div>
+                        <div class="visual-card" onclick="selectVisual(this, 'cadre', 'Ville')">
+                            <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=800">
+                            <div class="p-6 text-center font-bold text-xs uppercase tracking-widest">L'effervescence Urbaine</div>
+                            <input type="radio" name="cadre" value="Ville" class="hidden">
                         </div>
                     </div>
                 </div>
 
                 <div class="step" data-step="3">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">03. Résidence</span>
-                    <h2 class="text-4xl serif mt-4 mb-12 italic">L'atmosphère de vos nuits</h2>
+                    <span class="text-[10px] font-bold tracking-[0.4em] text-slate-300 uppercase">03 / Confort</span>
+                    <h2 class="text-5xl serif mt-6 mb-16 italic">Votre exigence de voyage.</h2>
                     
-                    <div class="grid md:grid-cols-2 gap-8 mb-12">
-                        <div class="visual-card" onclick="selectVisual(this, 'cadre', 'Plage')">
-                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800">
-                            <div class="p-4 text-center font-bold text-xs uppercase tracking-widest">L'infini de la Plage</div>
-                            <input type="radio" name="cadre" value="Plage" class="hidden" required>
+                    <div class="grid md:grid-cols-2 gap-20">
+                        <div>
+                            <label class="block text-[10px] uppercase font-black mb-8 tracking-widest text-center">Niveau de dépaysement</label>
+                            <div class="flex justify-between text-[9px] uppercase tracking-tighter mb-4 italic">
+                                <span>Rassurant (Europe)</span>
+                                <span>Total (Bout du monde)</span>
+                            </div>
+                            <input type="range" name="depaysement" min="0" max="100" value="50" class="mb-12">
+                            
+                            <div id="passport-required" class="p-6 bg-amber-50 rounded-xl border border-amber-100 hidden">
+                                <label class="flex items-center text-xs cursor-pointer"><input type="checkbox" name="has_passport" class="mr-3 w-5 h-5 accent-black"> Je possède un passeport valide pour le monde entier.</label>
+                            </div>
                         </div>
-                        <div class="visual-card" onclick="selectVisual(this, 'cadre', 'Montagne')">
-                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800">
-                            <div class="p-4 text-center font-bold text-xs uppercase tracking-widest">La majesté des Sommets</div>
-                            <input type="radio" name="cadre" value="Montagne" class="hidden">
-                        </div>
-                    </div>
-
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <div class="visual-card" onclick="selectVisual(this, 'standing', 'Standard')">
-                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600">
-                            <div class="p-3 text-center text-[10px] font-bold uppercase">Boutique Hôtel</div>
-                            <input type="radio" name="standing" value="Standard" class="hidden" required>
-                        </div>
-                        <div class="visual-card" onclick="selectVisual(this, 'standing', 'Premium')">
-                            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=600">
-                            <div class="p-3 text-center text-[10px] font-bold uppercase">5 Étoiles</div>
-                            <input type="radio" name="standing" value="Premium" class="hidden">
-                        </div>
-                        <div class="visual-card" onclick="selectVisual(this, 'standing', 'Luxe')">
-                            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=600">
-                            <div class="p-3 text-center text-[10px] font-bold uppercase">Palais Privé</div>
-                            <input type="radio" name="standing" value="Luxe" class="hidden">
+                        <div class="space-y-12">
+                            <label class="block text-[10px] uppercase font-black mb-4 tracking-widest">Standing de l'Hébergement</label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <label class="cursor-pointer group text-center">
+                                    <input type="radio" name="standing" value="Boutique" class="hidden peer" checked>
+                                    <div class="py-4 border rounded-xl peer-checked:bg-black peer-checked:text-white transition-all text-[10px] uppercase font-bold">Boutique</div>
+                                </label>
+                                <label class="cursor-pointer group text-center">
+                                    <input type="radio" name="standing" value="Premium" class="hidden peer">
+                                    <div class="py-4 border rounded-xl peer-checked:bg-black peer-checked:text-white transition-all text-[10px] uppercase font-bold">Luxe 5*</div>
+                                </label>
+                                <label class="cursor-pointer group text-center">
+                                    <input type="radio" name="standing" value="Palace" class="hidden peer">
+                                    <div class="py-4 border rounded-xl peer-checked:bg-black peer-checked:text-white transition-all text-[10px] uppercase font-bold">Palace</div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="step" data-step="4">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-slate-400 uppercase">04. Tempérament</span>
-                    <h2 class="text-4xl serif mt-4 mb-12 italic">Quel sera le tempo du voyage ?</h2>
+                    <span class="text-[10px] font-bold tracking-[0.4em] text-slate-300 uppercase">04 / Expériences</span>
+                    <h2 class="text-5xl serif mt-6 mb-12 italic">Qu'aimez-vous vivre ?</h2>
+                    <p class="text-slate-400 text-sm mb-10 italic">Sélectionnez les piliers de votre voyage.</p>
                     
-                    <div class="max-w-2xl mx-auto space-y-16 py-8">
-                        <div>
-                            <div class="flex justify-between text-[9px] uppercase tracking-widest mb-4 font-bold text-slate-400">
-                                <span>Lever aux aurores</span>
-                                <span>Grasse matinée</span>
-                            </div>
-                            <input type="range" name="temp_rythme" min="0" max="100" value="50">
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[9px] uppercase tracking-widest mb-4 font-bold text-slate-400">
-                                <span>Street Food Locale</span>
-                                <span>Table Étoilée</span>
-                            </div>
-                            <input type="range" name="temp_gastro" min="0" max="100" value="50">
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[9px] uppercase tracking-widest mb-4 font-bold text-slate-400">
-                                <span>Bain de foule</span>
-                                <span>Retraite Sauvage</span>
-                            </div>
-                            <input type="range" name="temp_foule" min="0" max="100" value="50">
-                        </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="activity-grid">
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Culture')">🏛️ Culture & Musées</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Gastronomie')">🍷 Gastronomie & Vins</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Nature')">🌿 Nature & Rando</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Nightlife')">🌙 Sorties & Bars</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Shopping')">🛍️ Shopping Design</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Détente')">🧘 Spa & Bien-être</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Sport')">🏄 Aventure Sportive</div>
+                        <div class="tag-pill text-center" onclick="toggleTag(this, 'Insolite')">✨ Lieux Secrets</div>
                     </div>
+                    <input type="hidden" name="selected_activities" id="selected_activities">
                 </div>
 
                 <div class="step" data-step="5">
                     <div class="text-center py-12">
-                        <h2 class="text-5xl serif mb-10 italic">Prêt pour l'inattendu ?</h2>
-                        <div id="emotionalSummary" class="text-2xl serif italic text-slate-600 leading-relaxed max-w-2xl mx-auto mb-16"></div>
-                        <p class="text-[10px] uppercase tracking-[0.2em] text-slate-400">Cliquez pour valider et recevoir votre accès prioritaire sur WhatsApp.</p>
+                        <h2 class="text-6xl serif mb-10 italic">Votre profil est prêt.</h2>
+                        <div id="emotionalSummary" class="text-3xl serif italic text-slate-700 leading-relaxed max-w-3xl mx-auto mb-16"></div>
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold">L'Inconnu vous recontacte sous 24h avec une première esquisse.</p>
                     </div>
                 </div>
 
-                <div class="mt-16 flex justify-between items-center border-t border-slate-100 pt-10">
-                    <button type="button" id="prevBtn" onclick="nextStep(-1)" class="text-[10px] uppercase tracking-widest text-slate-400 hover:text-black hidden">Précédent</button>
-                    <button type="button" id="nextBtn" onclick="nextStep(1)" class="bg-black text-white px-12 py-5 rounded-full text-[10px] uppercase tracking-widest font-bold ml-auto">Suivant</button>
-                    <button type="submit" id="submitBtn" class="bg-black text-white px-12 py-5 rounded-full text-[10px] uppercase tracking-widest font-bold hidden ml-auto">Finaliser l'expérience</button>
+                <div class="mt-20 flex justify-between items-center border-t border-slate-50 pt-12">
+                    <button type="button" id="prevBtn" onclick="nextStep(-1)" class="text-[10px] uppercase tracking-widest text-slate-400 hover:text-black font-bold hidden transition">Précédent</button>
+                    <button type="button" id="nextBtn" onclick="nextStep(1)" class="bg-black text-white px-16 py-6 rounded-full text-[11px] uppercase tracking-[0.2em] font-black ml-auto shadow-xl hover:scale-105 transition-all">Suivant</button>
+                    <button type="submit" id="submitBtn" class="bg-black text-white px-16 py-6 rounded-full text-[11px] uppercase tracking-[0.2em] font-black hidden ml-auto shadow-xl">Valider l'expérience</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // INIT CALENDRIER
+        // INIT FLATPIKRR
         flatpickr("#date_range", {
-            mode: "range",
-            minDate: "today",
-            locale: "fr",
-            dateFormat: "d-m-Y",
+            mode: "range", minDate: "today", locale: "fr", dateFormat: "d-m-Y",
             onClose: function(dates) {
                 if(dates.length === 2) {
                     const diff = Math.ceil((dates[1]-dates[0])/(1000*60*60*24));
-                    document.getElementById('nights-count').innerText = `Une escapade de ${diff} nuits se dessine.`;
+                    document.getElementById('nights-count').innerText = `✨ Une parenthèse de ${diff} nuits se dessine.`;
                 }
             }
         });
 
-        // BUDGET FEEDBACK
-        document.getElementById('budgetRange').oninput = function() {
-            const val = this.value;
-            document.getElementById('budgetVal').innerText = val;
-            const feedback = document.getElementById('budget-feedback');
-            if(val < 1500) feedback.innerText = "Une base solide pour une belle évasion.";
-            else if(val < 4000) feedback.innerText = "Nous allons pouvoir explorer des adresses très confidentielles.";
-            else feedback.innerHTML = "💎 <strong>L'exceptionnel devient possible.</strong> Accès aux palaces et services privés.";
+        // FEEDBACK BUDGET & PRIX
+        const bRange = document.getElementById('budgetRange');
+        bRange.oninput = function() {
+            document.getElementById('budgetVal').innerText = this.value;
+            const fb = document.getElementById('budget-feedback');
+            if(this.value > 6000) fb.innerHTML = "💎 <strong>L'Exceptionnel :</strong> Accès aux suites privées et transferts VIP.";
+            else fb.innerText = "Une base solide pour un voyage de haute volée.";
+            updatePricePerPers();
         };
 
-        function togglePassport(val) {
-            document.getElementById('passport-box').style.display = (val === 'Oui') ? 'block' : 'none';
+        function updatePricePerPers() {
+            const nb = parseInt(document.getElementById('nb_pers').value) || 1;
+            const price = Math.round(bRange.value / nb);
+            document.getElementById('price-per-person').innerText = `Estimation : ${price}€ / personne`;
+        }
+        document.getElementById('nb_pers').oninput = updatePricePerPers;
+
+        // TAGS D'ACTIVITÉS
+        let selectedTags = [];
+        function toggleTag(el, tag) {
+            el.classList.toggle('selected');
+            if(selectedTags.includes(tag)) selectedTags = selectedTags.filter(t => t !== tag);
+            else selectedTags.push(tag);
+            document.getElementById('selected_activities').value = selectedTags.join(', ');
         }
 
+        // VISUAL CARDS
         function selectVisual(el, name, value) {
             const cards = el.parentElement.querySelectorAll('.visual-card');
             cards.forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
             el.querySelector(`input[name="${name}"]`).checked = true;
+            if(name === 'cadre' && value === 'Ville') { /* On pourrait ajouter une question spécifique ici */ }
         }
 
+        // NAVIGATION & TRANSITIONS
         let currentStep = 1;
         const totalSteps = 5;
 
@@ -279,29 +264,23 @@
             const screen = document.getElementById('transition-screen');
             document.getElementById('transition-text').innerText = text;
             screen.style.display = 'flex';
-            setTimeout(() => {
-                screen.style.display = 'none';
-                callback();
-            }, 2200);
+            setTimeout(() => { screen.style.display = 'none'; callback(); }, 2500);
         }
 
         function nextStep(n) {
             const steps = document.querySelectorAll('.step');
             if(n === 1) {
-                const inputs = steps[currentStep-1].querySelectorAll('input[required]');
+                const activeStep = steps[currentStep-1];
+                const required = activeStep.querySelectorAll('input[required]');
                 let valid = true;
-                inputs.forEach(i => { if(!i.value || (i.type==='radio' && !document.querySelector(`input[name="${i.name}"]:checked`))) valid=false; });
-                if(!valid) { alert("Veuillez renseigner ce champ pour continuer."); return; }
+                required.forEach(i => { if(!i.value || (i.type==='radio' && !activeStep.querySelector(`input[name="${i.name}"]:checked`))) valid=false; });
+                if(!valid) { alert("Ce détail est essentiel pour la suite."); return; }
 
-                // LOGIQUE DE RÉASSURANCE
                 let msg = "";
-                if(currentStep === 2) msg = "Analyse de votre périmètre de vol terminée...";
-                if(currentStep === 3) msg = "Nos experts parcourent notre collection d'hôtels privés...";
+                if(currentStep === 2) msg = "Nos algorithmes vérifient les disponibilités météo pour ce cadre...";
+                if(currentStep === 4) msg = "Composition de votre itinéraire sur-mesure...";
                 
-                if(msg !== "") {
-                    showTransition(msg, () => move(n));
-                    return;
-                }
+                if(msg !== "") { showTransition(msg, () => move(n)); return; }
             }
             move(n);
         }
@@ -314,7 +293,7 @@
 
             if(currentStep === 5) {
                 const data = new FormData(document.getElementById('travelForm'));
-                document.getElementById('emotionalSummary').innerHTML = `Vous vous apprêtez à confier les clefs de votre prochaine aventure pour <strong>${data.get('nb_personnes')}</strong>. Nous allons concevoir une escale <strong>${data.get('standing')}</strong> centrée sur la <strong>${data.get('cadre')}</strong>. Prêt pour l'inattendu ?`;
+                document.getElementById('emotionalSummary').innerHTML = `Vous nous confiez les clés d'un voyage <strong>${data.get('cadre')}</strong> pour <strong>${data.get('nb_personnes')}</strong>. Nous allons sculpter une expérience <strong>${data.get('standing')}</strong> axée sur <strong>${selectedTags.join(' & ') || 'la surprise'}</strong>.`;
             }
 
             document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
@@ -326,11 +305,12 @@
         document.getElementById('travelForm').onsubmit = function(e) {
             e.preventDefault();
             const data = new FormData(this);
-            const msg = `*NOUVELLE DEMANDE L'INCONNU*%0A` +
+            const msg = `*MYSTÈRE L'INCONNU*%0A` +
                         `• Dates: ${data.get('dates_sejour')}%0A` +
-                        `• Budget: ${data.get('budget')}€%0A` +
-                        `• Profil: ${data.get('cadre')} / ${data.get('standing')}%0A` +
-                        `• Vol: ${data.get('temps_vol')}h (${data.get('classe')})`;
+                        `• Budget: ${data.get('budget')}€ (%0A` +
+                        `• Cadre: ${data.get('cadre')} / ${data.get('standing')}%0A` +
+                        `• Envies: ${data.get('selected_activities')}%0A` +
+                        `• Blacklist: ${data.get('blacklist')}`;
             window.open(`https://wa.me/33617572361?text=${msg}`, '_blank');
             this.submit();
         };
