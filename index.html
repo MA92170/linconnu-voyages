@@ -11,66 +11,63 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
-body {
-    background: #0a0a0a;
-    color: white;
-    font-family: Inter, sans-serif;
-    overflow: hidden;
-}
-
-.serif { font-family: 'Playfair Display', serif; }
+body { background:#0a0a0a; color:white; font-family:Inter; overflow:hidden; }
 
 .screen {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-    transition: 0.6s ease;
+position:absolute; inset:0;
+display:flex; flex-direction:column;
+justify-content:center; align-items:center;
+padding:2rem; text-align:center;
+transition:0.6s ease;
 }
 
-.hidden-screen {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(40px);
-}
+.hidden { opacity:0; transform:translateY(40px); pointer-events:none; }
 
 .progress {
-    position: fixed;
-    top:0;
-    left:0;
-    height:3px;
-    background:white;
-    transition:0.4s;
+position:fixed; top:0; left:0;
+height:3px; background:white;
+transition:0.4s;
 }
 
 .card {
-    border:1px solid rgba(255,255,255,0.1);
-    padding:20px;
-    border-radius:12px;
-    cursor:pointer;
-    transition:0.3s;
+border:1px solid rgba(255,255,255,0.1);
+padding:20px; border-radius:12px;
+cursor:pointer; transition:0.3s;
 }
 
 .card:hover { background:white; color:black; }
 .card.active { background:white; color:black; }
 
+.visual {
+cursor:pointer; border-radius:16px;
+overflow:hidden; position:relative;
+}
+
+.visual img {
+height:180px; width:100%;
+object-fit:cover; opacity:0.7;
+transition:0.4s;
+}
+
+.visual.active img { opacity:1; transform:scale(1.05); }
+
+.visual span {
+position:absolute; bottom:10px; left:10px;
+font-weight:bold;
+}
+
 button.main {
-    margin-top:40px;
-    padding:14px 30px;
-    border-radius:999px;
-    background:white;
-    color:black;
+margin-top:40px;
+padding:14px 30px;
+border-radius:999px;
+background:white; color:black;
 }
 
 input, select {
-    background:transparent;
-    border-bottom:1px solid #333;
-    padding:10px;
-    width:300px;
-    text-align:center;
+background:transparent;
+border-bottom:1px solid #333;
+padding:10px;
+text-align:center;
 }
 </style>
 </head>
@@ -79,102 +76,188 @@ input, select {
 
 <div id="progress" class="progress" style="width:0%"></div>
 
+<form id="form">
+
 <!-- INTRO -->
 <div id="intro" class="screen">
-<h1 class="serif text-5xl mb-6 text-center">
-Fermez les yeux…<br>Votre destination existe déjà.
-</h1>
+<h1 class="text-5xl mb-6">L'Inconnu</h1>
+<p class="text-white/60 mb-6">Une expérience de voyage pensée pour vous.</p>
 
-<button onclick="next()" class="main">Commencer l’expérience</button>
+<p class="text-xs text-white/40 max-w-md">
+Réservez idéalement votre voyage au minimum 1 mois à l’avance.  
+Toute demande plus tardive pourra entraîner un supplément.
+</p>
+
+<button type="button" onclick="next()" class="main">Commencer l'expérience</button>
 </div>
 
-<!-- QUESTIONS -->
-<div id="q1" class="screen hidden-screen">
-<h2 class="text-3xl serif mb-6">Quand souhaitez-vous partir ?</h2>
-<input id="dates">
-<button onclick="next()" class="main">Continuer</button>
+<!-- DATES -->
+<div id="q1" class="screen hidden">
+<h2 class="text-3xl mb-6">Quand souhaitez-vous partir ?</h2>
+<input id="dates" name="dates" required>
+<button type="button" onclick="next()" class="main">Continuer</button>
 </div>
 
-<div id="q2" class="screen hidden-screen">
-<h2 class="text-3xl serif mb-6">Quel est votre budget ?</h2>
-<input type="range" id="budget" min="100" max="5000">
+<!-- BUDGET -->
+<div id="q2" class="screen hidden">
+<h2 class="text-3xl mb-6">Quel budget souhaitez-vous investir ?</h2>
+<input type="range" name="budget" id="budget" min="100" max="5000">
 <p id="budgetVal">1000€</p>
-<button onclick="next()" class="main">Continuer</button>
+<button type="button" onclick="next()" class="main">Continuer</button>
 </div>
 
-<div id="q3" class="screen hidden-screen">
-<h2 class="text-3xl serif mb-6">Combien êtes-vous ?</h2>
-<input id="personnes" type="number">
-<button onclick="next()" class="main">Continuer</button>
+<!-- PERSONNES -->
+<div id="q3" class="screen hidden">
+<h2 class="text-3xl mb-6">Combien êtes-vous ?</h2>
+<input type="number" name="personnes" required>
+<button type="button" onclick="next()" class="main">Continuer</button>
 </div>
 
-<div id="q4" class="screen hidden-screen">
-<h2 class="text-3xl serif mb-6">Sortir de l’UE ?</h2>
+<!-- AMBIANCE -->
+<div id="q4" class="screen hidden">
+<h2 class="text-3xl mb-8">Quel décor vous attire ?</h2>
+
+<div class="grid grid-cols-3 gap-6">
+<div class="visual" onclick="selectVisual(this,'Plage')">
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
+<span>Mer</span>
+</div>
+
+<div class="visual" onclick="selectVisual(this,'Montagne')">
+<img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b">
+<span>Montagne</span>
+</div>
+
+<div class="visual" onclick="selectVisual(this,'Ville')">
+<img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000">
+<span>Ville</span>
+</div>
+</div>
+
+<input type="hidden" name="ambiance" id="ambiance" required>
+<button type="button" onclick="next()" class="main">Continuer</button>
+</div>
+
+<!-- HOTEL -->
+<div id="q5" class="screen hidden">
+<h2 class="text-3xl mb-8">Quel niveau d'hébergement ?</h2>
+
+<div class="grid grid-cols-3 gap-6">
+<div class="visual" onclick="selectHotel(this,'Classique')">
+<img src="https://images.unsplash.com/photo-1566073771259-6a8506099945">
+<span>Classique</span>
+</div>
+
+<div class="visual" onclick="selectHotel(this,'Premium')">
+<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b">
+<span>Premium</span>
+</div>
+
+<div class="visual" onclick="selectHotel(this,'Luxe')">
+<img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb">
+<span>Luxe</span>
+</div>
+</div>
+
+<input type="hidden" name="hotel" id="hotel" required>
+<button type="button" onclick="next()" class="main">Continuer</button>
+</div>
+
+<!-- TRANSFERT -->
+<div id="q6" class="screen hidden">
+<h2 class="text-3xl mb-6">Accès à l'aéroport</h2>
+
+<p class="text-white/50 mb-6 text-sm">
+Souhaitez-vous vous y rendre par vos propres moyens ou bénéficier d’un service premium ?
+</p>
+
 <div class="flex gap-6">
-<div class="card" onclick="select(this,'oui')">Oui</div>
-<div class="card" onclick="select(this,'non')">Non</div>
-</div>
-<button onclick="next()" class="main">Continuer</button>
+<div class="card" onclick="selectOption(this,'transfert','Autonome')">Par mes propres moyens</div>
+<div class="card" onclick="selectOption(this,'transfert','Taxi VIP')">Taxi VIP (supplément)</div>
 </div>
 
-<div id="q5" class="screen hidden-screen">
-<h2 class="text-3xl serif mb-6">Type de voyage ?</h2>
-<div class="flex gap-6">
-<div class="card" onclick="select(this,'detente')">Détente</div>
-<div class="card" onclick="select(this,'decouverte')">Découverte</div>
-</div>
-<button onclick="next()" class="main">Voir mon mystère</button>
+<input type="hidden" name="transfert" id="transfert" required>
+<button type="button" onclick="next()" class="main">Continuer</button>
 </div>
 
 <!-- FINAL -->
-<div id="final" class="screen hidden-screen text-center">
-<h2 class="text-4xl serif mb-6">Nous avons trouvé.</h2>
-<p id="result" class="text-xl"></p>
+<div id="final" class="screen hidden">
+<h2 class="text-4xl mb-6">Votre demande est prête</h2>
+<p class="text-white/50">Nous allons concevoir votre expérience.</p>
+
+<button type="submit" class="main">Envoyer ma demande</button>
 </div>
+
+</form>
 
 <script>
 
-flatpickr("#dates",{mode:"range"});
+flatpickr("#dates",{mode:"range",minDate:"today"});
 
 let step=0;
-const screens=["intro","q1","q2","q3","q4","q5","final"];
+const screens=["intro","q1","q2","q3","q4","q5","q6","final"];
 
 function next(){
-document.getElementById(screens[step]).classList.add("hidden-screen");
+if(step>0){
+const current=document.getElementById(screens[step]);
+const inputs=current.querySelectorAll("input[required]");
+for(let i of inputs){ if(!i.value){ alert("Merci de compléter"); return; } }
+}
+
+document.getElementById(screens[step]).classList.add("hidden");
 step++;
-document.getElementById(screens[step]).classList.remove("hidden-screen");
+document.getElementById(screens[step]).classList.remove("hidden");
 
 document.getElementById("progress").style.width = (step/(screens.length-1))*100+"%";
-
-if(screens[step]==="final"){
-generate();
-}
 }
 
-function select(el,val){
+// interactions
+function selectVisual(el,val){
+document.querySelectorAll("#q4 .visual").forEach(v=>v.classList.remove("active"));
+el.classList.add("active");
+document.getElementById("ambiance").value=val;
+}
+
+function selectHotel(el,val){
+document.querySelectorAll("#q5 .visual").forEach(v=>v.classList.remove("active"));
+el.classList.add("active");
+document.getElementById("hotel").value=val;
+}
+
+function selectOption(el,name,val){
 el.parentElement.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
 el.classList.add("active");
-el.parentElement.dataset.value=val;
+document.getElementById(name).value=val;
 }
 
 // budget live
 document.getElementById("budget").oninput = e=>{
-document.getElementById("budgetVal").innerText=e.target.value+"€";
+document.getElementById("budgetVal").innerText = e.target.value + "€";
 };
 
-// générateur
-function generate(){
-let budget=document.getElementById("budget").value;
+// submit
+document.getElementById("form").onsubmit = function(e){
+e.preventDefault();
 
-let result="";
+const data=new FormData(this);
 
-if(budget<1500) result="Lisbonne, Budapest ou Athènes";
-else if(budget<3000) result="Grèce, Maroc ou Croatie";
-else result="Bali, Maldives ou Japon";
+// Formspree
+fetch("https://formspree.io/f/xdaynpav",{
+method:"POST",
+body:data,
+headers:{'Accept':'application/json'}
+});
 
-document.getElementById("result").innerText=result;
+// WhatsApp
+const msg=`Voyage :
+Budget ${data.get("budget")}€
+Personnes ${data.get("personnes")}
+Ambiance ${data.get("ambiance")}
+Hotel ${data.get("hotel")}`;
 
-console.log("Suggestions privées :",result);
+window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
+
+alert("Demande envoyée ✨");
 }
 
 </script>
