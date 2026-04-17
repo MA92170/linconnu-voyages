@@ -3,168 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Inconnu | Expérience</title>
-
+    <title>L'Inconnu | Expérience de Voyage Mystère</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Inter:wght@300;400;700&display=swap');
-
-        :root { --accent: #d4af37; --bg: #05070a; }
-
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; height: 100vh; }
+        :root { --accent: #d4af37; }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; overflow: hidden; height: 100vh; }
         .serif { font-family: 'Playfair Display', serif; }
 
-        /* Background Immersif */
-        .bg-overlay {
+        .bg-master {
             position: fixed; inset: 0; z-index: -1;
-            background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000');
             background-size: cover; background-position: center;
-            filter: brightness(0.2); transition: 1s;
+            filter: brightness(0.2); transition: 1.5s ease-in-out;
         }
 
         .screen {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 2rem; text-align: center;
-            transition: all 0.6s ease-in-out;
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 2rem;
+            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .hidden { opacity: 0; transform: translateY(30px); pointer-events: none; }
 
-        .hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
-
-        /* Inputs & Boutons */
-        .input-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem 2rem; border-radius: 12px;
-            color: white; font-size: 1.5rem; outline: none; text-align: center;
-        }
-
+        /* Navigation */
         .btn-main {
-            background: var(--accent); color: black; font-weight: 800;
+            background: var(--accent); color: black; font-weight: 700;
             padding: 1.2rem 3rem; border-radius: 999px; text-transform: uppercase;
-            letter-spacing: 2px; margin-top: 2rem; transition: 0.3s; cursor: pointer;
+            letter-spacing: 2px; margin-top: 2rem; transition: 0.3s;
         }
-
         .btn-back {
-            position: absolute; top: 30px; left: 30px; color: white;
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
-            opacity: 0.5; cursor: pointer;
+            position: absolute; top: 40px; left: 40px; color: white; opacity: 0.4;
+            text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; cursor: pointer;
         }
 
-        /* CUSTOM CALENDAR INLINE */
-        #calendar-container { margin-bottom: 10px; }
-        .flatpickr-calendar.inline {
-            background: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-            width: auto !important;
+        /* Form Controls */
+        .input-underlined {
+            background: transparent; border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding: 10px; font-size: 1.5rem; text-align: center; width: 100%; max-width: 400px;
+            outline: none; transition: 0.3s; color: white;
         }
-        .flatpickr-months .flatpickr-month { background: transparent !important; }
-        .flatpickr-day.selected { background: var(--accent) !important; border-color: var(--accent) !important; color: black !important; }
-        .flatpickr-day.inRange { background: rgba(212, 175, 55, 0.2) !important; border: none !important; }
-        
-        /* Progress Bar */
-        .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); transition: 0.4s; }
+        .input-underlined:focus { border-color: var(--accent); }
+
+        .choice-card {
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
+            padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center;
+        }
+        .choice-card.selected { border-color: var(--accent); background: rgba(212, 175, 55, 0.1); }
+
+        /* Calendrier Inline */
+        #calendar-wrapper { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 20px; }
+        .flatpickr-calendar { background: transparent !important; box-shadow: none !important; border: none !important; }
     </style>
 </head>
 <body>
 
-<div id="progress" class="progress" style="width:0%"></div>
-<div class="bg-overlay"></div>
+<div id="progress" class="fixed top-0 left-0 h-1 bg-[#d4af37] transition-all duration-500 z-50" style="width: 0%"></div>
+<div id="bg-master" class="bg-master" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600');"></div>
 
-<form id="form">
-
-    <div id="intro" class="screen">
-        <h1 class="text-7xl serif italic mb-4">L'Inconnu</h1>
-        <p class="text-white/60 mb-8 tracking-widest uppercase text-xs">Osez l'imprévisible</p>
-        <button type="button" onclick="next()" class="btn-main">Commencer</button>
+<form id="travelForm">
+    <div id="step0" class="screen">
+        <h1 class="text-7xl md:text-9xl serif italic mb-6">L'Inconnu</h1>
+        <p class="text-white/50 tracking-[0.3em] uppercase text-xs mb-10">Conciergerie de l'imprévisible</p>
+        <button type="button" onclick="nextStep()" class="btn-main">Concevoir mon mystère</button>
     </div>
 
-    <div id="q_depart" class="screen hidden">
-        <div onclick="back()" class="btn-back">← Retour</div>
-        <h2 class="text-4xl serif mb-10">D'où partez-vous ?</h2>
-        <input type="text" name="depart" class="input-box" placeholder="Ville de départ" required>
-        <button type="button" onclick="next()" class="btn-main">Continuer</button>
+    <div id="step1" class="screen hidden">
+        <div class="btn-back" onclick="prevStep()">← Retour</div>
+        <h2 class="text-4xl serif mb-10 italic">D'où commence l'aventure ?</h2>
+        <input type="text" name="ville_depart" class="input-underlined mb-6" placeholder="Ville de départ" required>
+        <button type="button" onclick="nextStep()" class="btn-main">Suivant</button>
     </div>
 
-    <div id="q_dates" class="screen hidden">
-        <div onclick="back()" class="btn-back">← Retour</div>
-        <h2 class="text-4xl serif mb-6">Vos dates de départ et retour</h2>
-        <div id="calendar-container"></div> <input type="hidden" id="dates_input" name="dates" required>
-        <button type="button" onclick="next()" class="btn-main">Confirmer les dates</button>
+    <div id="step2" class="screen hidden">
+        <div class="btn-back" onclick="prevStep()">← Retour</div>
+        <h2 class="text-4xl serif mb-6 italic">Vos dates de liberté</h2>
+        <div id="calendar-wrapper"></div>
+        <input type="hidden" name="dates_sejour" id="dates_sejour" required>
+        <button type="button" onclick="nextStep()" class="btn-main">Confirmer</button>
     </div>
 
-    <div id="q_budget" class="screen hidden">
-        <div onclick="back()" class="btn-back">← Retour</div>
-        <h2 class="text-4xl serif mb-10">Votre budget total ?</h2>
-        <input type="range" name="budget" id="budget" min="500" max="10000" step="100" value="2500" class="w-64 accent-[#d4af37]">
-        <p id="budgetVal" class="text-5xl font-bold mt-6 text-accent">2500€</p>
-        <button type="button" onclick="next()" class="btn-main">Continuer</button>
+    <div id="step3" class="screen hidden">
+        <div class="btn-back" onclick="prevStep()">← Retour</div>
+        <h2 class="text-3xl serif mb-8 italic">Avec qui voyagez-vous ?</h2>
+        <div class="grid grid-cols-3 gap-4 mb-8 w-full max-w-2xl">
+            <div class="choice-card" onclick="selectType(this, 'Couple')">Couple</div>
+            <div class="choice-card" onclick="selectType(this, 'Famille')">Famille</div>
+            <div class="choice-card" onclick="selectType(this, 'Amis')">Amis</div>
+        </div>
+        <input type="hidden" name="type_groupe" id="type_groupe" required>
+        
+        <div class="w-full max-w-md space-y-4">
+            <input type="text" name="age_voyageurs" class="input-underlined !text-sm" placeholder="Âge des voyageurs (ex: 32, 34)">
+            <div id="enfants-section" class="hidden">
+                <input type="text" name="enfants_details" class="input-underlined !text-sm" placeholder="Enfants ? (Nombre et âges)">
+            </div>
+            <div class="flex items-center justify-center gap-4 mt-4">
+                <span class="text-xs uppercase opacity-50">Passeport valide ?</span>
+                <input type="checkbox" name="passeport" value="Oui" class="w-5 h-5 accent-[#d4af37]">
+            </div>
+        </div>
+        <button type="button" onclick="nextStep()" class="btn-main">Suivant</button>
     </div>
 
-    <div id="final" class="screen hidden">
-        <h2 class="text-5xl serif mb-6 italic">Tout est prêt.</h2>
-        <button type="submit" class="btn-main">Envoyer ma demande</button>
+    <div id="step4" class="screen hidden">
+        <div class="btn-back" onclick="prevStep()">← Retour</div>
+        <h2 class="text-3xl serif mb-8 italic">Le standing souhaité</h2>
+        <div class="grid grid-cols-3 gap-4 mb-10 w-full max-w-2xl">
+            <div class="choice-card" onclick="selectStanding(this, 'Classique')">Classique</div>
+            <div class="choice-card" onclick="selectStanding(this, 'Premium')">Premium</div>
+            <div class="choice-card" onclick="selectStanding(this, 'Luxe')">Luxe</div>
+        </div>
+        <input type="hidden" name="standing" id="standing" required>
+
+        <h3 class="text-xs uppercase tracking-widest opacity-50 mb-6">Accès Aéroport</h3>
+        <div class="flex gap-4 w-full max-w-md">
+            <div class="choice-card flex-1 !text-xs" onclick="selectOption(this, 'transfert', 'Propres moyens')">Mes propres moyens</div>
+            <div class="choice-card flex-1 !text-xs" onclick="selectOption(this, 'transfert', 'Taxi VIP')">Taxi VIP (supplément)</div>
+        </div>
+        <input type="hidden" name="transfert" id="transfert" required>
+        <button type="button" onclick="nextStep()" class="btn-main">Suivant</button>
     </div>
 
+    <div id="step5" class="screen hidden">
+        <div class="btn-back" onclick="prevStep()">← Retour</div>
+        <h2 class="text-3xl serif mb-10 italic">Quel décor pour ce mystère ?</h2>
+        <div class="grid grid-cols-3 gap-6 w-full max-w-4xl mb-10">
+            <div class="relative group cursor-pointer overflow-hidden rounded-xl h-64" onclick="selectAmbiance(this, 'Mer', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e')">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600" class="h-full w-full object-cover transition duration-500 group-hover:scale-110 opacity-60">
+                <span class="absolute inset-0 flex items-center justify-center font-bold uppercase tracking-widest">Mer</span>
+            </div>
+            <div class="relative group cursor-pointer overflow-hidden rounded-xl h-64" onclick="selectAmbiance(this, 'Montagne', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b')">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600" class="h-full w-full object-cover transition duration-500 group-hover:scale-110 opacity-60">
+                <span class="absolute inset-0 flex items-center justify-center font-bold uppercase tracking-widest">Montagne</span>
+            </div>
+            <div class="relative group cursor-pointer overflow-hidden rounded-xl h-64" onclick="selectAmbiance(this, 'Ville', 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000')">
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600" class="h-full w-full object-cover transition duration-500 group-hover:scale-110 opacity-60">
+                <span class="absolute inset-0 flex items-center justify-center font-bold uppercase tracking-widest">Ville</span>
+            </div>
+        </div>
+        <input type="hidden" name="ambiance" id="ambiance" required>
+        
+        <div class="w-full max-w-md">
+            <label class="text-[10px] uppercase tracking-widest opacity-50">Budget estimé : <span id="budgetDisplay" class="text-accent font-bold">2500</span>€</label>
+            <input type="range" name="budget" min="500" max="15000" step="100" value="2500" class="w-full h-1 bg-white/20 accent-[#d4af37] outline-none" oninput="document.getElementById('budgetDisplay').innerText = this.value">
+        </div>
+        <button type="button" onclick="nextStep()" class="btn-main">Voir le résumé</button>
+    </div>
+
+    <div id="step6" class="screen hidden text-center">
+        <h2 class="text-5xl serif italic mb-8">L'Inconnu vous attend.</h2>
+        <p class="text-white/60 mb-10 max-w-lg">Vos critères ont été enregistrés. Nous allons concevoir une expérience qui dépasse vos attentes.</p>
+        <button type="submit" class="btn-main animate-pulse">Lancer ma demande</button>
+    </div>
 </form>
 
 <script>
-    let step = 0;
-    const screens = ["intro", "q_depart", "q_dates", "q_budget", "final"];
+    let currentStep = 0;
+    const totalSteps = 6;
+    const backgrounds = [
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
+        "https://images.unsplash.com/photo-1464012356351-03005597d52f",
+        "https://images.unsplash.com/photo-1493246507139-91e8bef99c1e",
+        "https://images.unsplash.com/photo-1539635278303-d4002c07dee3",
+        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+        "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1"
+    ];
 
-    // INITIALISATION DU CALENDRIER EN MODE INLINE (Visible de suite)
-    const fp = flatpickr("#calendar-container", {
+    // Initialisation Flatpickr Inline (Fini les bugs de cadre)
+    const fp = flatpickr("#calendar-wrapper", {
         inline: true,
         mode: "range",
         minDate: "today",
-        showMonths: window.innerWidth > 768 ? 2 : 1, // 2 mois sur PC, 1 sur Mobile
+        showMonths: window.innerWidth > 768 ? 2 : 1,
         locale: "fr",
         dateFormat: "d/m/Y",
-        onChange: function(selectedDates, dateStr) {
-            document.getElementById('dates_input').value = dateStr;
+        onChange: function(dates, dateStr) {
+            document.getElementById('dates_sejour').value = dateStr;
         }
     });
 
-    function next() {
-        // Validation basique
-        const currentScreen = document.getElementById(screens[step]);
-        const input = currentScreen.querySelector('input');
-        if(step > 0 && input && !input.value) {
-            alert("Merci de compléter cette étape ✨");
-            return;
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            const current = document.getElementById(`step${currentStep}`);
+            // Validation simple
+            if(currentStep > 0) {
+                const req = current.querySelector('input[required], input[type="hidden"]');
+                if(req && !req.value) { alert("Détail manquant pour votre voyage ✨"); return; }
+            }
+            
+            current.classList.add('hidden');
+            currentStep++;
+            const next = document.getElementById(`step${currentStep}`);
+            next.classList.remove('hidden');
+            
+            updateUI();
         }
-        changeStep(1);
     }
 
-    function back() {
-        if(step > 0) changeStep(-1);
+    function prevStep() {
+        if (currentStep > 0) {
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            updateUI();
+        }
     }
 
-    function changeStep(dir) {
-        document.getElementById(screens[step]).classList.add("hidden");
-        step += dir;
-        document.getElementById(screens[step]).classList.remove("hidden");
-        document.getElementById("progress").style.width = (step / (screens.length - 1)) * 100 + "%";
+    function updateUI() {
+        document.getElementById('progress').style.width = (currentStep / totalSteps * 100) + "%";
+        document.getElementById('bg-master').style.backgroundImage = `url('${backgrounds[currentStep]}?w=1600')`;
     }
 
-    document.getElementById("budget").oninput = e => {
-        document.getElementById("budgetVal").innerText = e.target.value + "€";
-    };
+    function selectType(el, val) {
+        document.querySelectorAll('#step3 .choice-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('type_groupe').value = val;
+        document.getElementById('enfants-section').style.display = (val === 'Famille') ? 'block' : 'none';
+    }
 
-    document.getElementById("form").onsubmit = function(e) {
+    function selectStanding(el, val) {
+        document.querySelectorAll('#step4 .grid .choice-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('standing').value = val;
+    }
+
+    function selectOption(el, inputId, val) {
+        el.parentElement.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById(inputId).value = val;
+    }
+
+    function selectAmbiance(el, val, img) {
+        document.querySelectorAll('#step5 .relative').forEach(c => c.style.borderColor = "transparent");
+        el.style.border = "2px solid var(--accent)";
+        document.getElementById('ambiance').value = val;
+        document.getElementById('bg-master').style.backgroundImage = `url('${img}?w=1600')`;
+    }
+
+    document.getElementById('travelForm').onsubmit = function(e) {
         e.preventDefault();
         const data = new FormData(this);
-        const msg = `L'INCONNU : \nDépart: ${data.get("depart")}\nDates: ${data.get("dates")}\nBudget: ${data.get("budget")}€`;
+        let msg = `✨ NOUVELLE DEMANDE MYSTÈRE ✨\n\n`;
+        data.forEach((value, key) => { msg += `• ${key.replace('_',' ')} : ${value}\n`; });
+        
         window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
+        
+        // Envoi optionnel à Formspree
+        fetch("https://formspree.io/f/xdaynpav", {
+            method: "POST", body: data, headers: {'Accept': 'application/json'}
+        }).then(() => alert("Votre demande a été transmise avec succès ✨"));
     };
 </script>
-
 </body>
 </html>
