@@ -3,162 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Inconnu — Expérience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Outfit:wght@200;400&display=swap" rel="stylesheet">
+    <title>L'Inconnu — Voyage Sur-Mesure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
     
     <style>
-        :root { --bg: #0a0a0a; --text: #faf9f6; --gold: #b8974a; --border: rgba(255,255,255,0.15); }
+        :root { 
+            --bg: #151515; 
+            --card-bg: #1e1e1e;
+            --text: #faf9f6; 
+            --gold: #b8974a; 
+            --border: rgba(255,255,255,0.1); 
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        .quiz-container { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .quiz-container { width: 100%; max-width: 1000px; padding: 40px 20px; }
 
-        .step { display: none; width: 100%; max-width: 900px; text-align: center; animation: fadeIn 0.6s ease; }
+        .step { display: none; text-align: center; animation: fadeIn 0.8s ease; }
         .step.active { display: block; }
 
-        h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2.2rem; margin-bottom: 1.5rem; font-weight: 300; color: var(--gold); }
+        h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2.5rem; margin-bottom: 2rem; font-weight: 300; color: var(--gold); }
 
-        /* Style des images redimensionnées */
-        .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
+        /* Grille Horizontale pour les photos */
+        .choice-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin: 20px 0;
+        }
         .img-card { 
-            position: relative; height: 200px; cursor: pointer; border: 1px solid var(--border); 
-            overflow: hidden; transition: 0.3s; border-radius: 4px;
+            position: relative; 
+            height: 180px; /* Format horizontal */
+            cursor: pointer; 
+            border: 1px solid var(--border); 
+            overflow: hidden; 
+            border-radius: 8px;
+            transition: all 0.4s ease;
         }
-        .img-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); transition: 0.5s; }
-        .img-card span { position: absolute; bottom: 15px; left: 0; right: 0; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; z-index: 2; }
-        .img-card.selected { border-color: var(--gold); transform: scale(1.02); }
-        .img-card.selected img { filter: brightness(1); }
+        .img-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); transition: 0.6s; }
+        .img-card span { 
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            text-transform: uppercase; letter-spacing: 4px; font-size: 14px; font-weight: 300; z-index: 2; 
+        }
+        .img-card:hover { border-color: rgba(184, 151, 74, 0.5); }
+        .img-card.selected { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .img-card.selected img { filter: brightness(0.9) scale(1.05); }
 
-        /* Inputs & Sliders */
+        /* Form Elements */
         input[type="text"], input[type="number"], textarea {
-            width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border);
-            color: white; padding: 12px; font-size: 1.1rem; text-align: center; outline: none; margin-bottom: 10px;
+            width: 100%; background: var(--card-bg); border: 1px solid var(--border);
+            color: white; padding: 18px; font-size: 1.1rem; text-align: center; outline: none; border-radius: 4px;
         }
-        .val-display { font-size: 1.8rem; color: var(--gold); font-family: 'Cormorant Garamond'; margin: 10px 0; }
-        input[type="range"] { width: 100%; accent-color: var(--gold); margin: 20px 0; }
+        .val-display { font-size: 2.5rem; color: var(--gold); font-family: 'Cormorant Garamond'; margin: 15px 0; }
+        input[type="range"] { width: 100%; accent-color: var(--gold); margin: 25px 0; height: 4px; }
 
-        /* Navigation */
-        .nav { margin-top: 40px; display: flex; gap: 20px; }
+        /* Nav */
+        .nav { margin-top: 50px; display: flex; justify-content: center; gap: 20px; }
         button {
             background: none; border: 1px solid var(--border); color: white;
-            padding: 10px 25px; cursor: pointer; text-transform: uppercase;
-            letter-spacing: 2px; font-size: 10px; transition: 0.3s;
+            padding: 14px 40px; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 11px; transition: 0.3s; border-radius: 2px;
         }
-        button:hover { border-color: var(--gold); }
-        .btn-next { background: var(--gold); color: white; border: none; }
+        button:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-next { background: var(--gold); color: white; border: none; font-weight: 500; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Écran de chargement final */
+        #loading-screen {
+            display: none; position: fixed; inset: 0; background: var(--bg);
+            z-index: 999; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 2px solid var(--border); border-top: 2px solid var(--gold);
+            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
+<div id="loading-screen">
+    <div class="loader"></div>
+    <h2 id="loading-text">Analyse de vos préférences...</h2>
+    <p style="font-size: 12px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase;">Confection de votre séjour secret</p>
+</div>
 
 <div class="quiz-container">
     <form id="voyageForm" action="https://formspree.io/f/xdaynpav" method="POST">
         
         <div class="step active" data-step="1">
-            <h2>L'horizon temporel</h2>
-            <div style="max-width: 400px; margin: 0 auto;">
-                <input type="text" id="rangeCalendar" name="dates" placeholder="Choisir vos dates..." required>
+            <h2>L'horizon de votre évasion</h2>
+            <div style="max-width: 500px; margin: 0 auto;">
+                <input type="text" id="rangeCalendar" name="Dates" placeholder="Sélectionnez vos dates" required style="cursor: pointer;">
             </div>
         </div>
 
         <div class="step" data-step="2">
-            <h2>La compagnie</h2>
+            <h2>Votre cercle de voyage</h2>
             <div class="choice-grid">
-                <div class="img-card" onclick="setSelect('groupe', 'Couple', this)">
-                    <img src="https://images.unsplash.com/photo-1530731141654-5993c3016c77?auto=format&fit=crop&w=400"><span>Couple</span>
+                <div class="img-card" onclick="setSelect('Groupe', 'Couple', this)">
+                    <img src="https://images.unsplash.com/photo-1539635278303-d4002c07dee3?auto=format&fit=crop&q=80&w=800"><span>Couple</span>
                 </div>
-                <div class="img-card" onclick="setSelect('groupe', 'Famille', this)">
-                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400"><span>Famille</span>
+                <div class="img-card" onclick="setSelect('Groupe', 'Famille', this)">
+                    <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=800"><span>Famille</span>
                 </div>
-                <div class="img-card" onclick="setSelect('groupe', 'Amis', this)">
-                    <img src="https://images.unsplash.com/photo-1522158633578-96400d72e458?auto=format&fit=crop&w=400"><span>Amis</span>
+                <div class="img-card" onclick="setSelect('Groupe', 'Amis', this)">
+                    <img src="https://images.unsplash.com/photo-1528605248644-14dd04cb113d?auto=format&fit=crop&q=80&w=800"><span>Amis</span>
                 </div>
             </div>
-            <input type="hidden" name="type_groupe" id="f_groupe">
+            <input type="hidden" name="Type_Groupe" id="f_Groupe">
             
-            <div style="margin-top:25px">
-                <p style="font-size:10px; letter-spacing:2px;">ENFANTS ?</p>
+            <div style="margin-top:30px">
+                <p style="font-size:11px; letter-spacing:3px; margin-bottom:15px; opacity: 0.6;">ENFANTS ?</p>
                 <button type="button" onclick="toggleEnfants(true)">OUI</button>
                 <button type="button" onclick="toggleEnfants(false)">NON</button>
             </div>
-            <div id="enfants-detail" style="display:none; margin-top:20px">
-                <input type="number" name="nb_enfants" placeholder="Nombre d'enfants" oninput="genAges(this.value)">
-                <div id="ages-wrap" class="choice-grid"></div>
+            <div id="enfants-detail" style="display:none; margin-top:25px; animation: fadeIn 0.5s;">
+                <input type="number" name="Nombre_Enfants" placeholder="Nombre d'enfants" oninput="genAges(this.value)">
+                <div id="ages-wrap" class="choice-grid" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));"></div>
             </div>
         </div>
 
         <div class="step" data-step="3">
-            <h2>Investissement souhaité</h2>
+            <h2>Budget pour cette expérience</h2>
             <div class="val-display" id="budgetValue">5 000 €</div>
-            <input type="range" name="budget" min="500" max="10000" step="100" value="5000" oninput="updateVal('budgetValue', this.value + ' €')">
+            <input type="range" name="Budget" min="500" max="10000" step="100" value="5000" oninput="updateVal('budgetValue', this.value + ' €')">
         </div>
 
         <div class="step" data-step="4">
-            <h2>L'élégance de l'abri</h2>
+            <h2>L'art de l'hôtellerie</h2>
             <div class="choice-grid">
-                <div class="img-card" onclick="setSelect('standing', 'Classique', this)">
-                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400"><span>Classique</span>
+                <div class="img-card" onclick="setSelect('Standing', 'Classique', this)">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=800"><span>Classique</span>
                 </div>
-                <div class="img-card" onclick="setSelect('standing', 'Premium', this)">
-                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4df85b?auto=format&fit=crop&w=400"><span>Premium</span>
+                <div class="img-card" onclick="setSelect('Standing', 'Premium', this)">
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=800"><span>Premium</span>
                 </div>
-                <div class="img-card" onclick="setSelect('standing', 'Luxe', this)">
-                    <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=400"><span>Luxe</span>
+                <div class="img-card" onclick="setSelect('Standing', 'Luxe', this)">
+                    <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=800"><span>Luxe</span>
                 </div>
             </div>
-            <input type="hidden" name="standing" id="f_standing">
+            <input type="hidden" name="Standing_Souhaite" id="f_Standing">
         </div>
 
         <div class="step" data-step="5">
-            <h2>L'appel de la terre</h2>
+            <h2>L'atmosphère idéale</h2>
             <div class="choice-grid">
-                <div class="img-card" onclick="setSelect('env', 'Plage', this)">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400"><span>Plage</span>
+                <div class="img-card" onclick="setSelect('Env', 'Plage', this)">
+                    <img src="https://images.unsplash.com/photo-1506929113675-b5592d9ff5f0?auto=format&fit=crop&q=80&w=800"><span>Plage</span>
                 </div>
-                <div class="img-card" onclick="setSelect('env', 'Montagne', this)">
-                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400"><span>Montagne</span>
+                <div class="img-card" onclick="setSelect('Env', 'Montagne', this)">
+                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800"><span>Montagne</span>
                 </div>
-                <div class="img-card" onclick="setSelect('env', 'Centre-Ville', this)">
-                    <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=400"><span>Centre-Ville</span>
+                <div class="img-card" onclick="setSelect('Env', 'Centre-Ville', this)">
+                    <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=800"><span>Centre-Ville</span>
                 </div>
             </div>
-            <input type="hidden" name="destination_pref" id="f_env">
+            <input type="hidden" name="Environnement" id="f_Env">
         </div>
 
         <div class="step" data-step="6">
-            <h2>Air & Bagages</h2>
-            <p style="font-size:10px; letter-spacing:2px;">TEMPS DE VOL MAX</p>
-            <div class="val-display" id="volValue">3h</div>
-            <input type="range" name="temps_vol" min="1" max="6" value="3" oninput="updateVal('volValue', this.value + 'h')">
+            <h2>Air & Logistique</h2>
+            <p style="font-size:11px; letter-spacing:3px; opacity:0.6">TEMPS DE VOL MAXIMAL</p>
+            <div class="val-display" id="volValue">4h</div>
+            <input type="range" name="Temps_Vol_Max" min="1" max="6" value="4" oninput="updateVal('volValue', this.value + 'h')">
             
-            <div style="margin-top:20px">
-                <p style="font-size:10px; letter-spacing:2px;">BAGAGES EN SOUTE</p>
-                <input type="number" name="nb_bagages" placeholder="Nombre (0 pour non)" style="max-width:200px">
+            <div style="margin-top:40px">
+                <p style="font-size:11px; letter-spacing:3px; opacity:0.6; margin-bottom:15px">BAGAGES EN SOUTE</p>
+                <input type="number" name="Nombre_Bagages" placeholder="Combien de bagages ? (0 si aucun)" style="max-width:350px">
             </div>
         </div>
 
         <div class="step" data-step="7">
-            <h2>Les interdits</h2>
-            <textarea name="a_eviter" placeholder="Villes ou pays à exclure..." rows="3"></textarea>
+            <h2>Territoires à exclure</h2>
+            <textarea name="Villes_A_Eviter" placeholder="Indiquez ici les destinations que vous ne souhaitez pas visiter..." rows="4"></textarea>
         </div>
 
         <div class="nav">
             <button type="button" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden">Retour</button>
             <button type="button" id="nextBtn" onclick="changeStep(1)">Continuer</button>
-            <button type="submit" id="submitBtn" style="display:none" class="btn-next">Finaliser ✦</button>
+            <button type="submit" id="submitBtn" style="display:none" class="btn-next">Finaliser l'expérience ✦</button>
         </div>
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 <script>
     let currentStep = 1;
     const totalSteps = 7;
 
-    flatpickr("#rangeCalendar", { mode: "range", minDate: "today", dateFormat: "d/m/Y" });
+    flatpickr("#rangeCalendar", { 
+        mode: "range", 
+        minDate: "today", 
+        dateFormat: "d/m/Y",
+        locale: "fr"
+    });
 
     function updateVal(id, val) { document.getElementById(id).innerText = val; }
 
@@ -168,41 +219,53 @@
         el.classList.add('selected');
     }
 
-    function toggleEnfants(show) { document.getElementById('enfants-detail').style.display = show ? 'block' : 'none'; }
+    function toggleEnfants(show) { 
+        document.getElementById('enfants-detail').style.display = show ? 'block' : 'none'; 
+    }
 
     function genAges(num) {
         const wrap = document.getElementById('ages-wrap');
         wrap.innerHTML = "";
         for(let i=1; i<=num; i++) {
             const inp = document.createElement('input');
-            inp.type = "number"; inp.name = "age_enfant_"+i; inp.placeholder = "Âge " + i;
+            inp.type = "number"; inp.name = "Age_Enfant_"+i; inp.placeholder = "Âge " + i;
             wrap.appendChild(inp);
         }
     }
 
     function changeStep(dir) {
-        document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
         currentStep += dir;
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
         
-        document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
         document.getElementById('prevBtn').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
         document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'inline-block';
         document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // GESTION ENVOI WHATSAPP + FORMSPREE
     document.getElementById('voyageForm').onsubmit = function(e) {
-        const formData = new FormData(this);
-        let message = "NOUVELLE DEMANDE L'INCONNU : %0A";
+        e.preventDefault();
+        const form = this;
+        const formData = new FormData(form);
+        
+        // Affichage de l'animation de fin
+        document.getElementById('loading-screen').style.display = 'flex';
+        
+        // Construction du message WhatsApp
+        let message = "✨ *NOUVELLE DEMANDE L'INCONNU* ✨%0A%0A";
         for (let [key, value] of formData.entries()) {
-            if(value) message += `*${key}*: ${value}%0A`;
+            if(value && value !== "") message += `*${key.replace('_', ' ')}* : ${value}%0A`;
         }
         
-        // Envoi vers WhatsApp (Remplace le numéro par le tien)
-        const whatsappUrl = `https://wa.me/33600000000?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-        
-        // Le formulaire continuera vers Formspree normalement
+        const whatsappUrl = `https://wa.me/33617572361?text=${message}`;
+
+        // Petit délai pour l'effet visuel avant l'envoi
+        setTimeout(() => {
+            window.open(whatsappUrl, '_blank');
+            form.submit(); // Envoi final vers Formspree
+        }, 2500);
     };
 </script>
 
