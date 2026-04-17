@@ -3,177 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Inconnu — Expérience Sur-Mesure</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet">
+    <title>L'Inconnu — Expérience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Outfit:wght@200;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
     
     <style>
-        :root {
-            --bg: #0a0a0a; --text: #faf9f6; --gold: #b8974a; --border: rgba(255,255,255,0.15);
-        }
+        :root { --bg: #0a0a0a; --text: #faf9f6; --gold: #b8974a; --border: rgba(255,255,255,0.15); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* Arrière-plan dynamique */
-        #bg-overlay {
-            position: fixed; inset: 0; z-index: -1;
-            background-size: cover; background-position: center;
-            filter: brightness(0.4); transition: background-image 1s ease-in-out;
-        }
+        .quiz-container { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
 
-        .quiz-container {
-            height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; padding: 40px;
-            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
-        }
-
-        .step { display: none; width: 100%; max-width: 800px; text-align: center; animation: fadeIn 0.8s ease; }
+        .step { display: none; width: 100%; max-width: 900px; text-align: center; animation: fadeIn 0.6s ease; }
         .step.active { display: block; }
 
-        h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 2rem; font-weight: 300; }
+        h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2.2rem; margin-bottom: 1.5rem; font-weight: 300; color: var(--gold); }
 
-        /* Grilles d'images pour choix */
-        .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        /* Style des images redimensionnées */
+        .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
         .img-card { 
-            position: relative; height: 250px; cursor: pointer; border: 1px solid var(--border); overflow: hidden; transition: 0.4s;
+            position: relative; height: 200px; cursor: pointer; border: 1px solid var(--border); 
+            overflow: hidden; transition: 0.3s; border-radius: 4px;
         }
-        .img-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: grayscale(50%); }
-        .img-card span { position: absolute; bottom: 20px; left: 0; right: 0; text-transform: uppercase; letter-spacing: 3px; font-size: 12px; }
-        .img-card:hover img, .img-card.selected img { filter: grayscale(0%); transform: scale(1.05); }
-        .img-card.selected { border-color: var(--gold); box-shadow: 0 0 20px rgba(184, 151, 74, 0.3); }
+        .img-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); transition: 0.5s; }
+        .img-card span { position: absolute; bottom: 15px; left: 0; right: 0; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; z-index: 2; }
+        .img-card.selected { border-color: var(--gold); transform: scale(1.02); }
+        .img-card.selected img { filter: brightness(1); }
 
-        /* Formulaire & Sliders */
+        /* Inputs & Sliders */
         input[type="text"], input[type="number"], textarea {
             width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border);
-            color: white; padding: 15px; font-size: 1.2rem; text-align: center; outline: none;
+            color: white; padding: 12px; font-size: 1.1rem; text-align: center; outline: none; margin-bottom: 10px;
         }
-        .slider-wrap { margin: 40px 0; }
-        input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
-        .val-display { font-size: 2rem; color: var(--gold); font-family: 'Cormorant Garamond'; }
+        .val-display { font-size: 1.8rem; color: var(--gold); font-family: 'Cormorant Garamond'; margin: 10px 0; }
+        input[type="range"] { width: 100%; accent-color: var(--gold); margin: 20px 0; }
 
         /* Navigation */
-        .nav { position: fixed; bottom: 50px; display: flex; gap: 40px; }
+        .nav { margin-top: 40px; display: flex; gap: 20px; }
         button {
             background: none; border: 1px solid var(--border); color: white;
-            padding: 12px 35px; cursor: pointer; text-transform: uppercase;
+            padding: 10px 25px; cursor: pointer; text-transform: uppercase;
             letter-spacing: 2px; font-size: 10px; transition: 0.3s;
         }
-        button:hover { border-color: var(--gold); color: var(--gold); }
-        .btn-next { background: var(--text); color: var(--bg); border: none; }
+        button:hover { border-color: var(--gold); }
+        .btn-next { background: var(--gold); color: white; border: none; }
 
-        /* Calendrier Custom */
-        .flatpickr-calendar { background: #1a1a1a !important; border: 1px solid var(--gold) !important; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div id="bg-overlay"></div>
-
 <div class="quiz-container">
-    <form id="voyageForm">
+    <form id="voyageForm" action="https://formspree.io/f/xdaynpav" method="POST">
         
-        <div class="step active" data-step="1" data-bg="https://images.unsplash.com/photo-1500835595353-b0386db21137?q=80&w=2000">
-            <h2>Sélectionnez vos dates<br>de départ et de retour</h2>
-            <input type="text" id="rangeCalendar" placeholder="Choisir l'intervalle..." required>
+        <div class="step active" data-step="1">
+            <h2>L'horizon temporel</h2>
+            <div style="max-width: 400px; margin: 0 auto;">
+                <input type="text" id="rangeCalendar" name="dates" placeholder="Choisir vos dates..." required>
+            </div>
         </div>
 
-        <div class="step" data-step="2" data-bg="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2000">
-            <h2>Avec qui voyagez-vous ?</h2>
+        <div class="step" data-step="2">
+            <h2>La compagnie</h2>
             <div class="choice-grid">
                 <div class="img-card" onclick="setSelect('groupe', 'Couple', this)">
-                    <img src="https://images.unsplash.com/photo-1516589174184-c685266e430c?q=80&w=600"><span>Couple</span>
+                    <img src="https://images.unsplash.com/photo-1530731141654-5993c3016c77?auto=format&fit=crop&w=400"><span>Couple</span>
                 </div>
                 <div class="img-card" onclick="setSelect('groupe', 'Famille', this)">
-                    <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=600"><span>Famille</span>
+                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400"><span>Famille</span>
                 </div>
                 <div class="img-card" onclick="setSelect('groupe', 'Amis', this)">
-                    <img src="https://images.unsplash.com/photo-1539635278303-d4002c07dee3?q=80&w=600"><span>Amis</span>
+                    <img src="https://images.unsplash.com/photo-1522158633578-96400d72e458?auto=format&fit=crop&w=400"><span>Amis</span>
                 </div>
             </div>
-            <input type="hidden" name="groupe" id="f_groupe" required>
+            <input type="hidden" name="type_groupe" id="f_groupe">
             
-            <div style="margin-top:30px">
-                <p style="font-size:10px; letter-spacing:2px; margin-bottom:15px">ENFANTS PRÉSENTS ?</p>
+            <div style="margin-top:25px">
+                <p style="font-size:10px; letter-spacing:2px;">ENFANTS ?</p>
                 <button type="button" onclick="toggleEnfants(true)">OUI</button>
                 <button type="button" onclick="toggleEnfants(false)">NON</button>
             </div>
             <div id="enfants-detail" style="display:none; margin-top:20px">
-                <input type="number" placeholder="Nombre d'enfants" oninput="genAges(this.value)">
-                <div id="ages-wrap" class="choice-grid" style="grid-template-columns: repeat(5, 1fr); margin-top:10px"></div>
+                <input type="number" name="nb_enfants" placeholder="Nombre d'enfants" oninput="genAges(this.value)">
+                <div id="ages-wrap" class="choice-grid"></div>
             </div>
         </div>
 
-        <div class="step" data-step="3" data-bg="https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2000">
-            <h2>Votre budget global</h2>
-            <div class="slider-wrap">
-                <div class="val-display" id="budgetValue">5 000 €</div>
-                <input type="range" min="500" max="10000" step="100" value="5000" oninput="updateVal('budgetValue', this.value + ' €')">
-            </div>
+        <div class="step" data-step="3">
+            <h2>Investissement souhaité</h2>
+            <div class="val-display" id="budgetValue">5 000 €</div>
+            <input type="range" name="budget" min="500" max="10000" step="100" value="5000" oninput="updateVal('budgetValue', this.value + ' €')">
         </div>
 
-        <div class="step" data-step="4" data-bg="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2000">
-            <h2>Quel standing d'hôtel ?</h2>
+        <div class="step" data-step="4">
+            <h2>L'élégance de l'abri</h2>
             <div class="choice-grid">
                 <div class="img-card" onclick="setSelect('standing', 'Classique', this)">
-                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=600"><span>Classique</span>
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400"><span>Classique</span>
                 </div>
                 <div class="img-card" onclick="setSelect('standing', 'Premium', this)">
-                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4df85b?q=80&w=600"><span>Premium</span>
+                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4df85b?auto=format&fit=crop&w=400"><span>Premium</span>
                 </div>
                 <div class="img-card" onclick="setSelect('standing', 'Luxe', this)">
-                    <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600"><span>Luxe</span>
+                    <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=400"><span>Luxe</span>
                 </div>
             </div>
-            <input type="hidden" name="standing" id="f_standing" required>
+            <input type="hidden" name="standing" id="f_standing">
         </div>
 
-        <div class="step" data-step="5" data-bg="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2000">
-            <h2>L'environnement souhaité</h2>
+        <div class="step" data-step="5">
+            <h2>L'appel de la terre</h2>
             <div class="choice-grid">
                 <div class="img-card" onclick="setSelect('env', 'Plage', this)">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600"><span>Plage</span>
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400"><span>Plage</span>
                 </div>
                 <div class="img-card" onclick="setSelect('env', 'Montagne', this)">
-                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600"><span>Montagne</span>
+                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400"><span>Montagne</span>
                 </div>
                 <div class="img-card" onclick="setSelect('env', 'Centre-Ville', this)">
-                    <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=600"><span>Centre-Ville</span>
+                    <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=400"><span>Centre-Ville</span>
                 </div>
             </div>
-            <input type="hidden" name="env" id="f_env" required>
+            <input type="hidden" name="destination_pref" id="f_env">
         </div>
 
-        <div class="step" data-step="6" data-bg="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000">
-            <h2>Logistique de vol</h2>
-            <p class="field-label">TEMPS DE VOL MAX (H)</p>
-            <div class="slider-wrap">
-                <div class="val-display" id="volValue">3h</div>
-                <input type="range" min="1" max="6" step="1" value="3" oninput="updateVal('volValue', this.value + 'h')">
-            </div>
-            <div style="margin-top:30px">
-                <p class="field-label">BAGAGES EN SOUTE ?</p>
-                <button type="button" onclick="document.getElementById('bag-in').style.display='block'">OUI</button>
-                <button type="button" onclick="document.getElementById('bag-in').style.display='none'">NON</button>
-                <div id="bag-in" style="display:none; margin-top:15px">
-                    <input type="number" placeholder="Nombre de bagages">
-                </div>
+        <div class="step" data-step="6">
+            <h2>Air & Bagages</h2>
+            <p style="font-size:10px; letter-spacing:2px;">TEMPS DE VOL MAX</p>
+            <div class="val-display" id="volValue">3h</div>
+            <input type="range" name="temps_vol" min="1" max="6" value="3" oninput="updateVal('volValue', this.value + 'h')">
+            
+            <div style="margin-top:20px">
+                <p style="font-size:10px; letter-spacing:2px;">BAGAGES EN SOUTE</p>
+                <input type="number" name="nb_bagages" placeholder="Nombre (0 pour non)" style="max-width:200px">
             </div>
         </div>
 
-        <div class="step" data-step="7" data-bg="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2000">
-            <h2>Villes à éviter absolument</h2>
-            <textarea placeholder="Listez les villes ou pays..." rows="4"></textarea>
+        <div class="step" data-step="7">
+            <h2>Les interdits</h2>
+            <textarea name="a_eviter" placeholder="Villes ou pays à exclure..." rows="3"></textarea>
         </div>
 
+        <div class="nav">
+            <button type="button" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden">Retour</button>
+            <button type="button" id="nextBtn" onclick="changeStep(1)">Continuer</button>
+            <button type="submit" id="submitBtn" style="display:none" class="btn-next">Finaliser ✦</button>
+        </div>
     </form>
-
-    <div class="nav">
-        <button id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden">Précédent</button>
-        <button class="btn-next" id="nextBtn" onclick="changeStep(1)">Continuer</button>
-    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -181,60 +158,52 @@
     let currentStep = 1;
     const totalSteps = 7;
 
-    // Initialisation Calendrier Interactif
-    flatpickr("#rangeCalendar", {
-        mode: "range",
-        minDate: "today",
-        dateFormat: "d-m-Y",
-        onReady: function() { this.show(); } // Toujours visible pour le design
-    });
+    flatpickr("#rangeCalendar", { mode: "range", minDate: "today", dateFormat: "d/m/Y" });
 
     function updateVal(id, val) { document.getElementById(id).innerText = val; }
 
     function setSelect(field, val, el) {
         document.getElementById('f_' + field).value = val;
-        const cards = el.parentElement.querySelectorAll('.img-card');
-        cards.forEach(c => c.classList.remove('selected'));
+        el.parentElement.querySelectorAll('.img-card').forEach(c => c.classList.remove('selected'));
         el.classList.add('selected');
     }
 
-    function toggleEnfants(show) {
-        document.getElementById('enfants-detail').style.display = show ? 'block' : 'none';
-    }
+    function toggleEnfants(show) { document.getElementById('enfants-detail').style.display = show ? 'block' : 'none'; }
 
     function genAges(num) {
         const wrap = document.getElementById('ages-wrap');
         wrap.innerHTML = "";
         for(let i=1; i<=num; i++) {
             const inp = document.createElement('input');
-            inp.type = "number"; inp.placeholder = "Âge " + i; inp.style.fontSize = "14px";
+            inp.type = "number"; inp.name = "age_enfant_"+i; inp.placeholder = "Âge " + i;
             wrap.appendChild(inp);
         }
     }
 
     function changeStep(dir) {
-        if(dir === 1 && !validate()) return;
-        
         document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
         currentStep += dir;
         
-        if(currentStep > totalSteps) { alert("Analyse de vos préférences en cours..."); return; }
-
-        const nextEl = document.querySelector(`[data-step="${currentStep}"]`);
-        nextEl.classList.add('active');
-        document.getElementById('bg-overlay').style.backgroundImage = `url(${nextEl.dataset.bg})`;
-        
+        document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
         document.getElementById('prevBtn').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
-        document.getElementById('nextBtn').innerText = currentStep === totalSteps ? 'Finaliser' : 'Continuer';
+        document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+        document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'inline-block' : 'none';
     }
 
-    function validate() {
-        // Logique de validation simplifiée
-        return true; 
-    }
-
-    // Init BG
-    document.getElementById('bg-overlay').style.backgroundImage = `url(${document.querySelector('.step.active').dataset.bg})`;
+    // GESTION ENVOI WHATSAPP + FORMSPREE
+    document.getElementById('voyageForm').onsubmit = function(e) {
+        const formData = new FormData(this);
+        let message = "NOUVELLE DEMANDE L'INCONNU : %0A";
+        for (let [key, value] of formData.entries()) {
+            if(value) message += `*${key}*: ${value}%0A`;
+        }
+        
+        // Envoi vers WhatsApp (Remplace le numéro par le tien)
+        const whatsappUrl = `https://wa.me/33600000000?text=${message}`;
+        window.open(whatsappUrl, '_blank');
+        
+        // Le formulaire continuera vers Formspree normalement
+    };
 </script>
 
 </body>
