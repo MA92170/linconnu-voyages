@@ -1,265 +1,342 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Inconnu | Expérience de Voyage</title>
 
-<title>L'Inconnu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Inter:wght@300;400;600&display=swap');
 
-<style>
-body { background:#0a0a0a; color:white; font-family:Inter; overflow:hidden; }
+        :root {
+            --accent: #d4af37; /* Or */
+            --bg: #05070a;
+        }
 
-.screen {
-position:absolute; inset:0;
-display:flex; flex-direction:column;
-justify-content:center; align-items:center;
-padding:2rem; text-align:center;
-transition:0.6s ease;
-}
+        body { 
+            background: var(--bg); 
+            color: #e2e8f0; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a202c 0%, #05070a 100%);
+        }
 
-.hidden { opacity:0; transform:translateY(40px); pointer-events:none; }
+        .serif { font-family: 'Playfair Display', serif; }
 
-.progress {
-position:fixed; top:0; left:0;
-height:3px; background:white;
-transition:0.4s;
-}
+        .screen {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 2rem; text-align: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(0px);
+        }
 
-.card {
-border:1px solid rgba(255,255,255,0.1);
-padding:20px; border-radius:12px;
-cursor:pointer; transition:0.3s;
-}
+        .hidden { 
+            opacity: 0; 
+            transform: scale(0.9) translateY(30px); 
+            pointer-events: none; 
+            filter: blur(10px);
+        }
 
-.card:hover { background:white; color:black; }
-.card.active { background:white; color:black; }
+        .progress-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 4px;
+            background: rgba(255,255,255,0.05); z-index: 100;
+        }
+        .progress-bar {
+            height: 100%; background: linear-gradient(90deg, var(--accent), #fef3c7);
+            box-shadow: 0 0 15px var(--accent);
+            transition: 0.5s ease; width: 0%;
+        }
 
-.visual {
-cursor:pointer; border-radius:16px;
-overflow:hidden; position:relative;
-}
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px; border-radius: 16px;
+            cursor: pointer; transition: 0.3s;
+            width: 100%; max-width: 250px;
+        }
 
-.visual img {
-height:180px; width:100%;
-object-fit:cover; opacity:0.7;
-transition:0.4s;
-}
+        .card:hover, .card.active { 
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
 
-.visual.active img { opacity:1; transform:scale(1.05); }
+        .visual {
+            cursor: pointer; border-radius: 20px;
+            overflow: hidden; position: relative;
+            aspect-ratio: 4/5; border: 2px solid transparent;
+            transition: 0.4s;
+        }
 
-.visual span {
-position:absolute; bottom:10px; left:10px;
-font-weight:bold;
-}
+        .visual img {
+            height: 100%; width: 100%;
+            object-fit: cover; opacity: 0.5;
+            transition: 0.6s;
+        }
 
-button.main {
-margin-top:40px;
-padding:14px 30px;
-border-radius:999px;
-background:white; color:black;
-}
+        .visual:hover img, .visual.active img { opacity: 0.9; transform: scale(1.1); }
+        .visual.active { border-color: var(--accent); box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); }
 
-input, select {
-background:transparent;
-border-bottom:1px solid #333;
-padding:10px;
-text-align:center;
-}
-</style>
+        .visual span {
+            position: absolute; bottom: 20px; width: 100%; left: 0;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        button.main {
+            margin-top: 40px;
+            padding: 16px 45px;
+            border-radius: 999px;
+            background: var(--accent); color: black;
+            font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        button.main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+            background: #f1c40f;
+        }
+
+        input[type="text"], input[type="number"] {
+            background: transparent;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            padding: 15px; font-size: 1.5rem;
+            text-align: center; outline: none; transition: 0.3s;
+            color: white;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        /* Custom Range Slider */
+        input[type=range] { -webkit-appearance: none; width: 300px; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 20px; width: 20px;
+            border-radius: 50%; background: var(--accent);
+            margin-top: -8px; cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="progress" class="progress" style="width:0%"></div>
+<div class="progress-container"><div id="progress" class="progress-bar"></div></div>
 
 <form id="form">
 
-<!-- INTRO -->
-<div id="intro" class="screen">
-<h1 class="text-5xl mb-6">L'Inconnu</h1>
-<p class="text-white/60 mb-6">Une expérience de voyage pensée pour vous.</p>
+    <div id="intro" class="screen">
+        <h1 class="text-7xl mb-6 serif italic">L'Inconnu</h1>
+        <p class="text-white/60 mb-8 tracking-[0.2em] uppercase text-sm">Osez l'imprévu, vivez l'excellence.</p>
+        
+        <div class="bg-white/5 p-4 rounded-lg border border-white/10 mb-8 max-w-md">
+            <p class="text-xs text-amber-200/70">
+                ✨ Pour une organisation optimale, réservez votre voyage au minimum 1 mois avant le départ.
+            </p>
+        </div>
 
-<p class="text-xs text-white/40 max-w-md">
-Réservez idéalement votre voyage au minimum 1 mois à l’avance.  
-Toute demande plus tardive pourra entraîner un supplément.
-</p>
+        <button type="button" onclick="next()" class="main">Commencer l'expérience</button>
+    </div>
 
-<button type="button" onclick="next()" class="main">Commencer l'expérience</button>
-</div>
+    <div id="q_depart" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Origine</span>
+        <h2 class="text-4xl mb-10 serif">D'où commence votre histoire ?</h2>
+        <input type="text" name="depart" id="depart" placeholder="Votre ville de départ" required>
+        <button type="button" onclick="next()" class="main">Continuer</button>
+    </div>
 
-<!-- DATES -->
-<div id="q1" class="screen hidden">
-<h2 class="text-3xl mb-6">Quand souhaitez-vous partir ?</h2>
-<input id="dates" name="dates" required>
-<button type="button" onclick="next()" class="main">Continuer</button>
-</div>
+    <div id="q1" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Temporalité</span>
+        <h2 class="text-4xl mb-10 serif">Quand l'horizon vous appelle-t-il ?</h2>
+        <input id="dates" name="dates" placeholder="Sélectionnez vos dates" required class="cursor-pointer">
+        <button type="button" onclick="next()" class="main">Confirmer les dates</button>
+    </div>
 
-<!-- BUDGET -->
-<div id="q2" class="screen hidden">
-<h2 class="text-3xl mb-6">Quel budget souhaitez-vous investir ?</h2>
-<input type="range" name="budget" id="budget" min="100" max="5000">
-<p id="budgetVal">1000€</p>
-<button type="button" onclick="next()" class="main">Continuer</button>
-</div>
+    <div id="q2" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Investissement</span>
+        <h2 class="text-4xl mb-10 serif">Quel est votre curseur d'évasion ?</h2>
+        <input type="range" name="budget" id="budget" min="500" max="10000" step="100" value="2500">
+        <p id="budgetVal" class="text-3xl mt-6 font-light text-accent">2500€</p>
+        <button type="button" onclick="next()" class="main">Continuer</button>
+    </div>
 
-<!-- PERSONNES -->
-<div id="q3" class="screen hidden">
-<h2 class="text-3xl mb-6">Combien êtes-vous ?</h2>
-<input type="number" name="personnes" required>
-<button type="button" onclick="next()" class="main">Continuer</button>
-</div>
+    <div id="q3" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Compagnons</span>
+        <h2 class="text-4xl mb-10 serif">Combien d'âmes voyagent ?</h2>
+        <input type="number" name="personnes" min="1" placeholder="Nombre de personnes" required>
+        <button type="button" onclick="next()" class="main">Continuer</button>
+    </div>
 
-<!-- AMBIANCE -->
-<div id="q4" class="screen hidden">
-<h2 class="text-3xl mb-8">Quel décor vous attire ?</h2>
+    <div id="q4" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Atmosphère</span>
+        <h2 class="text-4xl mb-12 serif">Quel décor pour vos souvenirs ?</h2>
 
-<div class="grid grid-cols-3 gap-6">
-<div class="visual" onclick="selectVisual(this,'Plage')">
-<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
-<span>Mer</span>
-</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+            <div class="visual" onclick="selectVisual(this,'Plage')">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80">
+                <span>Mer & Sable</span>
+            </div>
 
-<div class="visual" onclick="selectVisual(this,'Montagne')">
-<img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b">
-<span>Montagne</span>
-</div>
+            <div class="visual" onclick="selectVisual(this,'Montagne')">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80">
+                <span>Sommets & Air pur</span>
+            </div>
 
-<div class="visual" onclick="selectVisual(this,'Ville')">
-<img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000">
-<span>Ville</span>
-</div>
-</div>
+            <div class="visual" onclick="selectVisual(this,'Ville')">
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80">
+                <span>Lumières urbaines</span>
+            </div>
+        </div>
 
-<input type="hidden" name="ambiance" id="ambiance" required>
-<button type="button" onclick="next()" class="main">Continuer</button>
-</div>
+        <input type="hidden" name="ambiance" id="ambiance" required>
+        <button type="button" onclick="next()" class="main">Choisir cet univers</button>
+    </div>
 
-<!-- HOTEL -->
-<div id="q5" class="screen hidden">
-<h2 class="text-3xl mb-8">Quel niveau d'hébergement ?</h2>
+    <div id="q5" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Hébergement</span>
+        <h2 class="text-4xl mb-12 serif">Votre niveau d'exigence</h2>
 
-<div class="grid grid-cols-3 gap-6">
-<div class="visual" onclick="selectHotel(this,'Classique')">
-<img src="https://images.unsplash.com/photo-1566073771259-6a8506099945">
-<span>Classique</span>
-</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            <div class="card" onclick="selectHotel(this,'Classique')">
+                <h3 class="text-xl font-bold mb-2">Classique</h3>
+                <p class="text-xs text-white/50">Hôtels de charme & confort sélectionné.</p>
+            </div>
 
-<div class="visual" onclick="selectHotel(this,'Premium')">
-<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b">
-<span>Premium</span>
-</div>
+            <div class="card" onclick="selectHotel(this,'Premium')">
+                <h3 class="text-xl font-bold mb-2">Premium</h3>
+                <p class="text-xs text-white/50">Luxe discret et services d'exception.</p>
+            </div>
 
-<div class="visual" onclick="selectHotel(this,'Luxe')">
-<img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb">
-<span>Luxe</span>
-</div>
-</div>
+            <div class="card" onclick="selectHotel(this,'Luxe')">
+                <h3 class="text-xl font-bold mb-2">Luxe</h3>
+                <p class="text-xs text-white/50">Le summum de l'hôtellerie mondiale.</p>
+            </div>
+        </div>
 
-<input type="hidden" name="hotel" id="hotel" required>
-<button type="button" onclick="next()" class="main">Continuer</button>
-</div>
+        <input type="hidden" name="hotel" id="hotel" required>
+        <button type="button" onclick="next()" class="main">Continuer</button>
+    </div>
 
-<!-- TRANSFERT -->
-<div id="q6" class="screen hidden">
-<h2 class="text-3xl mb-6">Accès à l'aéroport</h2>
+    <div id="q6" class="screen hidden">
+        <span class="text-accent mb-4 block uppercase tracking-widest text-xs">Logistique</span>
+        <h2 class="text-4xl mb-8 serif italic">L'accès à l'aéroport</h2>
+        
+        <p class="text-white/50 mb-10 text-sm max-w-lg italic">
+            "Le voyage commence dès le pas de votre porte."
+        </p>
 
-<p class="text-white/50 mb-6 text-sm">
-Souhaitez-vous vous y rendre par vos propres moyens ou bénéficier d’un service premium ?
-</p>
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="card" onclick="selectOption(this,'transfert','Autonome')">Libre-accès</div>
+            <div class="card" onclick="selectOption(this,'transfert','Taxi VIP')">Chauffeur Privé</div>
+        </div>
 
-<div class="flex gap-6">
-<div class="card" onclick="selectOption(this,'transfert','Autonome')">Par mes propres moyens</div>
-<div class="card" onclick="selectOption(this,'transfert','Taxi VIP')">Taxi VIP (supplément)</div>
-</div>
+        <input type="hidden" name="transfert" id="transfert" required>
+        <button type="button" onclick="next()" class="main">Finaliser mon profil</button>
+    </div>
 
-<input type="hidden" name="transfert" id="transfert" required>
-<button type="button" onclick="next()" class="main">Continuer</button>
-</div>
+    <div id="final" class="screen hidden">
+        <h2 class="text-6xl mb-6 serif italic">L'inconnu vous attend.</h2>
+        <p class="text-white/50 mb-10 italic">Nous transformons vos réponses en une aventure unique.</p>
 
-<!-- FINAL -->
-<div id="final" class="screen hidden">
-<h2 class="text-4xl mb-6">Votre demande est prête</h2>
-<p class="text-white/50">Nous allons concevoir votre expérience.</p>
-
-<button type="submit" class="main">Envoyer ma demande</button>
-</div>
+        <button type="submit" class="main animate-pulse">Lancer la création</button>
+    </div>
 
 </form>
 
 <script>
+    // Configuration Flatpickr avec 2 mois et français
+    flatpickr("#dates", {
+        mode: "range",
+        minDate: "today",
+        showMonths: window.innerWidth > 768 ? 2 : 1,
+        locale: "fr",
+        dateFormat: "d/m/Y"
+    });
 
-flatpickr("#dates",{mode:"range",minDate:"today"});
+    let step = 0;
+    const screens = ["intro", "q_depart", "q1", "q2", "q3", "q4", "q5", "q6", "final"];
 
-let step=0;
-const screens=["intro","q1","q2","q3","q4","q5","q6","final"];
+    function next() {
+        if(step > 0) {
+            const current = document.getElementById(screens[step]);
+            const inputs = current.querySelectorAll("input[required]");
+            for(let i of inputs) { 
+                if(!i.value) { 
+                    alert("Merci de préciser ce détail pour votre voyage ✨"); 
+                    return; 
+                } 
+            }
+        }
 
-function next(){
-if(step>0){
-const current=document.getElementById(screens[step]);
-const inputs=current.querySelectorAll("input[required]");
-for(let i of inputs){ if(!i.value){ alert("Merci de compléter"); return; } }
-}
+        document.getElementById(screens[step]).classList.add("hidden");
+        step++;
+        if(step < screens.length) {
+            document.getElementById(screens[step]).classList.remove("hidden");
+            document.getElementById("progress").style.width = (step / (screens.length - 1)) * 100 + "%";
+        }
+    }
 
-document.getElementById(screens[step]).classList.add("hidden");
-step++;
-document.getElementById(screens[step]).classList.remove("hidden");
+    // interactions
+    function selectVisual(el, val) {
+        document.querySelectorAll("#q4 .visual").forEach(v => v.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("ambiance").value = val;
+    }
 
-document.getElementById("progress").style.width = (step/(screens.length-1))*100+"%";
-}
+    function selectHotel(el, val) {
+        document.querySelectorAll("#q5 .card").forEach(v => v.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("hotel").value = val;
+    }
 
-// interactions
-function selectVisual(el,val){
-document.querySelectorAll("#q4 .visual").forEach(v=>v.classList.remove("active"));
-el.classList.add("active");
-document.getElementById("ambiance").value=val;
-}
+    function selectOption(el, name, val) {
+        el.parentElement.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById(name).value = val;
+    }
 
-function selectHotel(el,val){
-document.querySelectorAll("#q5 .visual").forEach(v=>v.classList.remove("active"));
-el.classList.add("active");
-document.getElementById("hotel").value=val;
-}
+    // budget live
+    document.getElementById("budget").oninput = e => {
+        document.getElementById("budgetVal").innerText = e.target.value + "€";
+    };
 
-function selectOption(el,name,val){
-el.parentElement.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
-el.classList.add("active");
-document.getElementById(name).value=val;
-}
+    // submit
+    document.getElementById("form").onsubmit = function(e) {
+        e.preventDefault();
+        const data = new FormData(this);
 
-// budget live
-document.getElementById("budget").oninput = e=>{
-document.getElementById("budgetVal").innerText = e.target.value + "€";
-};
+        // WhatsApp
+        const msg = `✨ NOUVELLE DEMANDE L'INCONNU ✨\n\n` +
+                    `📍 Départ : ${data.get("depart")}\n` +
+                    `📅 Dates : ${data.get("dates")}\n` +
+                    `💰 Budget : ${data.get("budget")}€\n` +
+                    `👥 Personnes : ${data.get("personnes")}\n` +
+                    `🌍 Ambiance : ${data.get("ambiance")}\n` +
+                    `🏨 Hôtel : ${data.get("hotel")}\n` +
+                    `🚕 Transfert : ${data.get("transfert")}`;
 
-// submit
-document.getElementById("form").onsubmit = function(e){
-e.preventDefault();
+        window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
 
-const data=new FormData(this);
-
-// Formspree
-fetch("https://formspree.io/f/xdaynpav",{
-method:"POST",
-body:data,
-headers:{'Accept':'application/json'}
-});
-
-// WhatsApp
-const msg=`Voyage :
-Budget ${data.get("budget")}€
-Personnes ${data.get("personnes")}
-Ambiance ${data.get("ambiance")}
-Hotel ${data.get("hotel")}`;
-
-window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
-
-alert("Demande envoyée ✨");
-}
-
+        // Formspree
+        fetch("https://formspree.io/f/xdaynpav", {
+            method: "POST",
+            body: data,
+            headers: {'Accept': 'application/json'}
+        }).then(() => {
+            alert("Votre voyage est en cours de conception... ✨");
+        });
+    }
 </script>
 
 </body>
