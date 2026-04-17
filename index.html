@@ -1,107 +1,342 @@
-<section id="step-11">
-        <h2>Qui embarque dans l’aventure ?</h2>
-        <div id="passengers-list" style="background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 600px; max-height: 60vh; overflow-y: auto; border: 1px solid #eee;">
-            </div>
-        <button type="button" class="btn btn-gold" style="margin-top:20px;" onclick="finish()">Découvrir mon mystère 🤫</button>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyage Mystère | Expérience Premium</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-hover: #b8962d;
+            --bg-light: #f5f5f7;
+            --text-dark: #1d1d1f;
+            --white: #ffffff;
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: var(--text-dark); overflow: hidden; }
+
+        /* Barre de progression */
+        .progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 5px; background: #e0e0e0; z-index: 1000; }
+        #progress-bar { height: 100%; width: 0%; background: var(--gold); transition: width 0.4s ease; }
+
+        /* Sections */
+        section {
+            display: none; height: 100vh; width: 100vw; padding: 40px;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; background-size: cover; background-position: center;
+            position: absolute; top: 0; left: 0;
+        }
+        section.active { display: flex; animation: slideIn 0.6s forwards; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1, h2 { font-family: 'Poppins', sans-serif; font-weight: 700; margin-bottom: 20px; }
+        p.subtitle { font-size: 1.1rem; max-width: 700px; margin-bottom: 30px; opacity: 0.8; }
+
+        /* Boutons */
+        .btn {
+            background: var(--white); color: var(--text-dark); padding: 16px 45px;
+            border-radius: 50px; font-weight: 600; cursor: pointer; border: 1px solid #ddd;
+            transition: var(--transition); box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;
+        }
+        .btn:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        .btn-gold { background: var(--gold); color: white; border: none; }
+
+        /* Cards Style */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; width: 100%; max-width: 900px; }
+        .card {
+            background: white; border-radius: 12px; overflow: hidden; cursor: pointer;
+            transition: var(--transition); border: 2px solid transparent; position: relative;
+        }
+        .card img { width: 100%; height: 130px; object-fit: cover; transition: 0.5s; }
+        .card:hover img { transform: scale(1.1); }
+        .card-label { padding: 12px; font-weight: 600; font-size: 0.9rem; }
+        .card.selected { border-color: var(--gold); background: #fffdf5; }
+
+        /* Inputs & Form */
+        .slider-wrap { width: 100%; max-width: 500px; margin: 20px 0; }
+        input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
+        .form-group { width: 100%; max-width: 400px; margin-bottom: 12px; text-align: left; }
+        input[type="text"], input[type="email"], input[type="number"], input[type="date"], select {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 5px; font-family: inherit;
+        }
+
+        /* Liste des passagers dynamique */
+        #passengers-list {
+            background: white; padding: 25px; border-radius: 15px; width: 100%; 
+            max-width: 600px; max-height: 55vh; overflow-y: auto; border: 1px solid #eee;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .passenger-block { text-align: left; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px dashed #eee; }
+
+        /* Écran de chargement */
+        #step-12 { background: #1a1a1a; color: white; }
+        .loader-dots { display: flex; gap: 8px; margin-top: 20px; }
+        .dot { width: 12px; height: 12px; background: var(--gold); border-radius: 50%; animation: pulse 1.5s infinite; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="progress-container"><div id="progress-bar"></div></div>
+
+<form id="mysteryForm" action="https://formspree.io/f/xdaynpav" method="POST">
+    
+    <section id="step-1" class="active" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1436491865332-7a61a109c0f2?q=80&w=1920'); color: white;">
+        <h1>Vous adorez voyager mais vous ne savez jamais où partir ?</h1>
+        <p class="subtitle">Partez sans savoir où vous allez.</p>
+        <button type="button" class="btn btn-gold" onclick="next(2)">Commencer l’expérience</button>
     </section>
 
+    <section id="step-2" style="background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1920');">
+        <h2>Quel budget pour cette aventure ?</h2>
+        <div class="slider-wrap">
+            <h1 style="color: var(--gold); font-size: 3.5rem;"><span id="budgetVal">2000</span>€</h1>
+            <input type="range" name="budget" min="500" max="30000" step="500" value="2000" oninput="updateBudget(this.value)">
+            <p id="budgetDesc" style="font-style: italic; color: #666; margin-top: 10px;">On ne se refuse rien</p>
+        </div>
+        <button type="button" class="btn" onclick="next(3)">Continuer</button>
+    </section>
+
+    <section id="step-3" style="background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1920');">
+        <h2>Quand partez-vous pour je-ne-sais-où ?</h2>
+        <input type="text" id="datePicker" name="dates" placeholder="Sélectionnez vos dates" style="width: 300px; text-align: center; padding: 15px; font-size: 1.1rem; border: 2px solid var(--gold); border-radius: 12px; outline: none;">
+        <button type="button" class="btn btn-gold" style="margin-top: 30px;" onclick="next(4)">Valider les dates</button>
+    </section>
+
+    <section id="step-4">
+        <h2>Affinons la logistique</h2>
+        <div class="slider-wrap">
+            <p>Durée de vol max : <span id="volVal" style="font-weight:700; color: var(--gold);">4h</span></p>
+            <input type="range" name="duree_vol" min="1" max="15" value="4" oninput="document.getElementById('volVal').innerText = this.value + 'h'">
+        </div>
+        <div class="form-group">
+            <label>Villes à éviter</label>
+            <input type="text" name="villes_exclues" placeholder="Ex: Londres, Rome...">
+        </div>
+        <div class="form-group">
+            <label>Résidez-vous dans l'UE ?</label>
+            <select name="residence_ue">
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+            </select>
+        </div>
+        <button type="button" class="btn" onclick="next(5)">Suivant</button>
+    </section>
+
+    <section id="step-5">
+        <h2>Avec qui partez-vous ?</h2>
+        <div class="grid-cards">
+            <div class="card" onclick="sel(this, 'groupe', 'Famille')"><img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400"><div class="card-label">Famille</div></div>
+            <div class="card" onclick="sel(this, 'groupe', 'Amis')"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400"><div class="card-label">Amis</div></div>
+            <div class="card" onclick="sel(this, 'groupe', 'Couple')"><img src="https://images.unsplash.com/photo-1516589174184-c68d8e21e481?w=400"><div class="card-label">Couple</div></div>
+        </div>
+        <input type="hidden" name="type_groupe" id="type_groupe">
+        <div style="margin-top:25px; display:flex; gap:15px; justify-content:center;">
+            <div class="form-group" style="width:140px;"><label>Adultes</label><input type="number" name="nb_adultes" value="1" min="1"></div>
+            <div class="form-group" style="width:140px;"><label>Enfants</label><input type="number" name="nb_enfants" value="0" min="0"></div>
+        </div>
+        <div class="form-group">
+            <label>Bagages en soute ?</label>
+            <select name="bagage_soute" onchange="this.value=='Oui'?document.getElementById('bagQty').style.display='block':document.getElementById('bagQty').style.display='none'">
+                <option value="Non">Non</option>
+                <option value="Oui">Oui</option>
+            </select>
+            <input type="number" id="bagQty" name="nb_bagages" placeholder="Nombre de bagages" style="display:none; margin-top:10px;">
+        </div>
+        <button type="button" class="btn btn-gold" onclick="next(6)">Suivant</button>
+    </section>
+
+    <section id="step-6" style="background-image: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1441716842325-a1c5c4472919?q=80&w=1920');">
+        <h2>D'où décollez-vous ?</h2>
+        <div class="form-group"><input type="text" name="ville_depart" placeholder="Ville de départ"></div>
+        <div class="form-group"><input type="text" name="aeroport_proche" placeholder="Aéroport le plus proche"></div>
+        <button type="button" class="btn" onclick="next(7)">Continuer</button>
+    </section>
+
+    <section id="step-7">
+        <h2>Quelle ambiance vous attire ?</h2>
+        <div class="grid-cards">
+            <div class="card" onclick="sel(this, 'ambiance', 'Plage')"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"><div class="card-label">Plage</div></div>
+            <div class="card" onclick="sel(this, 'ambiance', 'Montagne')"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400"><div class="card-label">Montagne</div></div>
+            <div class="card" onclick="sel(this, 'ambiance', 'Ville')"><img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400"><div class="card-label">Centre-ville</div></div>
+        </div>
+        <input type="hidden" name="ambiance" id="ambiance">
+        <button type="button" class="btn" style="margin-top:20px;" onclick="next(8)">Suivant</button>
+    </section>
+
+    <section id="step-8">
+        <h2>Niveau d'hébergement</h2>
+        <div class="grid-cards">
+            <div class="card" onclick="sel(this, 'standing', 'Classique')"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400"><div class="card-label">Classique</div></div>
+            <div class="card" onclick="sel(this, 'standing', 'Premium')"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400"><div class="card-label">Premium</div></div>
+            <div class="card" onclick="sel(this, 'standing', 'Luxe')"><img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400"><div class="card-label">Luxe</div></div>
+        </div>
+        <input type="hidden" name="standing" id="standing">
+        <button type="button" class="btn" style="margin-top:20px;" onclick="next(9)">Suivant</button>
+    </section>
+
+    <section id="step-9">
+        <h2>La formule idéale</h2>
+        <div class="form-group">
+            <select name="restauration">
+                <option value="Petit-déjeuner">Petit-déjeuner uniquement</option>
+                <option value="All-inclusive">All-inclusive</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-gold" onclick="next(10)">Suivant</button>
+    </section>
+
+    <section id="step-10">
+        <h2>Quel est votre mood ?</h2>
+        <div class="grid-cards" style="max-width: 600px;">
+            <div class="card" onclick="sel(this, 'mood', 'Détente')"><div class="card-label" style="font-size: 1.5rem; padding: 40px;">😌 Détente</div></div>
+            <div class="card" onclick="sel(this, 'mood', 'Découverte')"><div class="card-label" style="font-size: 1.5rem; padding: 40px;">🧭 Découverte</div></div>
+        </div>
+        <input type="hidden" name="mood" id="mood">
+        <button type="button" class="btn" style="margin-top:30px;" onclick="next(11)">Dernière étape</button>
+    </section>
+
+    <section id="step-11">
+        <h2>Qui embarque dans l’aventure ?</h2>
+        <div id="passengers-list">
+            </div>
+        <button type="button" class="btn btn-gold" style="margin-top:20px;" onclick="finish()">Finaliser ma demande 🤫</button>
+    </section>
+
+    <section id="step-12">
+        <h2 id="loader-content">Analyse de vos préférences...</h2>
+        <p style="opacity:0.7;">Nous recherchons votre voyage mystère parfait mais..chuut 🤫</p>
+        <div class="loader-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </section>
+
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    // Ajoutez cette fonction pour générer les formulaires passagers
+    let currentStep = 1;
+    const totalSteps = 11;
+
+    // Initialisation du calendrier Airbnb-style
+    flatpickr("#datePicker", { mode: "range", minDate: "today", showMonths: 2, dateFormat: "d-m-Y" });
+
+    function next(s) {
+        // Logique spécifique pour l'étape 11 (génération des champs passagers)
+        if(s === 11) generatePassengerFields();
+
+        document.querySelector('section.active').classList.remove('active');
+        document.getElementById('step-'+s).classList.add('active');
+        currentStep = s;
+        document.getElementById('progress-bar').style.width = ((s-1)/(totalSteps-1)*100) + '%';
+    }
+
+    function updateBudget(v) {
+        document.getElementById('budgetVal').innerText = v;
+        let d = "";
+        if(v <= 2000) d = "On sait se faire plaisir";
+        else if(v <= 10000) d = "On ne se refuse rien";
+        else d = "💎 Voyage mémorable en vue";
+        document.getElementById('budgetDesc').innerText = d;
+    }
+
+    function sel(el, id, val) {
+        el.parentElement.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById(id).value = val;
+    }
+
     function generatePassengerFields() {
         const container = document.getElementById('passengers-list');
         const nbAdultes = parseInt(document.getElementsByName('nb_adultes')[0].value) || 1;
         const nbEnfants = parseInt(document.getElementsByName('nb_enfants')[0].value) || 0;
         const total = nbAdultes + nbEnfants;
         
-        container.innerHTML = ''; // Reset
+        container.innerHTML = ''; 
 
         for (let i = 1; i <= total; i++) {
             const isFirst = (i === 1);
             const type = (i <= nbAdultes) ? "Adulte" : "Enfant";
             
             const html = `
-                <div class="passenger-block" style="text-align:left; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px dashed #ddd;">
-                    <h4 style="color: var(--gold); margin-bottom: 10px;">Voyageur ${i} (${type})</h4>
+                <div class="passenger-block">
+                    <h4 style="color: var(--gold); margin-bottom: 12px; font-size: 0.9rem;">VOYAGEUR ${i} (${type})</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <input type="text" name="nom_voyageur_${i}" placeholder="Nom" required>
-                        <input type="text" name="prenom_voyageur_${i}" placeholder="Prénom" required>
+                        <input type="text" name="nom_${i}" placeholder="Nom" required>
+                        <input type="text" name="prenom_${i}" placeholder="Prénom" required>
                     </div>
-                    <div style="margin-top:10px;">
-                        <label style="font-size: 0.8rem; opacity: 0.7;">Date de naissance</label>
-                        <input type="date" name="dob_voyageur_${i}" required>
+                    <div style="margin-top:10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end;">
+                        <div>
+                            <label style="font-size: 0.7rem; text-transform: uppercase;">Date de naissance</label>
+                            <input type="date" name="dob_${i}" required>
+                        </div>
+                        ${isFirst ? `<div><input type="email" name="email_contact" placeholder="Email contact" required></div>` : ''}
                     </div>
-                    ${isFirst ? `
-                    <div style="margin-top:10px;">
-                        <input type="email" name="email_contact" placeholder="Email de contact (Obligatoire)" required>
-                    </div>` : ''}
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
         }
     }
 
-    // Modifiez votre fonction next() pour déclencher la génération à l'étape 11
-    function next(s) {
-        // Si on passe à l'étape 11, on génère les champs
-        if(s === 11) {
-            generatePassengerFields();
-        }
-        
-        document.querySelector('section.active').classList.remove('active');
-        document.getElementById('step-'+s).classList.add('active');
-        step = s;
-        document.getElementById('progress-bar').style.width = ((s-1)/(total-1)*100) + '%';
-    }
-
-    // Mise à jour de la fonction finish pour inclure tous les noms dans WhatsApp
     function finish() {
-        // Vérification basique des champs requis avant de lancer l'anim
-        const currentInputs = document.getElementById('passengers-list').querySelectorAll('input[required]');
+        // Validation rapide
+        const inputs = document.getElementById('passengers-list').querySelectorAll('input[required]');
         let valid = true;
-        currentInputs.forEach(input => { if(!input.value) valid = false; });
-        
-        if(!valid) {
-            alert("Veuillez remplir les informations de tous les voyageurs.");
-            return;
-        }
+        inputs.forEach(i => { if(!i.value) valid = false; });
+        if(!valid) { alert("Merci de compléter les infos de tous les passagers."); return; }
 
         next(12);
-        const msgs = ["Sélection des meilleurs vols...", "Optimisation de l'hébergement...", "Calcul de l'indice mystère...", "C'est prêt !"];
+        const msgs = ["Comparaison des vols secrets...", "Sélection des hôtels pépites...", "Vérification des disponibilités...", "Génération de votre mystère..."];
         let i = 0;
         const interval = setInterval(() => {
-            document.getElementById('loader-content').innerText = msgs[i];
-            i++;
-            if(i == msgs.length) {
+            if(i < msgs.length) {
+                document.getElementById('loader-content').innerText = msgs[i];
+                i++;
+            } else {
                 clearInterval(interval);
-                submitForm();
+                sendFinalData();
             }
-        }, 1500);
+        }, 1800);
     }
 
-    function submitForm() {
-        const f = document.getElementById('mysteryForm');
-        const data = new FormData(f);
+    function sendFinalData() {
+        const form = document.getElementById('mysteryForm');
+        const data = new FormData(form);
         
-        // Synthèse WhatsApp propre
-        let text = "🎯 *NOUVELLE RÉSERVATION MYSTÈRE* 🎯\n\n";
-        text += `💰 Budget: ${data.get('budget')}€\n`;
-        text += `📅 Dates: ${data.get('dates')}\n`;
-        text += `📍 Départ: ${data.get('ville_depart')}\n`;
-        text += `🏨 Confort: ${data.get('standing')}\n`;
-        text += `✨ Mood: ${data.get('mood')}\n\n`;
-        text += `👥 *VOYAGEURS :*\n`;
+        // Construction du message WhatsApp
+        let waMsg = "🎯 *NOUVEAU VOYAGE MYSTÈRE* 🎯\n\n";
+        waMsg += `💰 *Budget :* ${data.get('budget')}€\n`;
+        waMsg += `📅 *Dates :* ${data.get('dates')}\n`;
+        waMsg += `✈️ *Vol Max :* ${data.get('duree_vol')}h\n`;
+        waMsg += `📍 *Départ :* ${data.get('ville_depart')}\n`;
+        waMsg += `🏨 *Standing :* ${data.get('standing')}\n`;
+        waMsg += `🍽️ *Formule :* ${data.get('restauration')}\n\n`;
+        waMsg += `👥 *VOYAGEURS :*\n`;
 
-        const nbAdultes = parseInt(data.get('nb_adultes')) || 1;
-        const nbEnfants = parseInt(data.get('nb_enfants')) || 0;
-        for(let i=1; i <= (nbAdultes + nbEnfants); i++) {
-            text += `- ${data.get('prenom_voyageur_'+i)} ${data.get('nom_voyageur_'+i)} (${data.get('dob_voyageur_'+i)})\n`;
+        const nbTotal = (parseInt(data.get('nb_adultes')) || 1) + (parseInt(data.get('nb_enfants')) || 0);
+        for(let i=1; i <= nbTotal; i++) {
+            waMsg += `- ${data.get('prenom_'+i)} ${data.get('nom_'+i)} (${data.get('dob_'+i)})\n`;
         }
-        text += `\n📧 Contact: ${data.get('email_contact')}`;
+        waMsg += `\n📧 *Contact :* ${data.get('email_contact')}`;
 
-        // Envoi Formspree
-        fetch(f.action, { method: 'POST', body: data, headers: {'Accept': 'application/json'} })
-        .then(() => {
-            window.location.href = `https://wa.me/33617572361?text=${encodeURIComponent(text)}`;
+        // Envoi Formspree puis WhatsApp
+        fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { 'Accept': 'application/json' }
+        }).then(() => {
+            window.location.href = `https://wa.me/33617572361?text=${encodeURIComponent(waMsg)}`;
         });
     }
 </script>
+
+</body>
+</html>
