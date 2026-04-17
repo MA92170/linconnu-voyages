@@ -14,8 +14,10 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 
-    .screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:all .6s ease;opacity:0;transform:translateX(40px);pointer-events:none}
-    .screen.active{opacity:1;transform:translateX(0);pointer-events:auto}
+    .screen{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateX(100px) scale(0.98);pointer-events:none;transition:all .5s cubic-bezier(0.22,1,0.36,1)}
+    .screen.active{opacity:1;transform:translateX(0) scale(1);pointer-events:auto;z-index:2}
+.screen.exit-left{opacity:0;transform:translateX(-80px) scale(0.98);z-index:1}
+.screen.exit-right{opacity:0;transform:translateX(80px) scale(0.98);z-index:1}
 
     .card{background:white;padding:40px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.1);max-width:520px;width:90%;text-align:center}
 
@@ -159,10 +161,22 @@
 let data={};
 let total=11;
 
+let current=1;
 function next(step){
-  document.getElementById('s'+step).classList.remove('active');
-  document.getElementById('s'+(step+1)).classList.add('active');
-  document.getElementById('progress').style.width=((step/total)*100)+'%';
+  let currentEl=document.getElementById('s'+current);
+  let nextEl=document.getElementById('s'+(step+1));
+
+  currentEl.classList.remove('active');
+  currentEl.classList.add('exit-left');
+
+  nextEl.classList.add('active');
+
+  setTimeout(()=>{
+    currentEl.classList.remove('exit-left');
+  },500);
+
+  current=step+1;
+  document.getElementById('progress').style.width=((current/total)*100)+'%';
 }
 
 function updateBudget(){
