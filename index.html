@@ -18,12 +18,12 @@
 
         body { 
             background: var(--bg); color: white; font-family: 'Inter', sans-serif; 
-            overflow: hidden; height: 100vh;
+            margin: 0; height: 100vh; overflow: hidden;
         }
 
         .serif { font-family: 'Playfair Display', serif; }
 
-        /* Arrière-plans immersifs par étape */
+        /* Arrière-plans immersifs */
         .bg-overlay {
             position: fixed; inset: 0; z-index: -1;
             background-size: cover; background-position: center;
@@ -37,52 +37,53 @@
             justify-content: center; align-items: center;
             padding: 1.5rem; text-align: center;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
         }
 
-        .hidden { opacity: 0; transform: translateY(20px); pointer-events: none; }
+        .hidden { opacity: 0; transform: translateY(20px); pointer-events: none; z-index: 0; }
 
-        /* Conteneurs de réponse */
+        /* Inputs ultra-lisibles */
         .input-box {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem 2rem; border-radius: 12px;
-            color: white; font-size: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 1.2rem 2rem; border-radius: 12px;
+            color: #ffffff !important; font-size: 1.25rem;
             width: 100%; max-width: 400px;
             outline: none; text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 1rem;
         }
 
-        .input-box:focus { border-color: var(--accent); background: rgba(255, 255, 255, 0.12); }
+        .input-box::placeholder { color: rgba(255,255,255,0.4); }
+        .input-box:focus { border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
 
-        /* Cartes & Visuels */
-        .visual-card {
-            cursor: pointer; position: relative; border-radius: 12px; overflow: hidden;
-            border: 2px solid transparent; transition: 0.3s; height: 180px;
-        }
-        .visual-card.active { border-color: var(--accent); transform: scale(1.03); }
-        .visual-card img { width: 100%; height: 100%; object-fit: cover; }
-        .visual-card span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Navigation */
+        /* Boutons */
         .btn-main {
-            background: var(--accent); color: black; font-weight: 700;
-            padding: 1rem 3rem; border-radius: 999px; text-transform: uppercase;
-            letter-spacing: 1px; font-size: 0.85rem; transition: 0.3s;
-            margin-top: 1.5rem;
+            background: var(--accent); color: #000; font-weight: 800;
+            padding: 1.2rem 3.5rem; border-radius: 999px; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 0.9rem; transition: 0.3s;
+            margin-top: 2rem; border: none; cursor: pointer;
         }
+        .btn-main:hover { transform: scale(1.05); background: #f1c40f; }
+
         .btn-back {
             position: absolute; top: 40px; left: 40px;
-            color: rgba(255,255,255,0.4); font-size: 0.75rem;
+            color: white; font-size: 0.75rem; font-weight: bold;
             text-transform: uppercase; letter-spacing: 2px;
-            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 5px;
         }
 
-        /* Fix Calendrier */
-        .flatpickr-calendar { background: #1a1a1a !important; border: 1px solid var(--accent) !important; }
-        #dates { min-width: 320px; }
-
-        /* Progress */
-        .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); transition: 0.4s; z-index: 100; }
+        /* Fix spécifique pour Flatpickr dans un écran absolu */
+        .flatpickr-calendar { 
+            background: #1a1a1a !important; 
+            border: 1px solid var(--accent) !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
+        }
+        .flatpickr-months .flatpickr-month { background: #1a1a1a !important; color: white !important; }
+        .flatpickr-innerContainer { padding: 10px; }
+        
+        /* Progress Bar */
+        .progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); transition: 0.4s; z-index: 100; box-shadow: 0 0 15px var(--accent); }
     </style>
 </head>
 <body>
@@ -94,131 +95,65 @@
 
     <div id="intro" class="screen">
         <h1 class="text-6xl md:text-8xl serif italic mb-6">L'Inconnu</h1>
-        <p class="text-white/70 mb-8 max-w-md">L'art de voyager sans savoir où le vent vous mène.</p>
-        <button type="button" onclick="next()" class="btn-main">Entrer dans l'expérience</button>
-        <p class="text-[10px] text-white/30 mt-8 uppercase tracking-widest">Réservez minimum 1 mois à l'avance</p>
+        <p class="text-white/80 mb-8 max-w-md tracking-wide">Osez l'imprévisible. Nous créons votre mystère.</p>
+        <button type="button" onclick="next()" class="btn-main">Commencer</button>
     </div>
 
     <div id="q_depart" class="screen hidden">
         <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Votre point de départ ?</h2>
-        <input type="text" name="depart" id="depart" class="input-box" placeholder="Ville ou Aéroport" required>
+        <h2 class="text-4xl serif mb-10">Votre ville de départ ?</h2>
+        <input type="text" name="depart" id="depart" class="input-box" placeholder="Ex: Paris, Lyon..." required>
         <button type="button" onclick="next()" class="btn-main">Continuer</button>
     </div>
 
     <div id="q1" class="screen hidden">
         <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Quand l'évasion commence ?</h2>
-        <input id="dates" name="dates" class="input-box cursor-pointer" placeholder="Choisir vos dates" required readonly>
-        <button type="button" onclick="next()" class="btn-main">Valider les dates</button>
+        <h2 class="text-4xl serif mb-10">Quand souhaitez-vous fuir ?</h2>
+        <input id="dates" name="dates" class="input-box cursor-pointer" placeholder="Cliquer pour choisir" required readonly>
+        <button type="button" onclick="next()" class="btn-main">Valider ces dates</button>
     </div>
 
     <div id="q2" class="screen hidden">
         <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Quel investissement ?</h2>
-        <input type="range" name="budget" id="budget" min="500" max="10000" step="100" value="2000" class="w-64 accent-[#d4af37]">
-        <p id="budgetVal" class="text-4xl font-bold mt-6 text-accent">2000€</p>
+        <h2 class="text-4xl serif mb-10">Votre budget total ?</h2>
+        <input type="range" name="budget" id="budget" min="500" max="10000" step="100" value="2500" class="w-64 accent-[#d4af37]">
+        <p id="budgetVal" class="text-5xl font-bold mt-6 text-accent">2500€</p>
         <button type="button" onclick="next()" class="btn-main">Continuer</button>
-    </div>
-
-    <div id="q3" class="screen hidden">
-        <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Nombre de voyageurs ?</h2>
-        <input type="number" name="personnes" class="input-box" placeholder="Ex: 2" required>
-        <button type="button" onclick="next()" class="btn-main">Continuer</button>
-    </div>
-
-    <div id="q4" class="screen hidden">
-        <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Quel décor ?</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
-            <div class="visual-card" onclick="selectVisual(this,'Plage','https://images.unsplash.com/photo-1507525428034-b723cf961d3e')">
-                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500">
-                <span>Mer</span>
-            </div>
-            <div class="visual-card" onclick="selectVisual(this,'Montagne','https://images.unsplash.com/photo-1464822759023-fed622ff2c3b')">
-                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500">
-                <span>Montagne</span>
-            </div>
-            <div class="visual-card" onclick="selectVisual(this,'Ville','https://images.unsplash.com/photo-1449824913935-59a10b8d2000')">
-                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=500">
-                <span>Ville</span>
-            </div>
-        </div>
-        <input type="hidden" name="ambiance" id="ambiance" required>
-        <button type="button" onclick="next()" class="btn-main">Continuer</button>
-    </div>
-
-    <div id="q5" class="screen hidden">
-        <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Confort souhaité</h2>
-        <div class="flex flex-col md:flex-row gap-4 w-full max-w-3xl">
-            <div class="flex-1 p-6 border border-white/20 rounded-xl cursor-pointer hover:border-accent transition" onclick="selectHotel(this,'Classique')">
-                <h3 class="font-bold">Classique (4*)</h3>
-            </div>
-            <div class="flex-1 p-6 border border-white/20 rounded-xl cursor-pointer hover:border-accent transition" onclick="selectHotel(this,'Premium')">
-                <h3 class="font-bold">Premium (5*)</h3>
-            </div>
-            <div class="flex-1 p-6 border border-white/20 rounded-xl cursor-pointer hover:border-accent transition" onclick="selectHotel(this,'Luxe')">
-                <h3 class="font-bold">Luxe (Palace)</h3>
-            </div>
-        </div>
-        <input type="hidden" name="hotel" id="hotel" required>
-        <button type="button" onclick="next()" class="btn-main">Continuer</button>
-    </div>
-
-    <div id="q6" class="screen hidden">
-        <button type="button" onclick="back()" class="btn-back">← Retour</button>
-        <h2 class="text-4xl serif mb-10">Accès Aéroport</h2>
-        <div class="flex gap-4">
-            <div class="p-6 border border-white/20 rounded-xl cursor-pointer hover:border-accent transition" onclick="selectOption(this,'transfert','Autonome')">Libre</div>
-            <div class="p-6 border border-white/20 rounded-xl cursor-pointer hover:border-accent transition" onclick="selectOption(this,'transfert','Taxi VIP')">Taxi VIP</div>
-        </div>
-        <input type="hidden" name="transfert" id="transfert" required>
-        <button type="button" onclick="next()" class="btn-main">Finaliser</button>
     </div>
 
     <div id="final" class="screen hidden">
-        <h2 class="text-5xl serif mb-6 italic">L'inconnu commence ici.</h2>
-        <p class="text-white/60 mb-8">Nous créons votre itinéraire secret...</p>
+        <h2 class="text-5xl serif mb-6 italic">Prêt pour l'inconnu ?</h2>
         <button type="submit" class="btn-main animate-pulse">Envoyer ma demande</button>
     </div>
 
 </form>
 
 <script>
-    // Configuration Arrière-plans
-    const backgrounds = {
-        intro: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
-        q_depart: "https://images.unsplash.com/photo-1464012356351-03005597d52f",
-        q1: "https://images.unsplash.com/photo-1493246507139-91e8bef99c1e",
-        q2: "https://images.unsplash.com/photo-1554224155-1696413565d3",
-        q3: "https://images.unsplash.com/photo-1539635278303-d4002c07dee3",
-        q4: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-        q5: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
-        q6: "https://images.unsplash.com/photo-1441333391268-40236c452cbc",
-        final: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1"
-    };
-
-    // Calendrier Double
-    flatpickr("#dates", {
+    // INITIALISATION FLATPICKR CORRIGÉE
+    const fp = flatpickr("#dates", {
         mode: "range",
         minDate: "today",
         showMonths: window.innerWidth > 768 ? 2 : 1,
         locale: "fr",
         dateFormat: "d/m/Y",
-        static: true
+        // CRUCIAL : On attache le calendrier au div de la question pour qu'il soit visible
+        appendTo: document.getElementById('q1'), 
+        inline: false,
+        static: true // Garde le calendrier ancré à l'input
     });
 
     let step = 0;
-    const screens = ["intro", "q_depart", "q1", "q2", "q3", "q4", "q5", "q6", "final"];
+    const screens = ["intro", "q_depart", "q1", "q2", "final"];
 
     function next() {
-        if(step > 0) {
-            const current = document.getElementById(screens[step]);
-            const input = current.querySelector("input[required], input[type='hidden']");
-            if(input && !input.value) { alert("Merci de compléter cette étape."); return; }
+        const currentScreen = document.getElementById(screens[step]);
+        const input = currentScreen.querySelector('input');
+        
+        if(step > 0 && input && !input.value) {
+            alert("Veuillez remplir ce champ pour continuer ✨");
+            return;
         }
+
         changeStep(1);
     }
 
@@ -231,39 +166,8 @@
         step += dir;
         document.getElementById(screens[step]).classList.remove("hidden");
         
-        // Change Background
-        const bgId = screens[step];
-        document.getElementById('bg-master').style.backgroundImage = `url('${backgrounds[bgId]}?auto=format&fit=crop&q=80&w=2000')`;
-        
-        // Progress
+        // Mise à jour barre de progression
         document.getElementById("progress").style.width = (step / (screens.length - 1)) * 100 + "%";
-    }
-
-    function selectVisual(el, val, img) {
-        document.querySelectorAll("#q4 .visual-card").forEach(v => v.classList.remove("active"));
-        el.classList.add("active");
-        document.getElementById("ambiance").value = val;
-        document.getElementById('bg-master').style.backgroundImage = `url('${img}')`;
-    }
-
-    function selectHotel(el, val) {
-        document.querySelectorAll("#q5 .border-white\\/20").forEach(v => {
-            v.style.borderColor = "rgba(255,255,255,0.2)";
-            v.style.backgroundColor = "transparent";
-        });
-        el.style.borderColor = "#d4af37";
-        el.style.backgroundColor = "rgba(212,175,55,0.1)";
-        document.getElementById("hotel").value = val;
-    }
-
-    function selectOption(el, name, val) {
-        el.parentElement.querySelectorAll(".border-white\\/20").forEach(v => {
-            v.style.borderColor = "rgba(255,255,255,0.2)";
-            v.style.backgroundColor = "transparent";
-        });
-        el.style.borderColor = "#d4af37";
-        el.style.backgroundColor = "rgba(212,175,55,0.1)";
-        document.getElementById(name).value = val;
     }
 
     document.getElementById("budget").oninput = e => {
@@ -273,12 +177,8 @@
     document.getElementById("form").onsubmit = function(e) {
         e.preventDefault();
         const data = new FormData(this);
-        const msg = `L'INCONNU : \nDépart: ${data.get("depart")}\nDates: ${data.get("dates")}\nBudget: ${data.get("budget")}€\nAmbiance: ${data.get("ambiance")}\nHôtel: ${data.get("hotel")}\nTransfert: ${data.get("transfert")}`;
+        const msg = `L'INCONNU : \nDépart: ${data.get("depart")}\nDates: ${data.get("dates")}\nBudget: ${data.get("budget")}€`;
         window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
-        
-        fetch("https://formspree.io/f/xdaynpav", {
-            method: "POST", body: data, headers: {'Accept': 'application/json'}
-        });
     };
 </script>
 
