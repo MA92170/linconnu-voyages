@@ -24,30 +24,25 @@
         h2 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2.5rem; margin-bottom: 2rem; color: var(--text); }
         h3 { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--gold); margin-bottom: 15px; }
 
-        /* Grilles & Photos */
         .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
         .img-card { 
-            position: relative; height: 140px; cursor: pointer; border: 1px solid var(--border); 
+            position: relative; height: 160px; cursor: pointer; border: 1px solid var(--border); 
             border-radius: 4px; overflow: hidden; transition: 0.3s;
         }
         .img-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); opacity: 0.7; transition: 0.5s; }
         .img-card span { 
             position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            background: rgba(0,0,0,0.1); color: white; text-transform: uppercase; letter-spacing: 3px; font-size: 12px; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.3); color: white; text-transform: uppercase; letter-spacing: 3px; font-size: 12px; font-weight: 500;
         }
         .img-card.selected { border-color: var(--gold); border-width: 2px; transform: translateY(-3px); }
         .img-card.selected img { filter: grayscale(0%); opacity: 1; }
 
-        /* Formulaires */
         .config-box { background: white; padding: 30px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; }
         input, textarea, select {
             width: 100%; background: var(--card-bg); border: 1px solid var(--border);
             color: var(--text); padding: 15px; font-size: 1rem; outline: none; border-radius: 2px; margin-bottom: 15px;
         }
-        .voyageur-bloc { 
-            background: white; padding: 25px; border-radius: 8px; border: 1px solid var(--border); 
-            margin-bottom: 20px; text-align: left;
-        }
+        .voyageur-bloc { background: white; padding: 25px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; text-align: left; }
 
         .nav { margin-top: 40px; display: flex; justify-content: center; gap: 20px; }
         button { background: none; border: 1px solid var(--border); color: var(--text); padding: 12px 35px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; }
@@ -76,28 +71,27 @@
 
         <div class="step" data-step="2">
             <h2>Composition du voyage</h2>
-            
             <div class="choice-grid">
                 <div class="img-card" onclick="setSelect('TypeGroupe', 'Couple', this)">
-                    <img src="https://images.unsplash.com/photo-1516589174184-c685266e430c?auto=format&fit=crop&w=600"><span>Couple</span>
+                    <img src="https://images.unsplash.com/photo-1516589174184-c685266e430c?auto=format&fit=crop&w=800&q=80"><span>Couple</span>
                 </div>
                 <div class="img-card" onclick="setSelect('TypeGroupe', 'Famille', this)">
-                    <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=600"><span>Famille</span>
+                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=800&q=80"><span>Famille</span>
                 </div>
                 <div class="img-card" onclick="setSelect('TypeGroupe', 'Amis', this)">
-                    <img src="https://images.unsplash.com/photo-1539635278303-d4002c07dee3?auto=format&fit=crop&w=600"><span>Amis</span>
+                    <img src="https://images.unsplash.com/photo-1539635278303-d4002c07dee3?auto=format&fit=crop&w=800&q=80"><span>Amis</span>
                 </div>
             </div>
-            <input type="hidden" name="Type_Groupe" id="f_TypeGroupe" required>
+            <input type="hidden" name="Type_Groupe" id="f_TypeGroupe">
 
             <div class="config-box">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div>
-                        <label style="font-size: 11px; letter-spacing: 1px; display: block; margin-bottom: 10px;">ADULTES</label>
-                        <input type="number" id="nbAdultes" name="Nb_Adultes" min="1" value="2" required>
+                        <label style="font-size: 10px; letter-spacing: 1px; display: block; margin-bottom: 5px;">ADULTES</label>
+                        <input type="number" id="nbAdultes" name="Nb_Adultes" min="1" value="2">
                     </div>
                     <div>
-                        <label style="font-size: 11px; letter-spacing: 1px; display: block; margin-bottom: 10px;">ENFANTS (-12 ans)</label>
+                        <label style="font-size: 10px; letter-spacing: 1px; display: block; margin-bottom: 5px;">ENFANTS</label>
                         <select id="hasEnfants" onchange="toggleEnfantsInput(this.value)">
                             <option value="non">Non</option>
                             <option value="oui">Oui</option>
@@ -105,7 +99,7 @@
                     </div>
                 </div>
                 <div id="nbEnfantsContainer" style="display:none;">
-                    <label style="font-size: 11px; letter-spacing: 1px; display: block; margin-bottom: 10px;">NOMBRE D'ENFANTS</label>
+                    <label style="font-size: 10px; display: block; margin-bottom: 5px;">NOMBRE D'ENFANTS</label>
                     <input type="number" id="nbEnfants" name="Nb_Enfants" min="0" value="0">
                 </div>
             </div>
@@ -126,7 +120,7 @@
             <h2>Le standing souhaité</h2>
             <div class="choice-grid">
                 <div class="img-card" onclick="setSelect('Standing', 'Classique', this)">
-                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=600"><span>Classique</span>
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600"><span>Classique</span>
                 </div>
                 <div class="img-card" onclick="setSelect('Standing', 'Premium', this)">
                     <img src="https://images.unsplash.com/photo-1582719478250-c89cae4df85b?auto=format&fit=crop&w=600"><span>Premium</span>
@@ -135,7 +129,7 @@
                     <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600"><span>Luxe</span>
                 </div>
             </div>
-            <input type="hidden" name="Standing" id="f_Standing" required>
+            <input type="hidden" name="Standing" id="f_Standing">
         </div>
 
         <div class="step" data-step="6">
@@ -151,7 +145,7 @@
                     <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=600"><span>Ville</span>
                 </div>
             </div>
-            <input type="hidden" name="Destination_Type" id="f_Env" required>
+            <input type="hidden" name="Destination_Type" id="f_Env">
         </div>
 
         <div class="step" data-step="7">
@@ -186,13 +180,12 @@
     }
 
     function generateVoyageurForms() {
-        const adults = parseInt(document.getElementById('nbAdultes').value) || 0;
-        const kids = parseInt(document.getElementById('nbEnfants').value) || 0;
+        const adultsCount = parseInt(document.getElementById('nbAdultes').value) || 0;
+        const kidsCount = parseInt(document.getElementById('nbEnfants').value) || 0;
         const container = document.getElementById('voyageurs-container');
         container.innerHTML = "";
 
-        // Génération Adultes
-        for(let i=1; i<=adultes; i++) {
+        for(let i=1; i<=adultsCount; i++) {
             const isMain = (i === 1);
             container.innerHTML += `
                 <div class="voyageur-bloc">
@@ -206,8 +199,7 @@
                 </div>`;
         }
 
-        // Génération Enfants
-        for(let j=1; j<=kids; j++) {
+        for(let j=1; j<=kidsCount; j++) {
             container.innerHTML += `
                 <div class="voyageur-bloc" style="border-left: 3px solid var(--gold);">
                     <h3>Enfant ${j}</h3>
@@ -221,23 +213,23 @@
     }
 
     function changeStep(dir) {
-        const currentEl = document.querySelector(`.step[data-step="${currentStep}"]`);
-        
         if(dir === 1) {
-            // Validation simple
-            const inputs = currentEl.querySelectorAll('input[required], textarea[required], select[required]');
-            for(let input of inputs) { if(!input.value) { alert("Merci de tout remplir."); return; } }
+            const currentEl = document.querySelector(`.step[data-step="${currentStep}"]`);
             
-            // Validation spécifique sélections photos
+            // 1. Verif inputs classiques
+            const inputs = currentEl.querySelectorAll('input[required], textarea[required]');
+            for(let input of inputs) { if(!input.value) { alert("Veuillez remplir ce champ."); input.focus(); return; } }
+            
+            // 2. Verif sélections photos obligatoires
             if(currentStep === 2) {
-                if(!document.getElementById('f_TypeGroupe').value) { alert("Choisissez un type de voyage."); return; }
-                generateVoyageurForms(); // On prépare les formulaires de l'étape suivante
+                if(!document.getElementById('f_TypeGroupe').value) { alert("Choisissez un type de groupe."); return; }
+                generateVoyageurForms();
             }
             if(currentStep === 5 && !document.getElementById('f_Standing').value) { alert("Choisissez un standing."); return; }
             if(currentStep === 6 && !document.getElementById('f_Env').value) { alert("Choisissez un environnement."); return; }
         }
 
-        currentEl.classList.remove('active');
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
         currentStep += dir;
         document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
         
@@ -251,8 +243,8 @@
         e.preventDefault();
         document.getElementById('loading-screen').style.display = 'flex';
         const formData = new FormData(this);
-        let msg = "✨ NOUVELLE RÉSERVATION L'INCONNU ✨%0A%0A";
-        for (let [key, value] of formData.entries()) { if(value) msg += `*${key}*: ${value}%0A`; }
+        let msg = "✨ NOUVELLE DEMANDE ✨%0A%0A";
+        for (let [key, value] of formData.entries()) { if(value) msg += `*${key.replace(/_/g, ' ')}*: ${value}%0A`; }
         setTimeout(() => {
             window.open(`https://wa.me/33617572361?text=${msg}`, '_blank');
             this.submit();
