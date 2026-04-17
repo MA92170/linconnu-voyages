@@ -135,13 +135,16 @@
                 </div>
 
                 <div class="step" data-step="4" data-img="https://images.unsplash.com/photo-1511632765486-a01980e01a18">
-                    <p class="step-eyebrow">Compagnie</p>
-                    <h2 class="step-title">Qui participe à<br>ce secret ?</h2>
-                    <div class="field-group">
-                        <label class="field-label">Nombre de personnes</label>
-                        <input type="text" id="f_nb" name="nb_personnes" placeholder="ex. 2 adultes">
-                    </div>
-                </div>
+    <p class="step-eyebrow">Compagnie</p>
+    <h2 class="step-title">Qui participe à<br>ce secret ?</h2>
+    
+    <div class="field-group">
+        <label class="field-label">Combien de voyageurs au total ?</label>
+        <input type="number" id="f_nb" name="nb_personnes" min="1" max="10" placeholder="ex. 2" onchange="generateAgeFields(this.value)">
+    </div>
+
+    <div id="age-fields-container" class="field-group"></div>
+</div>
 
                 <div class="step" data-step="5" data-img="https://images.unsplash.com/photo-1506744038136-46273834b3fb">
                     <p class="step-eyebrow">Préférences</p>
@@ -230,11 +233,53 @@
     <p style="margin-top: 1rem; opacity: 0.5;">Marc vous contactera sous 24h.</p>
     <button onclick="window.location.reload()" style="margin-top:3rem; color:var(--gold); background:none; border:1px solid var(--gold); padding:1rem 2rem; cursor:pointer;">Retour</button>
 </div>
+    
 
+}
 <script>
 let currentStep = 1;
 const totalSteps = 10;
+function generateAgeFields(count) {
+    const container = document.getElementById('age-fields-container');
+    container.innerHTML = ""; // On vide le conteneur avant de recréer
+    
+    const num = parseInt(count);
+    if (isNaN(num) || num < 1) return;
 
+    // Création d'un titre discret
+    const label = document.createElement('label');
+    label.className = "field-label";
+    label.textContent = "Âge de chaque voyageur";
+    label.style.marginTop = "1.5rem";
+    container.appendChild(label);
+
+    // Création d'une grille pour les inputs d'âge
+    const grid = document.createElement('div');
+    grid.style.display = "grid";
+    grid.style.gap = "10px";
+    grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(80px, 1fr))";
+
+    for (let i = 1; i <= num; i++) {
+        const input = document.createElement('input');
+        input.type = "text"; // On utilise text pour la souplesse (ex: 32 ans)
+        input.name = `age_voyageur_${i}`;
+        input.placeholder = `V. ${i}`;
+        input.className = "age-input-dynamic"; // Classe pour le style si besoin
+        
+        // On applique le même style que tes autres inputs
+        input.style.width = "100%";
+        input.style.borderBottom = "1px solid var(--border)";
+        input.style.padding = "0.5rem 0";
+        input.style.textAlign = "center";
+        input.style.fontSize = "1rem";
+        input.style.background = "transparent";
+        input.style.outline = "none";
+        input.required = true;
+
+        grid.appendChild(input);
+    }
+    container.appendChild(grid);
+    
 function openQuiz(){
     document.getElementById('quiz-overlay').style.display='block';
     document.body.style.overflow='hidden';
@@ -274,10 +319,14 @@ function goStep(dir){
 
 function validateCurrentStep(){
     const current = document.querySelector('.step.active');
-    const input = current.querySelector('input[type="date"], input[type="text"], input[type="hidden"]');
-    if(input && input.value === "" && input.type !== "range") {
-        alert("Veuillez renseigner ce champ pour continuer.");
-        return false;
+    // On récupère tous les inputs obligatoires de l'étape
+    const inputs = current.querySelectorAll('input[required], input[type="date"], input[type="text"]:not(.optional)');
+    
+    for (let input of inputs) {
+        if(input.value.trim() === "" && input.type !== "range") {
+            alert("Veuillez renseigner tous les détails pour continuer.");
+            return false;
+        }
     }
     return true;
 }
