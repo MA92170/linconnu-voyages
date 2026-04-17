@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>L'Inconnu</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -10,227 +11,170 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
-body { background:black; color:white; font-family:Inter; }
-.hidden { display:none; }
-.step { display:none; }
-.step.active { display:block; animation:fade 0.5s ease; }
-
-@keyframes fade {
-from {opacity:0; transform:translateY(20px);}
-to {opacity:1; transform:translateY(0);}
+body {
+    background: #0a0a0a;
+    color: white;
+    font-family: Inter, sans-serif;
+    overflow: hidden;
 }
 
-.progress-bar { height:4px; background:#222; }
-.progress { height:100%; background:white; width:0%; transition:0.4s; }
+.serif { font-family: 'Playfair Display', serif; }
 
-input, select, textarea {
-background:black; border:1px solid #333;
-padding:12px; width:100%; border-radius:8px;
+.screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    transition: 0.6s ease;
 }
 
-button.primary {
-background:white; color:black; padding:14px 30px;
-border-radius:999px;
+.hidden-screen {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(40px);
+}
+
+.progress {
+    position: fixed;
+    top:0;
+    left:0;
+    height:3px;
+    background:white;
+    transition:0.4s;
+}
+
+.card {
+    border:1px solid rgba(255,255,255,0.1);
+    padding:20px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.card:hover { background:white; color:black; }
+.card.active { background:white; color:black; }
+
+button.main {
+    margin-top:40px;
+    padding:14px 30px;
+    border-radius:999px;
+    background:white;
+    color:black;
+}
+
+input, select {
+    background:transparent;
+    border-bottom:1px solid #333;
+    padding:10px;
+    width:300px;
+    text-align:center;
 }
 </style>
 </head>
 
 <body>
 
+<div id="progress" class="progress" style="width:0%"></div>
+
 <!-- INTRO -->
-<div id="intro" class="h-screen flex flex-col justify-center items-center text-center px-6">
-<h1 class="text-5xl mb-6">L'Inconnu</h1>
-<button onclick="start()" class="primary">Commencer l'expérience</button>
+<div id="intro" class="screen">
+<h1 class="serif text-5xl mb-6 text-center">
+Fermez les yeux…<br>Votre destination existe déjà.
+</h1>
+
+<button onclick="next()" class="main">Commencer l’expérience</button>
 </div>
 
-<!-- EXPERIENCE -->
-<div id="quiz" class="hidden max-w-3xl mx-auto py-10 px-6">
-
-<div class="progress-bar mb-10"><div id="progress" class="progress"></div></div>
-
-<form id="form" action="https://formspree.io/f/mqakvjje" method="POST">
-
-<!-- STEP 1 -->
-<div class="step active">
-<h2 class="text-2xl mb-6">Informations pratiques</h2>
-
-<input id="dates" name="dates" placeholder="Dates de voyage" required>
-
-<label>Budget</label>
-<input type="range" name="budget" min="100" max="5000" value="1000" required>
-
-<input type="number" name="personnes" placeholder="Nombre de personnes" required>
-
-<textarea name="pays_eviter" placeholder="Pays à éviter" required></textarea>
-
-<select name="passeport" required>
-<option value="">Passeport valide ?</option>
-<option>Oui</option>
-<option>Non</option>
-</select>
-
-<select name="ue" required>
-<option value="">Résident UE ?</option>
-<option>Oui</option>
-<option>Non</option>
-</select>
-
+<!-- QUESTIONS -->
+<div id="q1" class="screen hidden-screen">
+<h2 class="text-3xl serif mb-6">Quand souhaitez-vous partir ?</h2>
+<input id="dates">
+<button onclick="next()" class="main">Continuer</button>
 </div>
 
-<!-- STEP 2 -->
-<div class="step">
-<h2 class="text-2xl mb-6">Trajet avion</h2>
-
-<select name="sortie_ue" required>
-<option value="">Sortir de l’UE ?</option>
-<option>Oui</option>
-<option>Non</option>
-</select>
-
-<label>Heures de vol max</label>
-<input type="range" name="heures_vol" min="0" max="10" required>
-
-<select name="classe" required>
-<option value="">Classe</option>
-<option>Economy</option>
-<option>Business</option>
-</select>
-
-<input type="number" name="bagage" placeholder="Bagages soute (nombre)" required>
-
+<div id="q2" class="screen hidden-screen">
+<h2 class="text-3xl serif mb-6">Quel est votre budget ?</h2>
+<input type="range" id="budget" min="100" max="5000">
+<p id="budgetVal">1000€</p>
+<button onclick="next()" class="main">Continuer</button>
 </div>
 
-<!-- STEP 3 -->
-<div class="step">
-<h2 class="text-2xl mb-6">Hébergement</h2>
-
-<select name="logement" required>
-<option value="">Type</option>
-<option>Airbnb</option>
-<option>Hôtel</option>
-</select>
-
-<select name="allinclusive" required>
-<option value="">All inclusive ?</option>
-<option>Oui</option>
-<option>Non</option>
-</select>
-
-<select name="standing" required>
-<option value="">Catégorie</option>
-<option>Standard</option>
-<option>Premium</option>
-<option>Luxe</option>
-</select>
-
+<div id="q3" class="screen hidden-screen">
+<h2 class="text-3xl serif mb-6">Combien êtes-vous ?</h2>
+<input id="personnes" type="number">
+<button onclick="next()" class="main">Continuer</button>
 </div>
 
-<!-- STEP 4 -->
-<div class="step">
-<h2 class="text-2xl mb-6">Activités</h2>
-
-<select name="style" required>
-<option value="">Détente ou découverte</option>
-<option>Détente</option>
-<option>Découverte</option>
-</select>
-
-<select name="culture" required>
-<option value="">Culture ?</option>
-<option>Oui</option>
-<option>Non</option>
-</select>
-
-<select name="randonnee" required>
-<option value="">Randonnée ?</option>
-<option>Oui</option>
-<option>Non</option>
-</select>
-
+<div id="q4" class="screen hidden-screen">
+<h2 class="text-3xl serif mb-6">Sortir de l’UE ?</h2>
+<div class="flex gap-6">
+<div class="card" onclick="select(this,'oui')">Oui</div>
+<div class="card" onclick="select(this,'non')">Non</div>
+</div>
+<button onclick="next()" class="main">Continuer</button>
 </div>
 
-<!-- NAV -->
-<div class="flex justify-between mt-10">
-<button type="button" onclick="prev()">Retour</button>
-<button type="button" onclick="next()">Suivant</button>
-<button type="submit" id="submit" class="primary hidden">Envoyer</button>
+<div id="q5" class="screen hidden-screen">
+<h2 class="text-3xl serif mb-6">Type de voyage ?</h2>
+<div class="flex gap-6">
+<div class="card" onclick="select(this,'detente')">Détente</div>
+<div class="card" onclick="select(this,'decouverte')">Découverte</div>
+</div>
+<button onclick="next()" class="main">Voir mon mystère</button>
 </div>
 
-</form>
+<!-- FINAL -->
+<div id="final" class="screen hidden-screen text-center">
+<h2 class="text-4xl serif mb-6">Nous avons trouvé.</h2>
+<p id="result" class="text-xl"></p>
 </div>
 
 <script>
 
-// flatpickr
-flatpickr("#dates",{mode:"range",minDate:"today"});
+flatpickr("#dates",{mode:"range"});
 
-// start
-function start(){
-document.getElementById("intro").style.display="none";
-document.getElementById("quiz").classList.remove("hidden");
-}
-
-// navigation
 let step=0;
-const steps=document.querySelectorAll(".step");
-
-function update(){
-steps.forEach(s=>s.classList.remove("active"));
-steps[step].classList.add("active");
-
-document.getElementById("progress").style.width=((step+1)/steps.length)*100+"%";
-
-document.querySelector("#submit").style.display = step===steps.length-1 ? "block":"none";
-}
+const screens=["intro","q1","q2","q3","q4","q5","final"];
 
 function next(){
-if(!steps[step].querySelectorAll("input,select,textarea:invalid").length){
-step++; update();
-}else{ alert("Remplis tous les champs"); }
+document.getElementById(screens[step]).classList.add("hidden-screen");
+step++;
+document.getElementById(screens[step]).classList.remove("hidden-screen");
+
+document.getElementById("progress").style.width = (step/(screens.length-1))*100+"%";
+
+if(screens[step]==="final"){
+generate();
+}
 }
 
-function prev(){ if(step>0){ step--; update(); } }
-
-// GENERATEUR DESTINATION
-function generateDestination(data){
-let results=[];
-
-if(data.get("style")==="Détente"){
-results.push("Bali","Maldives","Grèce");
-}
-if(data.get("randonnee")==="Oui"){
-results.push("Islande","Norvège");
-}
-if(data.get("budget")<1500){
-results.push("Portugal","Croatie");
+function select(el,val){
+el.parentElement.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
+el.classList.add("active");
+el.parentElement.dataset.value=val;
 }
 
-return [...new Set(results)].slice(0,3);
-}
+// budget live
+document.getElementById("budget").oninput = e=>{
+document.getElementById("budgetVal").innerText=e.target.value+"€";
+};
 
-// SUBMIT
-document.getElementById("form").onsubmit=function(e){
-e.preventDefault();
+// générateur
+function generate(){
+let budget=document.getElementById("budget").value;
 
-const data=new FormData(this);
+let result="";
 
-// 🔮 génération
-const suggestions=generateDestination(data);
-console.log("DESTINATIONS SUGGÉRÉES :",suggestions);
+if(budget<1500) result="Lisbonne, Budapest ou Athènes";
+else if(budget<3000) result="Grèce, Maroc ou Croatie";
+else result="Bali, Maldives ou Japon";
 
-// WhatsApp
-const msg=`Voyage mystère :
-Budget: ${data.get("budget")}
-Personnes: ${data.get("personnes")}
-Style: ${data.get("style")}`;
+document.getElementById("result").innerText=result;
 
-window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
-
-// Formspree
-this.submit();
-
-// Email (Formspree fera le mail automatiquement)
-alert("Demande envoyée ✨");
+console.log("Suggestions privées :",result);
 }
 
 </script>
