@@ -6,6 +6,12 @@
     <title>L'Inconnu | Expérience de Voyage Sur-Mesure</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .serif { font-family: 'Playfair Display', serif; }
@@ -19,6 +25,10 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .progress-bar { height: 4px; background: #e2e8f0; width: 100%; position: sticky; top: 0; z-index: 60; }
         .progress-fill { height: 100%; background: #0f172a; transition: width 0.3s ease; width: 0%; }
+        
+        /* Personnalisation calendrier pour le rendre plus Premium */
+        .flatpickr-day.selected { background: #0f172a !important; border-color: #0f172a !important; }
+        .flatpickr-day.inRange { background: #f1f5f9 !important; border-color: transparent !important; box-shadow: none !important; }
     </style>
 </head>
 <body class="bg-slate-50">
@@ -37,14 +47,14 @@
         <div class="max-w-2xl mx-auto px-6 py-20">
             <button onclick="closeQuiz()" class="absolute top-8 right-8 text-slate-400 hover:text-black uppercase text-xs tracking-widest">Fermer ×</button>
             
-            <form id="travelForm" action="https://formspree.io/f/xdaynpav" method="POST"> 
+            <form id="travelForm" action="https://formspree.io/f/mqakvjje" method="POST">
                 
                 <div class="step active" data-step="1">
                     <h2 class="text-3xl serif mb-10">Informations Pratiques</h2>
                     <div class="space-y-8">
                         <div>
-                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Dates de départ souhaitées</label>
-                            <input type="date" name="date_depart" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black" required>
+                            <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Dates de séjour (Aller - Retour)</label>
+                            <input type="text" id="date_range" name="dates_sejour" placeholder="Sélectionnez vos dates..." class="w-full border-b border-slate-200 py-3 outline-none focus:border-black bg-transparent" required>
                         </div>
                         <div>
                             <label class="block text-xs uppercase tracking-widest text-slate-400 mb-2">Budget Total : <span id="budgetVal">2500</span>€</label>
@@ -59,8 +69,8 @@
                             <textarea name="pays_eviter" rows="2" class="w-full border-b border-slate-200 py-3 outline-none focus:border-black" required></textarea>
                         </div>
                         <div class="flex gap-8">
-                            <label class="text-sm"><input type="checkbox" name="passeport" value="Oui" required> Passeport valide</label>
-                            <label class="text-sm"><input type="checkbox" name="resident_ue" value="Oui" required> Résident UE</label>
+                            <label class="text-sm cursor-pointer"><input type="checkbox" name="passeport" value="Oui" required class="mr-2"> Passeport valide</label>
+                            <label class="text-sm cursor-pointer"><input type="checkbox" name="resident_ue" value="Oui" required class="mr-2"> Résident UE</label>
                         </div>
                     </div>
                 </div>
@@ -71,8 +81,8 @@
                         <div>
                             <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Souhaitez-vous sortir de l'UE ?</label>
                             <div class="flex gap-6">
-                                <label><input type="radio" name="sortir_ue" value="Oui" required> Oui</label>
-                                <label><input type="radio" name="sortir_ue" value="Non"> Non</label>
+                                <label class="cursor-pointer"><input type="radio" name="sortir_ue" value="Oui" required class="mr-2"> Oui</label>
+                                <label class="cursor-pointer"><input type="radio" name="sortir_ue" value="Non" class="mr-2"> Non</label>
                             </div>
                         </div>
                         <div>
@@ -81,7 +91,7 @@
                         </div>
                         <div>
                             <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Classe de voyage</label>
-                            <select name="classe" class="w-full border-b border-slate-200 py-3 outline-none">
+                            <select name="classe" class="w-full border-b border-slate-200 py-3 outline-none bg-transparent">
                                 <option value="Economy">Economy</option>
                                 <option value="Business">Business Class</option>
                             </select>
@@ -99,20 +109,20 @@
                         <div>
                             <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Type de logement</label>
                             <div class="flex gap-6">
-                                <label><input type="radio" name="type_logement" value="Hotel" required> Hôtel</label>
-                                <label><input type="radio" name="type_logement" value="Airbnb"> Airbnb</label>
+                                <label class="cursor-pointer"><input type="radio" name="type_logement" value="Hotel" required class="mr-2"> Hôtel</label>
+                                <label class="cursor-pointer"><input type="radio" name="type_logement" value="Airbnb" class="mr-2"> Airbnb</label>
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Catégorie de standing</label>
                             <div class="grid grid-cols-3 gap-4">
-                                <label class="border p-4 text-center rounded"><input type="radio" name="standing" value="Standard" required><br>Standard</label>
-                                <label class="border p-4 text-center rounded"><input type="radio" name="standing" value="Premium"><br>Premium</label>
-                                <label class="border p-4 text-center rounded"><input type="radio" name="standing" value="Luxe"><br>Luxe</label>
+                                <label class="border p-4 text-center rounded cursor-pointer hover:bg-slate-50"><input type="radio" name="standing" value="Standard" required class="mb-2"><br>Standard</label>
+                                <label class="border p-4 text-center rounded cursor-pointer hover:bg-slate-50"><input type="radio" name="standing" value="Premium" class="mb-2"><br>Premium</label>
+                                <label class="border p-4 text-center rounded cursor-pointer hover:bg-slate-50"><input type="radio" name="standing" value="Luxe" class="mb-2"><br>Luxe</label>
                             </div>
                         </div>
                         <div>
-                            <label class="text-sm"><input type="checkbox" name="all_inclusive" value="Oui"> Option All-Inclusive si possible</label>
+                            <label class="text-sm cursor-pointer"><input type="checkbox" name="all_inclusive" value="Oui" class="mr-2"> Option All-Inclusive si possible</label>
                         </div>
                     </div>
                 </div>
@@ -123,16 +133,16 @@
                         <div>
                             <label class="block text-xs uppercase tracking-widest text-slate-400 mb-4">Votre humeur</label>
                             <div class="flex gap-6">
-                                <label><input type="radio" name="humeur" value="Détente" required> Détente</label>
-                                <label><input type="radio" name="humeur" value="Découverte"> Découverte</label>
+                                <label class="cursor-pointer"><input type="radio" name="humeur" value="Détente" required class="mr-2"> Détente</label>
+                                <label class="cursor-pointer"><input type="radio" name="humeur" value="Découverte" class="mr-2"> Découverte</label>
                             </div>
                         </div>
                         <div class="space-y-4">
-                            <label class="flex justify-between items-center border-b pb-2">
+                            <label class="flex justify-between items-center border-b pb-2 cursor-pointer">
                                 <span>Visites culturelles</span>
                                 <input type="checkbox" name="activite_culture" value="Oui">
                             </label>
-                            <label class="flex justify-between items-center border-b pb-2">
+                            <label class="flex justify-between items-center border-b pb-2 cursor-pointer">
                                 <span>Randonnées</span>
                                 <input type="checkbox" name="activite_rando" value="Oui">
                             </label>
@@ -150,6 +160,18 @@
     </div>
 
     <script>
+        // Initialisation du calendrier Flatpickr (Style Airbnb)
+        flatpickr("#date_range", {
+            mode: "range",
+            minDate: "today",
+            dateFormat: "d-m-Y",
+            locale: "fr",
+            showMonths: 2, // Affiche 2 mois côte à côte sur ordi
+            onClose: function(selectedDates, dateStr, instance) {
+                // Optionnel : on peut faire quelque chose quand les dates sont choisies
+            }
+        });
+
         let currentStep = 1;
         const totalSteps = 4;
 
@@ -172,12 +194,25 @@
         function nextStep(n) {
             const steps = document.querySelectorAll('.step');
             
-            // Validation simple avant de passer
             if (n === 1) {
-                const inputs = steps[currentStep-1].querySelectorAll('input[required], textarea[required], select[required]');
+                const activeStepEl = steps[currentStep-1];
+                const inputs = activeStepEl.querySelectorAll('input[required], textarea[required], select[required]');
                 let valid = true;
-                inputs.forEach(input => { if(!input.value || (input.type === 'checkbox' && !input.checked)) valid = false; });
-                if(!valid) { alert("Veuillez remplir tous les champs obligatoires."); return; }
+                
+                inputs.forEach(input => {
+                    if(input.type === 'radio' || input.type === 'checkbox') {
+                        const name = input.name;
+                        const checked = activeStepEl.querySelector(`input[name="${name}"]:checked`);
+                        if(!checked) valid = false;
+                    } else if(!input.value) {
+                        valid = false;
+                    }
+                });
+
+                if(!valid) {
+                    alert("Veuillez remplir tous les champs obligatoires pour continuer.");
+                    return;
+                }
             }
 
             steps[currentStep-1].classList.remove('active');
@@ -196,25 +231,33 @@
             
             const formData = new FormData(this);
             let data = {};
-            formData.forEach((value, key) => data[key] = value);
+            formData.forEach((value, key) => {
+                if(!data[key]) {
+                    data[key] = value;
+                } else {
+                    data[key] = data[key] + ", " + value;
+                }
+            });
 
-            // LOGIQUE GÉNÉRATEUR AUTOMATIQUE (POUR TOI SEUL)
+            // LOGIQUE GÉNÉRATEUR AUTOMATIQUE (POUR MARC)
             let suggestions = "";
-            if(data.budget > 3000) suggestions = "Maldives, Bora Bora, Tokyo";
-            else if(data.temps_vol < 5) suggestions = "Marrakech, Rome, Lisbonne";
-            else suggestions = "New York, Bali, Islande";
+            if(parseInt(data.budget) > 3500) suggestions = "Maldives, Bora Bora, Tokyo Luxury";
+            else if(parseInt(data.temps_vol) < 5) suggestions = "Marrakech (Palais), Mykonos, Seville";
+            else if(data.standing === "Luxe") suggestions = "Safari Kenya, Islande (Retreat), Dubai";
+            else suggestions = "Lisbonne, Budapest, Rhodes";
 
-            const message = `*DEMANDE L'INCONNU*%0A` +
+            const message = `*NOUVELLE DEMANDE L'INCONNU*%0A%0A` +
+                            `• Dates: ${data.dates_sejour}%0A` +
                             `• Budget: ${data.budget}€ / Pers: ${data.nb_personnes}%0A` +
-                            `• Destination évitée: ${data.pays_eviter}%0A` +
-                            `• Vol: ${data.temps_vol}h (${data.classe})%0A` +
-                            `• Logement: ${data.type_logement} (${data.standing})%0A%0A` +
-                            `*CONSEIL IA (POUR MARC)*: ${suggestions}`;
+                            `• Vol: ${data.temps_vol}h max (${data.classe})%0A` +
+                            `• Logement: ${data.type_logement} (${data.standing})%0A` +
+                            `• Humeur: ${data.humeur}%0A%0A` +
+                            `*SUGGESTIONS IA:* ${suggestions}`;
 
             // Envoi WhatsApp
             window.open(`https://wa.me/33617572361?text=${message}`, '_blank');
             
-            // Envoi Formspree (Mail)
+            // Soumission réelle du formulaire pour Formspree (Mail)
             this.submit();
         });
     </script>
