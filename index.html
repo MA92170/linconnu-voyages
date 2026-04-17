@@ -3,230 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>L'Inconnu — Expérience</title>
+<title>L'Inconnu</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
-body { font-family: 'Inter', sans-serif; background: black; color: white; }
-.serif { font-family: 'Playfair Display', serif; }
+body { background:black; color:white; font-family:Inter; }
+.hidden { display:none; }
+.step { display:none; }
+.step.active { display:block; animation:fade 0.5s ease; }
 
-/* animations */
-.fade-in { animation: fade 1s ease forwards; }
-@keyframes fade { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-
-/* choix */
-.choice {
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.choice.active {
-    background: white;
-    color: black;
+@keyframes fade {
+from {opacity:0; transform:translateY(20px);}
+to {opacity:1; transform:translateY(0);}
 }
 
-/* visuels */
-.visual {
-    position: relative;
-    cursor: pointer;
-}
-.visual img {
-    height: 160px;
-    width: 100%;
-    object-fit: cover;
-    opacity: 0.6;
-    transition: 0.3s;
-}
-.visual.active img {
-    opacity: 1;
-    transform: scale(1.03);
+.progress-bar { height:4px; background:#222; }
+.progress { height:100%; background:white; width:0%; transition:0.4s; }
+
+input, select, textarea {
+background:black; border:1px solid #333;
+padding:12px; width:100%; border-radius:8px;
 }
 
-/* range */
-input[type=range] {
-    width:100%;
+button.primary {
+background:white; color:black; padding:14px 30px;
+border-radius:999px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="app" class="min-h-screen flex items-center justify-center px-6">
-
-<form id="travelForm" class="w-full max-w-3xl space-y-16">
-
 <!-- INTRO -->
-<div id="intro" class="text-center space-y-8">
-    <h1 class="serif text-5xl italic leading-tight">
-        Fermez les yeux…<br>Votre destination existe déjà.
-    </h1>
-    <p class="text-white/60">Nous allons simplement la révéler.</p>
-
-    <button type="button" onclick="start()" class="border border-white px-10 py-4 rounded-full hover:bg-white hover:text-black transition">
-        Commencer
-    </button>
+<div id="intro" class="h-screen flex flex-col justify-center items-center text-center px-6">
+<h1 class="text-5xl mb-6">L'Inconnu</h1>
+<button onclick="start()" class="primary">Commencer l'expérience</button>
 </div>
 
 <!-- EXPERIENCE -->
-<div id="experience" class="hidden space-y-16">
+<div id="quiz" class="hidden max-w-3xl mx-auto py-10 px-6">
 
-<!-- BUDGET -->
-<div class="fade-in">
-    <p class="text-xs tracking-widest text-white/40">01</p>
-    <h2 class="text-3xl serif italic">Quel niveau d'expérience souhaitez-vous ?</h2>
+<div class="progress-bar mb-10"><div id="progress" class="progress"></div></div>
 
-    <input type="range" name="budget" id="budgetRange" min="500" max="15000" value="3500" class="mt-6">
+<form id="form" action="https://formspree.io/f/mqakvjje" method="POST">
 
-    <div class="flex justify-between text-xs text-white/40 mt-2">
-        <span>Minimaliste</span>
-        <span>Luxe absolu</span>
-    </div>
+<!-- STEP 1 -->
+<div class="step active">
+<h2 class="text-2xl mb-6">Informations pratiques</h2>
 
-    <p class="text-2xl mt-4"><span id="budgetVal">3500</span>€</p>
-</div>
+<input id="dates" name="dates" placeholder="Dates de voyage" required>
 
-<!-- GROUPE -->
-<div class="fade-in">
-    <h2 class="text-3xl serif italic">Avec qui partez-vous ?</h2>
+<label>Budget</label>
+<input type="range" name="budget" min="100" max="5000" value="1000" required>
 
-    <div class="grid grid-cols-3 gap-4 mt-6">
-        <div class="choice" onclick="selectChoice(this,'type_groupe','Couple')">Couple</div>
-        <div class="choice" onclick="selectChoice(this,'type_groupe','Amis')">Amis</div>
-        <div class="choice" onclick="selectChoice(this,'type_groupe','Famille')">Famille</div>
-    </div>
+<input type="number" name="personnes" placeholder="Nombre de personnes" required>
 
-    <input type="hidden" name="type_groupe" id="type_groupe">
-</div>
+<textarea name="pays_eviter" placeholder="Pays à éviter" required></textarea>
 
-<!-- PERSONNES -->
-<div class="fade-in">
-    <h2 class="text-3xl serif italic">Combien êtes-vous ?</h2>
+<select name="passeport" required>
+<option value="">Passeport valide ?</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
 
-    <select id="nb_personnes" name="nb_personnes" class="w-full mt-4 p-4 bg-black border border-white/20 rounded-lg">
-        <option value="2">2 personnes</option>
-        <option value="3">3 personnes</option>
-        <option value="4">4 personnes</option>
-        <option value="5">5 personnes</option>
-        <option value="6">6+</option>
-    </select>
-
-    <p id="price-per-person" class="text-sm text-white/50 mt-2"></p>
-</div>
-
-<!-- AGE -->
-<div class="fade-in">
-    <h2 class="text-3xl serif italic">Quel est votre profil ?</h2>
-
-    <select name="age_voyageurs" class="w-full mt-4 p-4 bg-black border border-white/20 rounded-lg">
-        <option>18-25 ans</option>
-        <option>25-35 ans</option>
-        <option>35-50 ans</option>
-        <option>50+</option>
-    </select>
-</div>
-
-<!-- LIEU -->
-<div class="fade-in">
-    <h2 class="text-3xl serif italic">D'où partez-vous ?</h2>
-
-    <input type="text" name="ville_depart" placeholder="Paris, Lyon..." class="w-full mt-4 p-4 bg-black border border-white/20 rounded-lg">
-</div>
-
-<!-- AMBIANCE -->
-<div class="fade-in">
-    <h2 class="text-3xl serif italic">Qu'est-ce qui vous attire ?</h2>
-
-    <div class="grid grid-cols-3 gap-4 mt-6">
-        <div class="visual" onclick="selectVisual(this,'cadre','Plage')">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">
-            <span class="block text-center mt-2">Plage</span>
-        </div>
-
-        <div class="visual" onclick="selectVisual(this,'cadre','Montagne')">
-            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b">
-            <span class="block text-center mt-2">Montagne</span>
-        </div>
-
-        <div class="visual" onclick="selectVisual(this,'cadre','Ville')">
-            <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000">
-            <span class="block text-center mt-2">Ville</span>
-        </div>
-    </div>
-
-    <input type="hidden" name="cadre" id="cadre">
-</div>
-
-<!-- CTA -->
-<div class="text-center pt-10">
-    <button type="submit" class="bg-white text-black px-12 py-5 rounded-full">
-        Découvrir mon mystère
-    </button>
-</div>
+<select name="ue" required>
+<option value="">Résident UE ?</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
 
 </div>
+
+<!-- STEP 2 -->
+<div class="step">
+<h2 class="text-2xl mb-6">Trajet avion</h2>
+
+<select name="sortie_ue" required>
+<option value="">Sortir de l’UE ?</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
+
+<label>Heures de vol max</label>
+<input type="range" name="heures_vol" min="0" max="10" required>
+
+<select name="classe" required>
+<option value="">Classe</option>
+<option>Economy</option>
+<option>Business</option>
+</select>
+
+<input type="number" name="bagage" placeholder="Bagages soute (nombre)" required>
+
+</div>
+
+<!-- STEP 3 -->
+<div class="step">
+<h2 class="text-2xl mb-6">Hébergement</h2>
+
+<select name="logement" required>
+<option value="">Type</option>
+<option>Airbnb</option>
+<option>Hôtel</option>
+</select>
+
+<select name="allinclusive" required>
+<option value="">All inclusive ?</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
+
+<select name="standing" required>
+<option value="">Catégorie</option>
+<option>Standard</option>
+<option>Premium</option>
+<option>Luxe</option>
+</select>
+
+</div>
+
+<!-- STEP 4 -->
+<div class="step">
+<h2 class="text-2xl mb-6">Activités</h2>
+
+<select name="style" required>
+<option value="">Détente ou découverte</option>
+<option>Détente</option>
+<option>Découverte</option>
+</select>
+
+<select name="culture" required>
+<option value="">Culture ?</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
+
+<select name="randonnee" required>
+<option value="">Randonnée ?</option>
+<option>Oui</option>
+<option>Non</option>
+</select>
+
+</div>
+
+<!-- NAV -->
+<div class="flex justify-between mt-10">
+<button type="button" onclick="prev()">Retour</button>
+<button type="button" onclick="next()">Suivant</button>
+<button type="submit" id="submit" class="primary hidden">Envoyer</button>
+</div>
+
 </form>
 </div>
 
 <script>
 
+// flatpickr
+flatpickr("#dates",{mode:"range",minDate:"today"});
+
 // start
 function start(){
-    document.getElementById("intro").style.display="none";
-    document.getElementById("experience").classList.remove("hidden");
+document.getElementById("intro").style.display="none";
+document.getElementById("quiz").classList.remove("hidden");
 }
 
-// budget dynamique
-const budget = document.getElementById("budgetRange");
-const budgetVal = document.getElementById("budgetVal");
-const nbPers = document.getElementById("nb_personnes");
-const pricePerPerson = document.getElementById("price-per-person");
+// navigation
+let step=0;
+const steps=document.querySelectorAll(".step");
 
-function updateBudget(){
-    const b = parseInt(budget.value);
-    const p = parseInt(nbPers.value);
-    budgetVal.innerText = b;
-    pricePerPerson.innerText = "≈ " + Math.round(b/p) + "€ / personne";
+function update(){
+steps.forEach(s=>s.classList.remove("active"));
+steps[step].classList.add("active");
+
+document.getElementById("progress").style.width=((step+1)/steps.length)*100+"%";
+
+document.querySelector("#submit").style.display = step===steps.length-1 ? "block":"none";
 }
 
-budget.oninput = updateBudget;
-nbPers.onchange = updateBudget;
-
-// choix
-function selectChoice(el,name,value){
-    document.querySelectorAll(".choice").forEach(c=>c.classList.remove("active"));
-    el.classList.add("active");
-    document.getElementById(name).value=value;
+function next(){
+if(!steps[step].querySelectorAll("input,select,textarea:invalid").length){
+step++; update();
+}else{ alert("Remplis tous les champs"); }
 }
 
-// visuel
-function selectVisual(el,name,value){
-    document.querySelectorAll(".visual").forEach(v=>v.classList.remove("active"));
-    el.classList.add("active");
-    document.getElementById(name).value=value;
+function prev(){ if(step>0){ step--; update(); } }
+
+// GENERATEUR DESTINATION
+function generateDestination(data){
+let results=[];
+
+if(data.get("style")==="Détente"){
+results.push("Bali","Maldives","Grèce");
+}
+if(data.get("randonnee")==="Oui"){
+results.push("Islande","Norvège");
+}
+if(data.get("budget")<1500){
+results.push("Portugal","Croatie");
 }
 
-// submit
-document.getElementById("travelForm").onsubmit = function(e){
-    e.preventDefault();
+return [...new Set(results)].slice(0,3);
+}
 
-    const data = new FormData(this);
+// SUBMIT
+document.getElementById("form").onsubmit=function(e){
+e.preventDefault();
 
-    const msg = `VOYAGE MYSTERE :
-Budget: ${data.get("budget")}€
-Groupe: ${data.get("type_groupe")}
-Personnes: ${data.get("nb_personnes")}
-Départ: ${data.get("ville_depart")}
-Ambiance: ${data.get("cadre")}`;
+const data=new FormData(this);
 
-    window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
+// 🔮 génération
+const suggestions=generateDestination(data);
+console.log("DESTINATIONS SUGGÉRÉES :",suggestions);
 
-    alert("Demande envoyée ✨");
-};
+// WhatsApp
+const msg=`Voyage mystère :
+Budget: ${data.get("budget")}
+Personnes: ${data.get("personnes")}
+Style: ${data.get("style")}`;
+
+window.open(`https://wa.me/33617572361?text=${encodeURIComponent(msg)}`);
+
+// Formspree
+this.submit();
+
+// Email (Formspree fera le mail automatiquement)
+alert("Demande envoyée ✨");
+}
 
 </script>
 
