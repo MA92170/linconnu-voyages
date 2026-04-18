@@ -351,8 +351,9 @@
   .final-bg {
     background: radial-gradient(ellipse at 30% 40%, #2e2818 0%, var(--dark) 55%);
     min-height: 540px;
-    display: flex; align-items: center; justify-content: center;
+    align-items: center; justify-content: center;
   }
+  .final-bg.active { display: flex; }
   .plane-anim { font-size: 2.8rem; animation: fly 2.2s ease-in-out infinite; display: inline-block; }
   @keyframes fly {
     0%,100% { transform: translateX(-10px) translateY(2px) rotate(-5deg); }
