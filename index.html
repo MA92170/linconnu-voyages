@@ -335,7 +335,7 @@
   #persons-scroll::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
 
   /* ── Récapitulatif ── */
-  .recap-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.6rem; max-height: 50vh; overflow-y: auto; padding-right: 4px; }
+  .recap-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
   .recap-section { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
   .recap-header {
     padding: 0.65rem 1rem; background: var(--dark);
@@ -692,33 +692,37 @@
   <div class="page" id="p12">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
-    <div class="content" style="gap:1rem;">
-      <div class="step-tag">Récapitulatif — Vérifiez vos informations</div>
-      <h2 class="qtitle" style="font-size:1.4rem;">Votre voyage mystère en un coup d'œil</h2>
-      <div class="recap-wrap" id="recap-content"></div>
-      <p class="recap-note">Si tout est correct, confirmez votre demande ci-dessous.</p>
-      <div class="nav-row">
-        <button class="btn-back" onclick="goTo(11)">← Modifier</button>
-        <button class="btn-next" onclick="goTo(13)">Confirmer ma demande ✓</button>
+    <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;height:100%;">
+      <div style="padding:1.2rem 2.2rem 0.6rem;text-align:center;flex-shrink:0;">
+        <div class="step-tag" style="margin-bottom:0.4rem;">Récapitulatif — Vérifiez vos informations</div>
+        <h2 class="qtitle" style="font-size:1.3rem;">Votre voyage mystère en un coup d'œil</h2>
+      </div>
+      <div id="recap-content" style="flex:1;overflow-y:auto;padding:0 2.2rem 0.5rem;display:flex;flex-direction:column;gap:0.55rem;"></div>
+      <div style="padding:0.8rem 2.2rem 1.2rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0.5rem;border-top:1px solid var(--border);background:rgba(250,249,247,0.97);">
+        <p class="recap-note">Si tout est correct, confirmez votre demande ci-dessous.</p>
+        <div class="nav-row" style="margin-top:0;">
+          <button class="btn-back" onclick="goTo(11)">← Modifier</button>
+          <button class="btn-next" onclick="goTo(13)">Confirmer ma demande ✓</button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ════════════════ PAGE 13 — Finale ════════════════ -->
   <div class="page final-bg" id="p13">
-    <div class="content" style="text-align:center;gap:1.8rem;">
+    <div class="content" style="text-align:center;gap:1.4rem;">
       <div class="plane-anim">✈️</div>
       <div class="final-gold">Nous recherchons votre<br>voyage mystère parfait<br>mais… 🤫</div>
       <p class="final-sub">Votre demande a été transmise à nos experts.<br>Vous recevrez votre proposition sous <strong>48h</strong>.</p>
       <div class="status-msg" id="status-msg"></div>
-      <div class="action-row">
-        <button class="btn-wa" onclick="sendWhatsApp()">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.5rem;max-width:380px;">
+        <p style="font-size:0.82rem;color:#c5bfb0;line-height:1.7;">En cas de questions, n'hésitez pas à nous écrire :</p>
+        <button class="btn-wa" onclick="sendWhatsApp()" style="margin:0.7rem auto 0;display:flex;">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.557 4.118 1.529 5.849L.057 23.571l5.886-1.543A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.002-1.372l-.358-.213-3.714.974.991-3.624-.234-.373A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
-          Envoyer sur WhatsApp
+          Nous contacter sur WhatsApp
         </button>
-        <button class="btn-email" onclick="submitEmail()">Envoyer par e-mail</button>
       </div>
-      <p style="font-size:0.72rem;color:#4a4438;letter-spacing:0.05em;margin-top:0.5rem;">✦ Voyage Mystère — L'aventure commence sans savoir où</p>
+      <p style="font-size:0.72rem;color:#4a4438;letter-spacing:0.05em;">✦ Voyage Mystère — L'aventure commence sans savoir où</p>
     </div>
   </div>
 
@@ -748,6 +752,7 @@ function goTo(n) {
   if(n === 3) renderCalendars();
   if(n === 11) renderPersonForms();
   if(n === 12) renderRecap();
+  if(n === 13) { setTimeout(submitEmail, 800); }
 }
 
 // ──────────────────────────────────────────────
@@ -1115,20 +1120,19 @@ function sendWhatsApp() {
 
 async function submitEmail() {
   const status=document.getElementById('status-msg');
-  status.textContent='Envoi en cours…';
-  const n=parseInt(document.getElementById('nb-persons').value)||2;
+  status.textContent='Transmission de votre demande en cours…';
   const em=(document.getElementById('p0-email')||{}).value||'';
   const body=buildSummary();
   try {
     const r=await fetch('https://formspree.io/f/xdaynpav',{
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({message:body,_replyto:em,email:em})
+      body:JSON.stringify({message:body,_replyto:em,email:em,_subject:'Nouvelle demande Voyage Mystère — '+((document.getElementById('p0-fn')||{}).value||'')})
     });
-    if(r.ok) status.textContent='✓ Votre demande a bien été envoyée à nos experts !';
-    else status.textContent='Une erreur est survenue. Réessayez ou envoyez via WhatsApp.';
+    if(r.ok) status.textContent='✓ Demande bien reçue — nos experts reviennent vers vous sous 48h.';
+    else status.textContent='';
   } catch(e) {
-    status.textContent='Erreur réseau. Veuillez utiliser le bouton WhatsApp.';
+    status.textContent='';
   }
 }
 
