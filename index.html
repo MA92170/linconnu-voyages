@@ -1,1146 +1,188 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Voyage Mystère — L'aventure commence sans savoir où</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voyage Mystère</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{--gold:#c9a24b}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Inter',sans-serif;background:#f4f4f4;overflow:hidden}
 
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #e8d08a;
-    --gold-pale: #fdf8ee;
-    --gold-border: #e2d0a0;
-    --dark: #1a1814;
-    --dark-2: #2e2a20;
-    --text: #2c2a25;
-    --text-muted: #6b6355;
-    --text-hint: #9a9180;
-    --bg: #faf9f7;
-    --bg-2: #f3f0e8;
-    --border: #e0dace;
-    --border-focus: #c9a84c;
-    --error: #c0392b;
-    --error-bg: #fdf0ee;
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'Jost', sans-serif;
-    --radius: 12px;
-    --radius-lg: 16px;
-    --transition: 0.22s ease;
-  }
+/* BACKGROUND PARALLAX */
+.bg{
+position:fixed;
+width:110%;height:110%;
+background:url('https://images.unsplash.com/photo-1504198453319-5ce911bafcde') center/cover;
+filter:blur(6px) brightness(0.8);
+z-index:-1;
+transform:scale(1.1);
+animation:zoom 20s infinite alternate;
+}
+@keyframes zoom{from{transform:scale(1.1)}to{transform:scale(1.2)}}
 
-  html { scroll-behavior: smooth; }
+.screen{
+position:absolute;top:0;left:0;width:100%;height:100%;
+display:flex;align-items:center;justify-content:center;
+opacity:0;transform:translateX(100px) scale(0.96);
+pointer-events:none;
+transition:all .6s cubic-bezier(0.22,1,0.36,1);
+}
+.screen.active{opacity:1;transform:translateX(0) scale(1);pointer-events:auto}
+.screen.exit{transform:translateX(-100px) scale(0.96);opacity:0}
 
-  html, body { height: 100%; overflow: hidden; }
+.card{
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(20px);
+padding:40px;border-radius:25px;
+box-shadow:0 30px 80px rgba(0,0,0,0.2);
+width:90%;max-width:520px;text-align:center;
+animation:fadeUp .8s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1}}
 
-  body {
-    font-family: var(--font-body);
-    background: var(--dark);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.6rem;
-  }
+button{
+background:linear-gradient(135deg,var(--gold),#e6c97a);
+border:none;color:white;padding:14px 26px;
+border-radius:12px;margin-top:20px;
+cursor:pointer;font-size:16px;
+box-shadow:0 10px 25px rgba(201,162,75,.4);
+transition:.3s;
+}
+button:hover{transform:scale(1.07)}
 
-  /* ── Shell ── */
-  .shell {
-    width: 100%;
-    max-width: 780px;
-    height: calc(100vh - 1.2rem);
-    max-height: 860px;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.18);
-    display: flex;
-    flex-direction: column;
-  }
+.cards{display:flex;gap:15px;margin-top:20px}
+.choice{
+flex:1;padding:20px;border-radius:15px;
+background:white;cursor:pointer;
+transition:.4s;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+.choice:hover{transform:translateY(-8px) scale(1.03)}
+.selected{
+border:2px solid var(--gold);
+transform:scale(1.05);
+box-shadow:0 15px 30px rgba(201,162,75,.3);
+}
 
-  /* ── Top bar ── */
-  .topbar {
-    background: var(--dark);
-    padding: 0.7rem 1.8rem;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-  }
-  .logo {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    font-weight: 300;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .prog-wrap { flex: 1; }
-  .prog-track { height: 2px; background: rgba(201,168,76,0.15); border-radius: 2px; }
-  .prog-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    border-radius: 2px;
-    transition: width 0.5s cubic-bezier(.4,0,.2,1);
-    width: 8.33%;
-  }
-  .step-num { font-size: 0.72rem; color: var(--text-hint); letter-spacing: 0.08em; white-space: nowrap; }
+input,select{
+width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px
+}
 
-  /* ── Pages ── */
-  .page {
-    display: none;
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .page.active { display: flex; animation: fadeSlide 0.38s cubic-bezier(.4,0,.2,1); }
-  @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.progress{
+position:fixed;top:0;left:0;height:4px;background:linear-gradient(to right,var(--gold),#fff);
+transition:.4s;
+}
 
-  .bg-img {
-    position: absolute; inset: 0;
-    background-size: cover;
-    background-position: center;
-    z-index: 0;
-  }
-  .overlay-dark { position: absolute; inset: 0; background: rgba(20,18,12,0.52); z-index: 1; }
-  .overlay-light { position: absolute; inset: 0; background: rgba(250,249,247,0.93); z-index: 1; }
+.loader{font-size:18px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
 
-  .content {
-    position: relative; z-index: 2;
-    width: 100%; max-width: 680px;
-    padding: 1.4rem 2.2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.9rem;
-  }
-
-  /* ── Typography ── */
-  .step-tag {
-    font-size: 0.7rem;
-    letter-spacing: 0.18em;
-    color: var(--gold);
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  h1.hero {
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    font-weight: 300;
-    color: #fff;
-    text-align: center;
-    line-height: 1.32;
-  }
-  h1.hero em { font-style: italic; color: var(--gold-light); }
-  h2.qtitle {
-    font-family: var(--font-display);
-    font-size: 1.7rem;
-    font-weight: 400;
-    color: var(--text);
-    text-align: center;
-    line-height: 1.35;
-  }
-  h2.qtitle em { font-style: italic; color: var(--gold); }
-
-  /* ── Buttons ── */
-  .btn-start {
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    color: var(--dark);
-    border: none;
-    padding: 1rem 3rem;
-    border-radius: 50px;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
-  }
-  .btn-start:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(201,168,76,0.4); }
-
-  .btn-next {
-    background: transparent;
-    border: 1.5px solid var(--gold);
-    color: var(--gold);
-    padding: 0.72rem 2.2rem;
-    border-radius: 50px;
-    font-family: var(--font-body);
-    font-size: 0.83rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all var(--transition);
-  }
-  .btn-next:hover { background: var(--gold); color: #fff; }
-  .btn-back {
-    background: none; border: none;
-    color: var(--text-hint); font-size: 0.8rem;
-    cursor: pointer; font-family: var(--font-body);
-    letter-spacing: 0.05em; text-decoration: underline;
-    transition: color var(--transition);
-  }
-  .btn-back:hover { color: var(--text-muted); }
-  .nav-row { display: flex; align-items: center; gap: 1.2rem; margin-top: 0.4rem; }
-
-  /* ── Validation ── */
-  .field-error { color: var(--error); font-size: 0.75rem; margin-top: 3px; display: none; }
-  .field-error.show { display: block; }
-  input.err, select.err { border-color: var(--error) !important; background: var(--error-bg) !important; }
-  .toast {
-    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
-    background: var(--dark); color: #fff; border-left: 3px solid var(--error);
-    padding: 0.85rem 1.5rem; border-radius: var(--radius); font-size: 0.85rem;
-    font-family: var(--font-body); z-index: 9999; letter-spacing: 0.03em;
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
-    opacity: 0; pointer-events: none;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-  /* ── Slider ── */
-  .slider-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
-  .slider-row { display: flex; align-items: center; gap: 1rem; }
-  .slider-lbl { font-size: 0.75rem; color: var(--text-hint); min-width: 36px; }
-  .slider-val {
-    font-family: var(--font-display);
-    font-size: 2.2rem; font-weight: 300;
-    color: var(--text); text-align: center;
-    line-height: 1;
-  }
-  .slider-desc {
-    font-style: italic; font-size: 0.88rem;
-    color: var(--text-muted); text-align: center;
-    min-height: 1.5rem; transition: opacity 0.25s;
-    font-family: var(--font-display);
-  }
-  input[type=range] {
-    flex: 1; -webkit-appearance: none; appearance: none;
-    height: 3px; background: var(--border); border-radius: 2px; outline: none;
-    cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 20px; height: 20px;
-    border-radius: 50%; background: var(--gold);
-    box-shadow: 0 2px 8px rgba(201,168,76,0.4); cursor: pointer;
-    transition: transform 0.15s;
-  }
-  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-
-  /* ── Calendar ── */
-  .cal-wrap {
-    background: #fff; border-radius: var(--radius-lg);
-    border: 1px solid var(--border); padding: 1.2rem;
-    width: 100%;
-  }
-  .cal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-  .cal-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
-  .cal-hdr span { font-size: 0.85rem; font-weight: 500; color: var(--text); }
-  .cal-hdr button {
-    background: none; border: none; cursor: pointer;
-    color: var(--gold); font-size: 1.1rem; line-height: 1;
-    width: 26px; height: 26px; border-radius: 50%;
-    transition: background var(--transition);
-  }
-  .cal-hdr button:hover { background: var(--gold-pale); }
-  .cal-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-  .cal-dname { text-align: center; font-size: 0.68rem; color: var(--text-hint); padding: 2px 0; font-weight: 500; }
-  .cal-day {
-    text-align: center; font-size: 0.78rem; padding: 5px 2px;
-    border-radius: 5px; cursor: pointer; color: var(--text);
-    transition: background var(--transition), color var(--transition);
-    line-height: 1.6;
-  }
-  .cal-day:hover:not(.empty):not(.past) { background: var(--gold-pale); }
-  .cal-day.sel { background: var(--gold) !important; color: #fff !important; border-radius: 5px; }
-  .cal-day.in-range { background: #fdf0d0; }
-  .cal-day.empty, .cal-day.past { color: #ccc; cursor: default; }
-  .date-pills { display: flex; gap: 0.8rem; width: 100%; }
-  .date-pill {
-    flex: 1; padding: 0.6rem 1rem; background: var(--bg-2);
-    border-radius: 8px; text-align: center;
-    border: 1px solid var(--border);
-  }
-  .date-pill .pill-lbl { font-size: 0.68rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
-  .date-pill .pill-val { font-size: 0.9rem; font-weight: 500; color: var(--text); }
-  .date-pill.err-pill { border-color: var(--error); background: var(--error-bg); }
-
-  /* ── Section cards ── */
-  .scard {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.1rem 1.3rem; width: 100%;
-  }
-  .scard-title { font-size: 0.72rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8rem; }
-
-  /* ── Radio buttons ── */
-  .radio-row { display: flex; gap: 0.8rem; width: 100%; }
-  .radio-btn {
-    flex: 1; padding: 0.7rem 0.5rem; border: 1.5px solid var(--border);
-    border-radius: 9px; text-align: center; font-size: 0.83rem;
-    cursor: pointer; background: var(--bg); color: var(--text);
-    transition: all var(--transition); font-family: var(--font-body);
-  }
-  .radio-btn:hover { border-color: var(--gold); }
-  .radio-btn.sel { border-color: var(--gold); background: var(--gold-pale); color: #9a6c10; font-weight: 500; }
-
-  /* ── Selectable cards ── */
-  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.9rem; width: 100%; }
-  .grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.9rem; width: 100%; }
-  .selcard {
-    border: 1.5px solid var(--border); border-radius: var(--radius);
-    background: var(--bg); overflow: hidden; cursor: pointer;
-    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
-  }
-  .selcard:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
-  .selcard.sel { border-color: var(--gold); background: var(--gold-pale); box-shadow: 0 4px 16px rgba(201,168,76,0.2); }
-  .selcard img { width: 100%; height: 96px; object-fit: cover; display: block; }
-  .selcard .cl { padding: 0.55rem 0.6rem; text-align: center; font-size: 0.83rem; color: var(--text); font-weight: 500; }
-  .selcard .ce { font-size: 1.5rem; padding: 0.6rem 0 0.1rem; text-align: center; }
-  .selcard.sel .cl { color: #9a6c10; }
-  .multi-hint { font-size: 0.73rem; color: var(--text-hint); font-style: italic; }
-
-  /* ── Forms ── */
-  .fg { display: flex; flex-direction: column; gap: 0.35rem; }
-  .fg label { font-size: 0.72rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.08em; }
-  .fg input, .fg select {
-    width: 100%; padding: 0.68rem 0.9rem;
-    border: 1px solid var(--border); border-radius: 8px;
-    font-size: 0.88rem; background: #fff; color: var(--text);
-    font-family: var(--font-body); outline: none;
-    transition: border-color var(--transition);
-  }
-  .fg input:focus, .fg select:focus { border-color: var(--gold); }
-  .frow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; }
-  .frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; width: 100%; }
-
-  /* ── Person blocks ── */
-  .person-block {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1rem; width: 100%;
-    transition: border-color var(--transition);
-  }
-  .person-block.err { border-color: var(--error); }
-  .person-lbl {
-    font-size: 0.72rem; font-weight: 500; color: var(--gold);
-    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8rem;
-  }
-  #persons-scroll { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; max-height: 45vh; overflow-y: auto; padding-right: 4px; }
-  #persons-scroll::-webkit-scrollbar { width: 4px; }
-  #persons-scroll::-webkit-scrollbar-track { background: var(--bg-2); border-radius: 2px; }
-  #persons-scroll::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
-
-  /* ── Récapitulatif ── */
-  .recap-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
-  .recap-section { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .recap-header {
-    padding: 0.65rem 1rem; background: var(--dark);
-    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--gold); font-weight: 500;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .recap-body { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
-  .recap-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-  .recap-key { font-size: 0.78rem; color: var(--text-hint); }
-  .recap-val { font-size: 0.82rem; color: var(--text); font-weight: 500; text-align: right; }
-  .recap-title-section {
-    font-family: var(--font-display);
-    font-size: 1.55rem; font-weight: 300;
-    color: var(--text); text-align: center;
-  }
-  .recap-note { font-size: 0.78rem; color: var(--text-hint); font-style: italic; text-align: center; }
-
-  /* ── Final page ── */
-  .final-bg {
-    background: radial-gradient(ellipse at 30% 40%, #2e2818 0%, var(--dark) 55%);
-    align-items: center; justify-content: center;
-  }
-  .final-bg.active { display: flex; }
-  .plane-anim { font-size: 2.8rem; animation: fly 2.2s ease-in-out infinite; display: inline-block; }
-  @keyframes fly {
-    0%,100% { transform: translateX(-10px) translateY(2px) rotate(-5deg); }
-    50% { transform: translateX(10px) translateY(-6px) rotate(3deg); }
-  }
-  .final-gold { font-family: var(--font-display); font-size: 1.6rem; font-weight: 300; color: var(--gold-light); line-height: 1.4; }
-  .final-sub { font-size: 0.85rem; color: #9a9180; line-height: 1.8; }
-  .final-sub strong { color: var(--gold-light); font-weight: 500; }
-  .status-msg { font-size: 0.82rem; font-style: italic; color: var(--text-hint); text-align: center; min-height: 1.2rem; }
-  .btn-wa {
-    background: #25d366; color: #fff; border: none;
-    padding: 0.85rem 2rem; border-radius: 50px;
-    font-family: var(--font-body); font-size: 0.83rem; font-weight: 500;
-    letter-spacing: 0.07em; cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,211,102,0.35); }
-  .btn-email {
-    background: transparent; border: 1.5px solid var(--gold);
-    color: var(--gold); padding: 0.85rem 2rem; border-radius: 50px;
-    font-family: var(--font-body); font-size: 0.83rem; font-weight: 500;
-    letter-spacing: 0.07em; cursor: pointer;
-    transition: all var(--transition);
-  }
-  .btn-email:hover { background: var(--gold); color: #fff; }
-  .action-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-
-  /* Checkbox */
-  .chk-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text); cursor: pointer; }
-  .chk-row input[type=checkbox] { accent-color: var(--gold); width: 15px; height: 15px; cursor: pointer; }
-
-  /* Scrollbar global */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  @media (max-width: 560px) {
-    .cal-grid { grid-template-columns: 1fr; }
-    .grid3 { grid-template-columns: repeat(2,1fr); }
-    .frow3 { grid-template-columns: 1fr 1fr; }
-    h1.hero { font-size: 1.7rem; }
-    h2.qtitle { font-size: 1.35rem; }
-    .content { padding: 1.8rem 1.2rem; }
-  }
 </style>
 </head>
 <body>
 
-<div class="shell">
-  <!-- Top Bar -->
-  <div class="topbar">
-    <div class="logo">✦ Voyage Mystère</div>
-    <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="prog"></div></div></div>
-    <div class="step-num" id="step-counter">1 / 13</div>
-  </div>
+<div class="bg"></div>
+<div class="progress" id="progress"></div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
+<div class="screen active" id="s1">
+<div class="card">
+<h2>Voyage Mystère ✈️</h2>
+<p>Partez sans savoir où vous allez</p>
+<button onclick="next()">Commencer</button>
+</div>
+</div>
 
-  <!-- ════════════════ PAGE 1 ════════════════ -->
-  <div class="page active" id="p1">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=85')"></div>
-    <div class="overlay-dark"></div>
-    <div class="content" style="text-align:center;">
-      <div class="step-tag">L'aventure commence</div>
-      <h1 class="hero">Vous adorez voyager<br>mais vous ne savez jamais où partir ?<br><em>Partez sans savoir où vous allez.</em></h1>
-      <p style="color:rgba(255,255,255,0.6);font-size:0.88rem;font-style:italic;font-family:'Cormorant Garamond',serif;">Un questionnaire. Une surprise. Une destination inconnue.</p>
-      <button class="btn-start" onclick="goTo(2)">Commencer l'expérience →</button>
-    </div>
-  </div>
+<div class="screen" id="s2">
+<div class="card">
+<h2>Budget</h2>
+<input type="range" min="500" max="30000" id="budget" oninput="budgetUpdate()">
+<p id="btxt"></p>
+<button onclick="next()">Suivant</button>
+</div>
+</div>
 
-  <!-- ════════════════ PAGE 2 — Budget ════════════════ -->
-  <div class="page" id="p2">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 1 — Budget</div>
-      <h2 class="qtitle">Quel est votre budget par personne ?</h2>
-      <div class="slider-wrap">
-        <div class="slider-val" id="budget-val">3 000 €</div>
-        <div class="slider-row">
-          <span class="slider-lbl">500 €</span>
-          <input type="range" id="budget" min="500" max="30000" step="100" value="3000" oninput="updateBudget(this.value)">
-          <span class="slider-lbl" style="text-align:right">30 000 €</span>
-        </div>
-        <div class="slider-desc" id="budget-desc">On ne se refuse rien — expériences premium et hôtels 5 étoiles.</div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(1)">← Retour</button><button class="btn-next" onclick="validate(2)">Continuer →</button></div>
-    </div>
-  </div>
+<div class="screen" id="s3">
+<div class="card">
+<h2>Dates</h2>
+<input type="date" id="start">
+<input type="date" id="end">
+<button onclick="next()">Suivant</button>
+</div>
+</div>
 
-  <!-- ════════════════ PAGE 3 — Dates ════════════════ -->
-  <div class="page" id="p3">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 2 — Dates</div>
-      <h2 class="qtitle">Quand partez-vous pour <em>je-ne-sais-où</em> ?</h2>
-      <div class="date-pills">
-        <div class="date-pill" id="dep-pill"><div class="pill-lbl">✈ Départ</div><div class="pill-val" id="dep-display">Sélectionner</div></div>
-        <div class="date-pill" id="ret-pill"><div class="pill-lbl">↩ Retour</div><div class="pill-val" id="ret-display">Sélectionner</div></div>
-      </div>
-      <div class="cal-wrap">
-        <div class="cal-grid">
-          <div id="cal0"></div>
-          <div id="cal1"></div>
-        </div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(2)">← Retour</button><button class="btn-next" onclick="validate(3)">Continuer →</button></div>
-    </div>
-  </div>
+<div class="screen" id="s4">
+<div class="card">
+<h2>Ambiance</h2>
+<div class="cards">
+<div class="choice" onclick="select(this,'mood','Plage')">🏝️</div>
+<div class="choice" onclick="select(this,'mood','Montagne')">🏔️</div>
+<div class="choice" onclick="select(this,'mood','Ville')">🌆</div>
+</div>
+<button onclick="next()">Suivant</button>
+</div>
+</div>
 
-  <!-- ════════════════ PAGE 4 — Vol & Contraintes ════════════════ -->
-  <div class="page" id="p4">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 3 — Préférences de vol</div>
-      <h2 class="qtitle">Vos contraintes de voyage</h2>
-      <div class="scard">
-        <div class="scard-title">Durée de vol maximale souhaitée</div>
-        <div class="slider-wrap">
-          <div class="slider-val" id="vol-val" style="font-size:1.6rem;">6h</div>
-          <div class="slider-row">
-            <span class="slider-lbl">1h</span>
-            <input type="range" id="vol-dur" min="1" max="16" step="1" value="6" oninput="document.getElementById('vol-val').textContent=this.value+'h'">
-            <span class="slider-lbl" style="text-align:right">16h+</span>
-          </div>
-        </div>
-      </div>
-      <div class="scard">
-        <div class="scard-title">Villes / pays à éviter</div>
-        <div class="fg"><input type="text" id="avoid-cities" placeholder="Ex : Dubaï, Maroc, États-Unis… (ou laisser vide)"></div>
-      </div>
-      <div class="scard">
-        <div class="scard-title">Résidence</div>
-        <div class="radio-row" id="res-grp">
-          <div class="radio-btn sel" onclick="pickRadio(this,'res-grp')">Résident UE</div>
-          <div class="radio-btn" onclick="pickRadio(this,'res-grp')">Hors UE</div>
-        </div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(3)">← Retour</button><button class="btn-next" onclick="validate(4)">Continuer →</button></div>
-    </div>
-  </div>
+<div class="screen" id="s5">
+<div class="card">
+<h2>Hôtel</h2>
+<div class="cards">
+<div class="choice" onclick="select(this,'hotel','Classique')">Classique</div>
+<div class="choice" onclick="select(this,'hotel','Premium')">Premium</div>
+<div class="choice" onclick="select(this,'hotel','Luxe')">Luxe</div>
+</div>
+<button onclick="finish()">Terminer</button>
+</div>
+</div>
 
-  <!-- ════════════════ PAGE 5 — Groupe ════════════════ -->
-  <div class="page" id="p5">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 4 — Votre groupe</div>
-      <h2 class="qtitle">Qui voyage avec vous ?</h2>
-      <div class="grid3" id="group-grid">
-        <div class="selcard" onclick="pickCard(this,'group-grid',true)"><div class="ce">👨‍👩‍👧‍👦</div><div class="cl">Famille</div></div>
-        <div class="selcard" onclick="pickCard(this,'group-grid',true)"><div class="ce">👫</div><div class="cl">Amis</div></div>
-        <div class="selcard" onclick="pickCard(this,'group-grid',true)"><div class="ce">💑</div><div class="cl">Couple</div></div>
-      </div>
-      <span class="field-error" id="group-err">Veuillez sélectionner une option</span>
-      <div class="frow2">
-        <div class="fg"><label>Nombre de voyageurs *</label>
-          <select id="nb-persons" onchange="updatePersonsCount()">
-            <option value="">— Sélectionner —</option>
-            <option value="1">1 personne</option><option value="2" selected>2 personnes</option>
-            <option value="3">3 personnes</option><option value="4">4 personnes</option>
-            <option value="5">5 personnes</option><option value="6">6 personnes</option>
-            <option value="7">7 personnes</option><option value="8">8+ personnes</option>
-          </select>
-          <span class="field-error" id="nbp-err">Ce champ est obligatoire</span>
-        </div>
-        <div class="fg"><label>Nombre d'enfants</label>
-          <select id="nb-children">
-            <option value="0" selected>Aucun enfant</option>
-            <option value="1">1 enfant</option><option value="2">2 enfants</option>
-            <option value="3">3 enfants</option><option value="4">4 enfants</option>
-          </select>
-        </div>
-      </div>
-      <div class="scard">
-        <div class="scard-title">Bagage en soute</div>
-        <div class="radio-row" id="bag-grp">
-          <div class="radio-btn sel" onclick="pickRadio(this,'bag-grp');toggleBag(false)">Cabine uniquement</div>
-          <div class="radio-btn" onclick="pickRadio(this,'bag-grp');toggleBag(true)">Avec bagage en soute</div>
-        </div>
-        <div id="bag-count-wrap" style="display:none;margin-top:0.8rem;">
-          <div class="fg"><label>Nombre de bagages en soute</label>
-            <select id="bag-count"><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select>
-          </div>
-        </div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(4)">← Retour</button><button class="btn-next" onclick="validate(5)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 6 — Départ ════════════════ -->
-  <div class="page" id="p6">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 5 — Point de départ</div>
-      <h2 class="qtitle">D'où décollons-nous ?</h2>
-      <div class="frow2">
-        <div class="fg"><label>Votre ville de départ *</label>
-          <input type="text" id="city-dep" placeholder="Ex : Paris, Lyon, Bordeaux…">
-          <span class="field-error" id="city-err">Ce champ est obligatoire</span>
-        </div>
-        <div class="fg"><label>Aéroport le plus proche *</label>
-          <input type="text" id="airport-dep" placeholder="Ex : CDG, ORY, LYS…">
-          <span class="field-error" id="airport-err">Ce champ est obligatoire</span>
-        </div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(5)">← Retour</button><button class="btn-next" onclick="validate(6)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 7 — Thème destination ════════════════ -->
-  <div class="page" id="p7">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 6 — Ambiance</div>
-      <h2 class="qtitle">Quel décor pour votre mystère ?</h2>
-      <div class="grid3" id="theme-grid">
-        <div class="selcard" onclick="toggleCard(this)">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=75" alt="Plage">
-          <div class="cl">Plage</div>
-        </div>
-        <div class="selcard" onclick="toggleCard(this)">
-          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=75" alt="Montagne">
-          <div class="cl">Montagne</div>
-        </div>
-        <div class="selcard" onclick="toggleCard(this)">
-          <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&q=75" alt="Ville">
-          <div class="cl">Centre-ville</div>
-        </div>
-      </div>
-      <div class="multi-hint">Plusieurs choix possibles</div>
-      <span class="field-error" id="theme-err">Veuillez sélectionner au moins une ambiance</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(6)">← Retour</button><button class="btn-next" onclick="validate(7)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 8 — Hôtel ════════════════ -->
-  <div class="page" id="p8">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 7 — Hébergement</div>
-      <h2 class="qtitle">Votre niveau d'hébergement idéal ?</h2>
-      <div class="grid3" id="hotel-grid">
-        <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
-          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=75" alt="Classique">
-          <div class="cl">Classique · 3-4★</div>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
-          <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500&q=75" alt="Premium">
-          <div class="cl">Premium · 4-5★</div>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
-          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500&q=75" alt="Luxe">
-          <div class="cl">Luxe · 5★ +</div>
-        </div>
-      </div>
-      <span class="field-error" id="hotel-err">Veuillez sélectionner un type d'hébergement</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(7)">← Retour</button><button class="btn-next" onclick="validate(8)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 9 — Restauration ════════════════ -->
-  <div class="page" id="p9">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 8 — Restauration</div>
-      <h2 class="qtitle">Quelle formule de restauration ?</h2>
-      <div class="grid2" id="board-grid">
-        <div class="selcard" onclick="pickCard(this,'board-grid',true)" style="padding:1.5rem;text-align:center;">
-          <div class="ce">🍳</div>
-          <div class="cl" style="font-size:1rem;">Petit-déjeuner</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Demi-pension légère</p>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'board-grid',true)" style="padding:1.5rem;text-align:center;">
-          <div class="ce">🍽️</div>
-          <div class="cl" style="font-size:1rem;">All inclusive</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Tout compris, sans souci</p>
-        </div>
-      </div>
-      <span class="field-error" id="board-err">Veuillez sélectionner une formule</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(8)">← Retour</button><button class="btn-next" onclick="validate(9)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 10 — Rythme ════════════════ -->
-  <div class="page" id="p10">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 9 — Rythme</div>
-      <h2 class="qtitle">Quel voyageur êtes-vous ?</h2>
-      <div class="grid2" id="mood-grid">
-        <div class="selcard" onclick="pickCard(this,'mood-grid',true)" style="padding:1.8rem;text-align:center;">
-          <div style="font-size:2.2rem;">🌿</div>
-          <div class="cl" style="font-size:1.05rem;">Détente</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Farniente, spa & bien-être</p>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'mood-grid',true)" style="padding:1.8rem;text-align:center;">
-          <div style="font-size:2.2rem;">🧭</div>
-          <div class="cl" style="font-size:1.05rem;">Découverte</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Visites, culture & aventure</p>
-        </div>
-      </div>
-      <span class="field-error" id="mood-err">Veuillez sélectionner un rythme</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(9)">← Retour</button><button class="btn-next" onclick="validate(10)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 11 — Participants ════════════════ -->
-  <div class="page" id="p11">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content" style="gap:1rem;">
-      <div class="step-tag">Étape 10 — Voyageurs</div>
-      <h2 class="qtitle">Informations des participants</h2>
-      <div id="persons-scroll"></div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(10)">← Retour</button><button class="btn-next" onclick="validate(11)">Voir le récapitulatif →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 12 — Récapitulatif ════════════════ -->
-  <div class="page" id="p12">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;height:100%;">
-      <div style="padding:1.2rem 2.2rem 0.6rem;text-align:center;flex-shrink:0;">
-        <div class="step-tag" style="margin-bottom:0.4rem;">Récapitulatif — Vérifiez vos informations</div>
-        <h2 class="qtitle" style="font-size:1.3rem;">Votre voyage mystère en un coup d'œil</h2>
-      </div>
-      <div id="recap-content" style="flex:1;overflow-y:auto;padding:0 2.2rem 0.5rem;display:flex;flex-direction:column;gap:0.55rem;"></div>
-      <div style="padding:0.8rem 2.2rem 1.2rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0.5rem;border-top:1px solid var(--border);background:rgba(250,249,247,0.97);">
-        <p class="recap-note">Si tout est correct, confirmez votre demande ci-dessous.</p>
-        <div class="nav-row" style="margin-top:0;">
-          <button class="btn-back" onclick="goTo(11)">← Modifier</button>
-          <button class="btn-next" onclick="goTo(13)">Confirmer ma demande ✓</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 13 — Finale ════════════════ -->
-  <div class="page final-bg" id="p13">
-    <div class="content" style="text-align:center;gap:1.4rem;">
-      <div class="plane-anim">✈️</div>
-      <div class="final-gold">Nous recherchons votre<br>voyage mystère parfait<br>mais… 🤫</div>
-      <p class="final-sub">Votre demande a été transmise à nos experts.<br>Vous recevrez votre proposition sous <strong>48h</strong>.</p>
-      <div class="status-msg" id="status-msg"></div>
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.5rem;max-width:380px;">
-        <p style="font-size:0.82rem;color:#c5bfb0;line-height:1.7;">En cas de questions, n'hésitez pas à nous écrire :</p>
-        <button class="btn-wa" onclick="sendWhatsApp()" style="margin:0.7rem auto 0;display:flex;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.557 4.118 1.529 5.849L.057 23.571l5.886-1.543A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.002-1.372l-.358-.213-3.714.974.991-3.624-.234-.373A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
-          Nous contacter sur WhatsApp
-        </button>
-      </div>
-      <p style="font-size:0.72rem;color:#4a4438;letter-spacing:0.05em;">✦ Voyage Mystère — L'aventure commence sans savoir où</p>
-    </div>
-  </div>
-
-</div><!-- /shell -->
+<div class="screen" id="s6">
+<div class="card">
+<h2>Création en cours...</h2>
+<p class="loader">✈️ Génération de votre expérience</p>
+</div>
+</div>
 
 <script>
-// ──────────────────────────────────────────────
-//  STATE
-// ──────────────────────────────────────────────
-const TOTAL = 13;
-let calBase = new Date(); calBase.setDate(1);
-let selStart = null, selEnd = null, picking = 'start';
-let bagEnabled = false;
+let step=1,total=6,data={};
 
-const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const DAYS_SHORT = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+function next(){
+let current=document.getElementById('s'+step);
+let next=document.getElementById('s'+(step+1));
 
-// ──────────────────────────────────────────────
-//  NAVIGATION
-// ──────────────────────────────────────────────
-function goTo(n) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('p'+n).classList.add('active');
-  document.getElementById('prog').style.width = (n/TOTAL*100)+'%';
-  document.getElementById('step-counter').textContent = n+' / '+TOTAL;
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(n === 3) renderCalendars();
-  if(n === 11) renderPersonForms();
-  if(n === 12) renderRecap();
-  if(n === 13) { setTimeout(submitEmail, 800); }
+current.classList.remove('active');
+current.classList.add('exit');
+next.classList.add('active');
+
+setTimeout(()=>current.classList.remove('exit'),600);
+
+step++;
+progress.style.width=(step/total*100)+'%';
 }
 
-// ──────────────────────────────────────────────
-//  TOAST
-// ──────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3200);
+function budgetUpdate(){
+let v=budget.value;
+btxt.innerText=v+'€';
+data.budget=v;
 }
 
-// ──────────────────────────────────────────────
-//  VALIDATION PER PAGE
-// ──────────────────────────────────────────────
-function validate(page) {
-  let ok = true;
-
-  const clearErr = (id) => { const e=document.getElementById(id); if(e){e.classList.remove('show','err');} };
-  const showErr  = (id) => { const e=document.getElementById(id); if(e){e.classList.add('show');} ok=false; };
-  const markErr  = (id) => { const e=document.getElementById(id); if(e){e.classList.add('err');} };
-  const clearFld = (id) => { const e=document.getElementById(id); if(e){e.classList.remove('err');} };
-
-  if(page === 3) {
-    clearErr('dep-pill'); clearErr('ret-pill');
-    document.getElementById('dep-pill').classList.remove('err-pill');
-    document.getElementById('ret-pill').classList.remove('err-pill');
-    if(!selStart) { document.getElementById('dep-pill').classList.add('err-pill'); ok=false; }
-    if(!selEnd)   { document.getElementById('ret-pill').classList.add('err-pill'); ok=false; }
-    if(!ok) { showToast('Veuillez sélectionner vos dates de départ et de retour.'); return; }
-  }
-
-  if(page === 5) {
-    clearErr('group-err'); clearErr('nbp-err');
-    clearFld('nb-persons');
-    const groupSel = document.querySelectorAll('#group-grid .selcard.sel').length;
-    if(!groupSel) { showErr('group-err'); ok=false; }
-    const nbp = document.getElementById('nb-persons').value;
-    if(!nbp) { showErr('nbp-err'); markErr('nb-persons'); ok=false; }
-    if(!ok) { showToast('Veuillez compléter la composition de votre groupe.'); return; }
-  }
-
-  if(page === 6) {
-    ['city-err','airport-err'].forEach(e => clearErr(e));
-    ['city-dep','airport-dep'].forEach(e => clearFld(e));
-    const city = document.getElementById('city-dep').value.trim();
-    const apt  = document.getElementById('airport-dep').value.trim();
-    if(!city)   { showErr('city-err');    markErr('city-dep');    ok=false; }
-    if(!apt)    { showErr('airport-err'); markErr('airport-dep'); ok=false; }
-    if(!ok) { showToast('Veuillez renseigner votre ville et aéroport de départ.'); return; }
-  }
-
-  if(page === 7) {
-    clearErr('theme-err');
-    const themes = document.querySelectorAll('#theme-grid .selcard.sel').length;
-    if(!themes) { showErr('theme-err'); showToast('Veuillez sélectionner au moins une ambiance.'); return; }
-  }
-
-  if(page === 8) {
-    clearErr('hotel-err');
-    if(!document.querySelector('#hotel-grid .selcard.sel')) { showErr('hotel-err'); showToast('Veuillez sélectionner un type d\'hébergement.'); return; }
-  }
-
-  if(page === 9) {
-    clearErr('board-err');
-    if(!document.querySelector('#board-grid .selcard.sel')) { showErr('board-err'); showToast('Veuillez sélectionner une formule de restauration.'); return; }
-  }
-
-  if(page === 10) {
-    clearErr('mood-err');
-    if(!document.querySelector('#mood-grid .selcard.sel')) { showErr('mood-err'); showToast('Veuillez sélectionner un rythme de voyage.'); return; }
-  }
-
-  if(page === 11) {
-    const n = parseInt(document.getElementById('nb-persons').value) || 2;
-    let personOk = true;
-    for(let i=0;i<n;i++) {
-      const pb = document.getElementById('pb-'+i);
-      const fn = (document.getElementById('p'+i+'-fn')||{}).value||'';
-      const ln = (document.getElementById('p'+i+'-ln')||{}).value||'';
-      const dob = (document.getElementById('p'+i+'-dob')||{}).value||'';
-      const em = (document.getElementById('p'+i+'-email')||{}).value||'';
-      let pOk = true;
-      if(!fn||!ln||!dob) pOk=false;
-      if(i===0 && !em) pOk=false;
-      if(i===0 && em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) pOk=false;
-      if(!pOk) { if(pb) pb.classList.add('err'); personOk=false; }
-      else { if(pb) pb.classList.remove('err'); }
-    }
-    if(!personOk) { showToast('Veuillez compléter les informations obligatoires pour chaque voyageur.'); return; }
-  }
-
-  goTo(page + 1);
+function select(el,key,val){
+el.parentNode.querySelectorAll('.choice').forEach(e=>e.classList.remove('selected'));
+el.classList.add('selected');
+data[key]=val;
 }
 
-// ──────────────────────────────────────────────
-//  UI HELPERS
-// ──────────────────────────────────────────────
-function pickRadio(el, grpId) {
-  document.querySelectorAll('#'+grpId+' .radio-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
+function finish(){
+next();
+fetch('https://formspree.io/f/xdaynpav',{
+method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)
+});
+setTimeout(()=>{
+window.location.href="https://wa.me/33617572361?text="+encodeURIComponent(JSON.stringify(data,null,2));
+},2500);
 }
 
-function pickCard(el, grpId, single) {
-  if(single) document.querySelectorAll('#'+grpId+' .selcard').forEach(c=>c.classList.remove('sel'));
-  el.classList.toggle('sel');
-  if(single) el.classList.add('sel');
-}
-
-function toggleCard(el) { el.classList.toggle('sel'); }
-
-function toggleBag(v) {
-  bagEnabled = v;
-  document.getElementById('bag-count-wrap').style.display = v?'':'none';
-}
-
-// ──────────────────────────────────────────────
-//  BUDGET
-// ──────────────────────────────────────────────
-function updateBudget(v) {
-  v = parseInt(v);
-  document.getElementById('budget-val').textContent = v.toLocaleString('fr-FR')+' €';
-  const d = document.getElementById('budget-desc');
-  if(v < 2000) d.textContent = 'On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.';
-  else if(v < 10000) d.textContent = 'On ne se refuse rien — expériences premium et hôtels 5 étoiles.';
-  else d.textContent = '💎 Voyage mémorable en vue — le grand luxe vous attend.';
-}
-
-// ──────────────────────────────────────────────
-//  CALENDAR
-// ──────────────────────────────────────────────
-function renderCalendars() {
-  renderMonth(0, new Date(calBase.getFullYear(), calBase.getMonth(), 1));
-  renderMonth(1, new Date(calBase.getFullYear(), calBase.getMonth()+1, 1));
-}
-
-function renderMonth(idx, d) {
-  const el = document.getElementById('cal'+idx);
-  const yr=d.getFullYear(), mo=d.getMonth();
-  const first=(new Date(yr,mo,1).getDay()+6)%7;
-  const days=new Date(yr,mo+1,0).getDate();
-  const today=new Date(); today.setHours(0,0,0,0);
-  let h=`<div class="cal-hdr">`;
-  if(idx===0) h+=`<button onclick="shiftCal(-1)">‹</button>`;
-  else h+=`<span></span>`;
-  h+=`<span>${MONTHS[mo]} ${yr}</span>`;
-  if(idx===1) h+=`<button onclick="shiftCal(1)">›</button>`;
-  else h+=`<span></span>`;
-  h+=`</div><div class="cal-days-grid">`;
-  h+=DAYS_SHORT.map(d=>`<div class="cal-dname">${d}</div>`).join('');
-  for(let i=0;i<first;i++) h+=`<div class="cal-day empty"></div>`;
-  for(let i=1;i<=days;i++) {
-    const date=new Date(yr,mo,i);
-    const past=date<today;
-    let cls='cal-day';
-    if(past) cls+=' past';
-    else {
-      if(selStart&&date.getTime()===selStart.getTime()) cls+=' sel';
-      else if(selEnd&&date.getTime()===selEnd.getTime()) cls+=' sel';
-      else if(selStart&&selEnd&&date>selStart&&date<selEnd) cls+=' in-range';
-    }
-    h+=`<div class="${cls}" onclick="${past?'':('pickDate('+yr+','+mo+','+i+')')}">${i}</div>`;
-  }
-  h+='</div>';
-  el.innerHTML=h;
-}
-
-function shiftCal(dir) {
-  calBase=new Date(calBase.getFullYear(),calBase.getMonth()+dir,1);
-  renderCalendars();
-}
-
-function pickDate(y,m,d) {
-  const date=new Date(y,m,d);
-  const today=new Date(); today.setHours(0,0,0,0);
-  if(date<today) return;
-  if(picking==='start'||(selStart&&selEnd)) {
-    selStart=date; selEnd=null; picking='end';
-  } else {
-    if(date<=selStart) { selEnd=selStart; selStart=date; }
-    else selEnd=date;
-    picking='start';
-  }
-  document.getElementById('dep-display').textContent=selStart?fmtDate(selStart):'Sélectionner';
-  document.getElementById('ret-display').textContent=selEnd?fmtDate(selEnd):'Sélectionner';
-  document.getElementById('dep-pill').classList.remove('err-pill');
-  if(selEnd) document.getElementById('ret-pill').classList.remove('err-pill');
-  renderCalendars();
-}
-
-function fmtDate(d) {
-  return d.getDate().toString().padStart(2,'0')+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getFullYear();
-}
-
-// ──────────────────────────────────────────────
-//  PERSON FORMS
-// ──────────────────────────────────────────────
-function updatePersonsCount() {}
-
-function renderPersonForms() {
-  const n=parseInt(document.getElementById('nb-persons').value)||2;
-  const c=document.getElementById('persons-scroll');
-  c.innerHTML='';
-  for(let i=0;i<n;i++) {
-    c.innerHTML+=`<div class="person-block" id="pb-${i}">
-      <div class="person-lbl">Voyageur ${i+1}${i===0?' · Responsable':''}</div>
-      <div class="frow3">
-        <div class="fg"><label>Prénom *</label><input type="text" id="p${i}-fn" placeholder="Prénom"></div>
-        <div class="fg"><label>Nom *</label><input type="text" id="p${i}-ln" placeholder="Nom"></div>
-        <div class="fg"><label>Date de naissance *</label><input type="date" id="p${i}-dob"></div>
-      </div>
-      <div class="fg" style="margin-top:0.5rem;">
-        <label>Email ${i===0?'*':'(facultatif)'}</label>
-        <input type="email" id="p${i}-email" placeholder="${i===0?'Adresse email (obligatoire)':'Adresse email (facultatif)'}">
-      </div>
-    </div>`;
-  }
-}
-
-// ──────────────────────────────────────────────
-//  RECAP
-// ──────────────────────────────────────────────
-function getVal(id) { const e=document.getElementById(id); return e?(e.value||'—'):'—'; }
-function getSelCard(gridId) {
-  const cards=[...document.querySelectorAll('#'+gridId+' .selcard.sel')];
-  return cards.map(c=>(c.querySelector('.cl')||c.querySelector('.card-label')||{}).textContent||'').filter(Boolean).join(', ')||'—';
-}
-function getRadio(grpId) {
-  const sel=document.querySelector('#'+grpId+' .radio-btn.sel');
-  return sel?sel.textContent:'—';
-}
-
-function renderRecap() {
-  const n=parseInt(getVal('nb-persons'))||2;
-  const persons=[];
-  for(let i=0;i<n;i++) {
-    const fn=(document.getElementById('p'+i+'-fn')||{}).value||'';
-    const ln=(document.getElementById('p'+i+'-ln')||{}).value||'';
-    const dob=(document.getElementById('p'+i+'-dob')||{}).value||'';
-    const em=(document.getElementById('p'+i+'-email')||{}).value||'';
-    persons.push({fn,ln,dob,em});
-  }
-  const themes=getSelCard('theme-grid');
-  const hotel=getSelCard('hotel-grid');
-  const board=getSelCard('board-grid');
-  const mood=getSelCard('mood-grid');
-  const group=getSelCard('group-grid');
-  const budget=document.getElementById('budget-val').textContent;
-  const dep=selStart?fmtDate(selStart):'—';
-  const ret=selEnd?fmtDate(selEnd):'—';
-  const volDur=(document.getElementById('vol-val')||{}).textContent||'—';
-  const avoid=getVal('avoid-cities');
-  const res=getRadio('res-grp');
-  const city=getVal('city-dep');
-  const apt=getVal('airport-dep');
-  const nbChildren=getVal('nb-children');
-  const bagTxt=bagEnabled?('Oui · '+getVal('bag-count')+' bagage(s)'):'Non';
-
-  const sections=[
-    { icon:'💶', title:'Budget & Dates', rows:[
-      ['Budget / personne', budget],
-      ['Départ', dep], ['Retour', ret],
-    ]},
-    { icon:'✈️', title:'Vol & Départ', rows:[
-      ['Durée de vol max', volDur],
-      ['Ville de départ', city], ['Aéroport', apt],
-      ['À éviter', avoid||'Aucun'], ['Résidence', res],
-    ]},
-    { icon:'👥', title:'Groupe', rows:[
-      ['Type de groupe', group],
-      ['Voyageurs', getVal('nb-persons')+' pers.'],
-      ['Enfants', nbChildren],
-      ['Bagage soute', bagTxt],
-    ]},
-    { icon:'🌍', title:'Voyage', rows:[
-      ['Ambiance', themes],
-      ['Hébergement', hotel],
-      ['Restauration', board],
-      ['Rythme', mood],
-    ]},
-  ];
-
-  let html='';
-  sections.forEach(s=>{
-    html+=`<div class="recap-section">
-      <div class="recap-header">${s.icon} ${s.title}</div>
-      <div class="recap-body">`;
-    s.rows.forEach(r=>{
-      html+=`<div class="recap-row"><span class="recap-key">${r[0]}</span><span class="recap-val">${r[1]}</span></div>`;
-    });
-    html+=`</div></div>`;
-  });
-
-  // Persons
-  html+=`<div class="recap-section"><div class="recap-header">👤 Participants</div><div class="recap-body">`;
-  persons.forEach((p,i)=>{
-    const dob=p.dob?new Date(p.dob).toLocaleDateString('fr-FR'):'—';
-    html+=`<div class="recap-row" style="border-bottom:1px solid var(--bg-2);padding-bottom:0.4rem;margin-bottom:0.4rem;">
-      <span class="recap-key">${i+1}. ${p.fn} ${p.ln}</span>
-      <span class="recap-val" style="font-size:0.78rem;">${dob}${p.em?' · '+p.em:''}</span>
-    </div>`;
-  });
-  html+=`</div></div>`;
-
-  document.getElementById('recap-content').innerHTML=html;
-}
-
-// ──────────────────────────────────────────────
-//  BUILD SUMMARY
-// ──────────────────────────────────────────────
-function buildSummary() {
-  const n=parseInt(document.getElementById('nb-persons').value)||2;
-  const persons=[];
-  for(let i=0;i<n;i++){
-    const fn=(document.getElementById('p'+i+'-fn')||{}).value||'';
-    const ln=(document.getElementById('p'+i+'-ln')||{}).value||'';
-    const dob=(document.getElementById('p'+i+'-dob')||{}).value||'';
-    const em=(document.getElementById('p'+i+'-email')||{}).value||'';
-    persons.push({fn,ln,dob,em});
-  }
-  const p1=persons[0]||{};
-  const themes=[...document.querySelectorAll('#theme-grid .selcard.sel')].map(c=>c.querySelector('.cl').textContent).join(', ')||'—';
-  const hotel=getSelCard('hotel-grid');
-  const board=getSelCard('board-grid');
-  const mood=getSelCard('mood-grid');
-  const group=getSelCard('group-grid');
-  const dep=selStart?fmtDate(selStart):'—';
-  const ret=selEnd?fmtDate(selEnd):'—';
-  const budget=document.getElementById('budget-val').textContent;
-  const volDur=(document.getElementById('vol-val')||{}).textContent||'—';
-  const avoid=getVal('avoid-cities');
-  const res=getRadio('res-grp');
-  const city=getVal('city-dep');
-  const apt=getVal('airport-dep');
-  const nbChildren=getVal('nb-children');
-  const bagTxt=bagEnabled?('Oui · '+getVal('bag-count')+' bagage(s)'):'Non';
-
-  let txt=`🗺️ VOYAGE MYSTÈRE — Nouvelle demande\n\n`;
-  txt+=`👤 Contact principal : ${p1.fn} ${p1.ln} | ${p1.em}\n\n`;
-  txt+=`💶 Budget : ${budget} / personne\n`;
-  txt+=`📅 Départ : ${dep} → Retour : ${ret}\n`;
-  txt+=`✈️ Vol max : ${volDur} | Départ de : ${city} (${apt})\n`;
-  txt+=`🚫 À éviter : ${avoid||'Aucun'} | Résidence : ${res}\n\n`;
-  txt+=`👥 Groupe : ${group} | ${n} pers. | Enfants : ${nbChildren}\n`;
-  txt+=`🧳 Bagages soute : ${bagTxt}\n\n`;
-  txt+=`🏖️ Ambiance : ${themes}\n`;
-  txt+=`🏨 Hébergement : ${hotel}\n`;
-  txt+=`🍽️ Restauration : ${board}\n`;
-  txt+=`🧭 Rythme : ${mood}\n\n`;
-  txt+=`👥 Participants :\n`;
-  persons.forEach((p,i)=>{
-    const d=p.dob?new Date(p.dob).toLocaleDateString('fr-FR'):'—';
-    txt+=`  ${i+1}. ${p.fn} ${p.ln} | ${d} | ${p.em||'—'}\n`;
-  });
-  return txt;
-}
-
-// ──────────────────────────────────────────────
-//  SEND
-// ──────────────────────────────────────────────
-function sendWhatsApp() {
-  const msg=buildSummary();
-  window.open('https://wa.me/33617572361?text='+encodeURIComponent(msg),'_blank');
-}
-
-async function submitEmail() {
-  const status=document.getElementById('status-msg');
-  status.textContent='Transmission de votre demande en cours…';
-  const em=(document.getElementById('p0-email')||{}).value||'';
-  const body=buildSummary();
-  try {
-    const r=await fetch('https://formspree.io/f/xdaynpav',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({message:body,_replyto:em,email:em,_subject:'Nouvelle demande Voyage Mystère — '+((document.getElementById('p0-fn')||{}).value||'')})
-    });
-    if(r.ok) status.textContent='✓ Demande bien reçue — nos experts reviennent vers vous sous 48h.';
-    else status.textContent='';
-  } catch(e) {
-    status.textContent='';
-  }
-}
-
-// ──────────────────────────────────────────────
-//  INIT
-// ──────────────────────────────────────────────
-updateBudget(3000);
-renderPersonForms();
 </script>
+
 </body>
 </html>
