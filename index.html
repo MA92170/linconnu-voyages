@@ -107,6 +107,10 @@
     position: relative;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
+  }
+  /* Pages with little content should still be centered */
+  .page.center-content {
     justify-content: center;
   }
   .page.active { display: flex; animation: fadeSlide 0.38s cubic-bezier(.4,0,.2,1); }
@@ -124,11 +128,13 @@
   .content {
     position: relative; z-index: 2;
     width: 100%; max-width: 680px;
-    padding: 1.4rem 2.2rem;
+    padding: 1.4rem 2.2rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.9rem;
+    /* Allow content to push nav-row into view on scroll pages */
+    flex-shrink: 0;
   }
 
   /* ── Typography ── */
@@ -266,6 +272,21 @@
     border-radius: 5px; cursor: pointer; color: var(--text);
     transition: background var(--transition), color var(--transition);
     line-height: 1.6;
+  }
+  @media (max-width: 600px) {
+    .cal-day { font-size: 0.82rem; padding: 7px 2px; line-height: 1.5; }
+    .cal-wrap { padding: 0.7rem 0.5rem; }
+    .cal-grid { gap: 1rem; }
+    .p3-nav {
+      position: sticky;
+      bottom: 0;
+      background: rgba(250,249,247,0.97);
+      padding: 0.8rem 1rem;
+      margin: 0 -1rem -1.5rem;
+      border-top: 1px solid var(--border);
+      justify-content: center;
+      z-index: 10;
+    }
   }
   .cal-day:hover:not(.empty):not(.past) { background: var(--gold-pale); }
   .cal-day.sel { background: var(--gold) !important; color: #fff !important; border-radius: 5px; }
@@ -433,7 +454,7 @@
     .frow3 { grid-template-columns: 1fr 1fr; }
     h1.hero { font-size: 1.55rem; line-height: 1.3; }
     h2.qtitle { font-size: 1.25rem; }
-    .content { padding: 1rem 1rem 1.2rem; gap: 0.75rem; }
+    .content { padding: 1rem 1rem 1.5rem; gap: 0.7rem; }
     .recap-grid { grid-template-columns: 1fr; }
     .recap-full { grid-column: 1; }
     .scard { padding: 0.9rem 1rem; }
@@ -465,7 +486,7 @@
   <div class="toast" id="toast"></div>
 
   <!-- ════════════════ PAGE 1 ════════════════ -->
-  <div class="page active" id="p1">
+  <div class="page center-content active" id="p1">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=85')"></div>
     <div class="overlay-dark"></div>
     <div class="content" style="text-align:center;">
@@ -477,7 +498,7 @@
   </div>
 
   <!-- ════════════════ PAGE 2 — Budget ════════════════ -->
-  <div class="page" id="p2">
+  <div class="page center-content" id="p2">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -513,12 +534,12 @@
           <div id="cal1"></div>
         </div>
       </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(2)">← Retour</button><button class="btn-next" onclick="validate(3)">Continuer →</button></div>
+      <div class="nav-row p3-nav"><button class="btn-back" onclick="goTo(2)">← Retour</button><button class="btn-next" onclick="validate(3)">Continuer →</button></div>
     </div>
   </div>
 
   <!-- ════════════════ PAGE 4 — Vol & Contraintes ════════════════ -->
-  <div class="page" id="p4">
+  <div class="page center-content" id="p4">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -557,7 +578,7 @@
   </div>
 
   <!-- ════════════════ PAGE 5 — Groupe ════════════════ -->
-  <div class="page" id="p5">
+  <div class="page center-content" id="p5">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -605,7 +626,7 @@
   </div>
 
   <!-- ════════════════ PAGE 6 — Départ ════════════════ -->
-  <div class="page" id="p6">
+  <div class="page center-content" id="p6">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -633,7 +654,7 @@
   </div>
 
   <!-- ════════════════ PAGE 7 — Thème destination ════════════════ -->
-  <div class="page" id="p7">
+  <div class="page center-content" id="p7">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -660,7 +681,7 @@
   </div>
 
   <!-- ════════════════ PAGE 8 — Hôtel ════════════════ -->
-  <div class="page" id="p8">
+  <div class="page center-content" id="p8">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -686,7 +707,7 @@
   </div>
 
   <!-- ════════════════ PAGE 9 — Restauration ════════════════ -->
-  <div class="page" id="p9">
+  <div class="page center-content" id="p9">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -710,7 +731,7 @@
   </div>
 
   <!-- ════════════════ PAGE 10 — Rythme ════════════════ -->
-  <div class="page" id="p10">
+  <div class="page center-content" id="p10">
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div class="content">
@@ -767,7 +788,7 @@
   </div>
 
   <!-- ════════════════ PAGE 13 — Finale ════════════════ -->
-  <div class="page final-bg" id="p13">
+  <div class="page final-bg center-content" id="p13">
     <div class="content" style="text-align:center;gap:1.4rem;">
       <div class="plane-anim">✈️</div>
       <div class="final-gold">Nous recherchons votre<br>voyage mystère parfait<br>mais… 🤫</div>
