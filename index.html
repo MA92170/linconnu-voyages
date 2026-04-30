@@ -874,7 +874,17 @@ function validate(page) {
       if(!pOk) { if(pb) pb.classList.add('err'); personOk=false; }
       else { if(pb) pb.classList.remove('err'); }
     }
-    if(!personOk) { showToast('Veuillez compléter les informations obligatoires pour chaque voyageur.'); return; }
+    // Enfants
+    const nk = parseInt(document.getElementById('nb-children').value) || 0;
+    for(let j=0;j<nk;j++) {
+      const pb = document.getElementById('pb-k'+j);
+      const fn = (document.getElementById('k'+j+'-fn')||{}).value||'';
+      const ln = (document.getElementById('k'+j+'-ln')||{}).value||'';
+      const dob = (document.getElementById('k'+j+'-dob')||{}).value||'';
+      if(!fn||!ln||!dob) { if(pb) pb.classList.add('err'); personOk=false; }
+      else { if(pb) pb.classList.remove('err'); }
+    }
+    if(!personOk) { showToast('Veuillez compléter les informations obligatoires pour chaque voyageur et enfant.'); return; }
   }
 
   goTo(page + 1);
@@ -989,11 +999,14 @@ function fmtDate(d) {
 function updatePersonsCount() {}
 
 function renderPersonForms() {
-  const n=parseInt(document.getElementById('nb-persons').value)||2;
-  const c=document.getElementById('persons-scroll');
-  c.innerHTML='';
-  for(let i=0;i<n;i++) {
-    c.innerHTML+=`<div class="person-block" id="pb-${i}">
+  const n = parseInt(document.getElementById('nb-persons').value) || 2;
+  const nk = parseInt(document.getElementById('nb-children').value) || 0;
+  const c = document.getElementById('persons-scroll');
+  c.innerHTML = '';
+
+  // Adultes
+  for(let i = 0; i < n; i++) {
+    c.innerHTML += `<div class="person-block" id="pb-${i}">
       <div class="person-lbl">Voyageur ${i+1}${i===0?' · Responsable':''}</div>
       <div class="frow3">
         <div class="fg"><label>Prénom *</label><input type="text" id="p${i}-fn" placeholder="Prénom"></div>
@@ -1005,6 +1018,28 @@ function renderPersonForms() {
         <input type="email" id="p${i}-email" placeholder="${i===0?'Adresse email (obligatoire)':'Adresse email (facultatif)'}">
       </div>
     </div>`;
+  }
+
+  // Enfants
+  if(nk > 0) {
+    const sep = document.createElement('div');
+    sep.style.cssText = 'width:100%;display:flex;align-items:center;gap:0.6rem;';
+    sep.innerHTML = `<div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:0.7rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;font-weight:500;white-space:nowrap;">👶 Enfants</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>`;
+    c.appendChild(sep);
+
+    for(let j = 0; j < nk; j++) {
+      const id = `k${j}`;
+      c.innerHTML += `<div class="person-block" id="pb-k${j}" style="border-left:3px solid var(--gold-border);">
+        <div class="person-lbl" style="color:var(--text-muted);">Enfant ${j+1}</div>
+        <div class="frow3">
+          <div class="fg"><label>Prénom *</label><input type="text" id="${id}-fn" placeholder="Prénom"></div>
+          <div class="fg"><label>Nom *</label><input type="text" id="${id}-ln" placeholder="Nom"></div>
+          <div class="fg"><label>Date de naissance *</label><input type="date" id="${id}-dob"></div>
+        </div>
+      </div>`;
+    }
   }
 }
 
@@ -1023,13 +1058,20 @@ function getRadio(grpId) {
 
 function renderRecap() {
   const n=parseInt(getVal('nb-persons'))||2;
+  const nk=parseInt(getVal('nb-children'))||0;
   const persons=[];
   for(let i=0;i<n;i++) {
     const fn=(document.getElementById('p'+i+'-fn')||{}).value||'';
     const ln=(document.getElementById('p'+i+'-ln')||{}).value||'';
     const dob=(document.getElementById('p'+i+'-dob')||{}).value||'';
     const em=(document.getElementById('p'+i+'-email')||{}).value||'';
-    persons.push({fn,ln,dob,em});
+    persons.push({fn,ln,dob,em,child:false});
+  }
+  for(let j=0;j<nk;j++) {
+    const fn=(document.getElementById('k'+j+'-fn')||{}).value||'';
+    const ln=(document.getElementById('k'+j+'-ln')||{}).value||'';
+    const dob=(document.getElementById('k'+j+'-dob')||{}).value||'';
+    persons.push({fn,ln,dob,em:'',child:true,idx:j+1});
   }
 
   const budget = document.getElementById('budget-val').textContent;
@@ -1102,9 +1144,11 @@ function renderRecap() {
     <div class="recap-card-body">`;
   persons.forEach((p, i) => {
     const dob = p.dob ? new Date(p.dob).toLocaleDateString('fr-FR') : '—';
+    const label = p.child ? `👶 Enfant ${p.idx}` : `${i+1}. ${p.fn} ${p.ln}`;
+    const detail = p.child ? `${p.fn} ${p.ln} · ${dob}` : `${dob}${p.em ? ' · ' + p.em : ''}`;
     persHtml += `<div class="recap-row" style="padding-bottom:0.3rem;margin-bottom:0.3rem;border-bottom:1px solid var(--bg-2);">
-      <span class="recap-key">${i+1}. ${p.fn} ${p.ln}</span>
-      <span class="recap-val">${dob}${p.em ? ' · ' + p.em : ''}</span>
+      <span class="recap-key">${label}</span>
+      <span class="recap-val">${detail}</span>
     </div>`;
   });
   persHtml += `</div></div>`;
@@ -1119,13 +1163,20 @@ function renderRecap() {
 // ──────────────────────────────────────────────
 function buildSummary() {
   const n=parseInt(document.getElementById('nb-persons').value)||2;
+  const nk=parseInt(document.getElementById('nb-children').value)||0;
   const persons=[];
   for(let i=0;i<n;i++){
     const fn=(document.getElementById('p'+i+'-fn')||{}).value||'';
     const ln=(document.getElementById('p'+i+'-ln')||{}).value||'';
     const dob=(document.getElementById('p'+i+'-dob')||{}).value||'';
     const em=(document.getElementById('p'+i+'-email')||{}).value||'';
-    persons.push({fn,ln,dob,em});
+    persons.push({fn,ln,dob,em,child:false});
+  }
+  for(let j=0;j<nk;j++){
+    const fn=(document.getElementById('k'+j+'-fn')||{}).value||'';
+    const ln=(document.getElementById('k'+j+'-ln')||{}).value||'';
+    const dob=(document.getElementById('k'+j+'-dob')||{}).value||'';
+    persons.push({fn,ln,dob,em:'',child:true,idx:j+1});
   }
   const p1=persons[0]||{};
   const themes=[...document.querySelectorAll('#theme-grid .selcard.sel')].map(c=>c.querySelector('.cl').textContent).join(', ')||'—';
@@ -1162,7 +1213,8 @@ function buildSummary() {
   txt+=`👥 Participants :\n`;
   persons.forEach((p,i)=>{
     const d=p.dob?new Date(p.dob).toLocaleDateString('fr-FR'):'—';
-    txt+=`  ${i+1}. ${p.fn} ${p.ln} | ${d} | ${p.em||'—'}\n`;
+    if(p.child) txt+=`  👶 Enfant ${p.idx}. ${p.fn} ${p.ln} | ${d}\n`;
+    else txt+=`  ${i+1}. ${p.fn} ${p.ln} | ${d} | ${p.em||'—'}\n`;
   });
   return txt;
 }
