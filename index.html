@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -335,23 +335,40 @@
   #persons-scroll::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
 
   /* ── Récapitulatif ── */
-  .recap-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
-  .recap-section { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .recap-header {
-    padding: 0.65rem 1rem; background: var(--dark);
-    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--gold); font-weight: 500;
-    display: flex; align-items: center; gap: 0.5rem;
+  .recap-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
   }
-  .recap-body { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
-  .recap-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-  .recap-key { font-size: 0.78rem; color: var(--text-hint); }
-  .recap-val { font-size: 0.82rem; color: var(--text); font-weight: 500; text-align: right; }
-  .recap-title-section {
-    font-family: var(--font-display);
-    font-size: 1.55rem; font-weight: 300;
-    color: var(--text); text-align: center;
+  .recap-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
   }
+  .recap-card-header {
+    background: var(--dark);
+    padding: 0.5rem 0.8rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .recap-card-body {
+    padding: 0.7rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .recap-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+  .recap-key { font-size: 0.73rem; color: var(--text-hint); flex-shrink: 0; }
+  .recap-val { font-size: 0.76rem; color: var(--text); font-weight: 500; text-align: right; }
+  .recap-full { grid-column: 1 / -1; }
   .recap-note { font-size: 0.78rem; color: var(--text-hint); font-style: italic; text-align: center; }
 
   /* ── Final page ── */
@@ -404,6 +421,8 @@
     h1.hero { font-size: 1.7rem; }
     h2.qtitle { font-size: 1.35rem; }
     .content { padding: 1.8rem 1.2rem; }
+    .recap-grid { grid-template-columns: 1fr; }
+    .recap-full { grid-column: 1; }
   }
 </style>
 </head>
@@ -446,7 +465,7 @@
           <input type="range" id="budget" min="500" max="30000" step="100" value="3000" oninput="updateBudget(this.value)">
           <span class="slider-lbl" style="text-align:right">30 000 €</span>
         </div>
-        <div class="slider-desc" id="budget-desc">On ne se refuse rien — expériences premium et hôtels 5 étoiles.</div>
+        <div class="slider-desc" id="budget-desc">On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.</div>
       </div>
       <div class="nav-row"><button class="btn-back" onclick="goTo(1)">← Retour</button><button class="btn-next" onclick="validate(2)">Continuer →</button></div>
     </div>
@@ -500,6 +519,12 @@
         <div class="radio-row" id="res-grp">
           <div class="radio-btn sel" onclick="pickRadio(this,'res-grp')">Résident UE</div>
           <div class="radio-btn" onclick="pickRadio(this,'res-grp')">Hors UE</div>
+        </div>
+        <div style="margin-top:0.9rem;">
+          <label class="chk-row">
+            <input type="checkbox" id="passport-valid">
+            <span>Passeport valide</span>
+          </label>
         </div>
       </div>
       <div class="nav-row"><button class="btn-back" onclick="goTo(3)">← Retour</button><button class="btn-next" onclick="validate(4)">Continuer →</button></div>
@@ -571,6 +596,13 @@
           <span class="field-error" id="airport-err">Ce champ est obligatoire</span>
         </div>
       </div>
+      <div class="scard">
+        <div class="scard-title">Transfert vers l'aéroport</div>
+        <div class="radio-row" id="transfer-grp">
+          <div class="radio-btn sel" onclick="pickRadio(this,'transfer-grp')">Mes propres moyens</div>
+          <div class="radio-btn" onclick="pickRadio(this,'transfer-grp')">Taxi privé <span style="font-size:0.72rem;opacity:0.7;display:block;margin-top:2px;">Supplément</span></div>
+        </div>
+      </div>
       <div class="nav-row"><button class="btn-back" onclick="goTo(5)">← Retour</button><button class="btn-next" onclick="validate(6)">Continuer →</button></div>
     </div>
   </div>
@@ -612,15 +644,15 @@
       <div class="grid3" id="hotel-grid">
         <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
           <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=75" alt="Classique">
-          <div class="cl">Classique · 3-4★</div>
+          <div class="cl">Classique</div>
         </div>
         <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
           <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500&q=75" alt="Premium">
-          <div class="cl">Premium · 4-5★</div>
+          <div class="cl">Premium</div>
         </div>
         <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
           <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500&q=75" alt="Luxe">
-          <div class="cl">Luxe · 5★ +</div>
+          <div class="cl">Luxe</div>
         </div>
       </div>
       <span class="field-error" id="hotel-err">Veuillez sélectionner un type d'hébergement</span>
@@ -660,18 +692,19 @@
       <div class="step-tag">Étape 9 — Rythme</div>
       <h2 class="qtitle">Quel voyageur êtes-vous ?</h2>
       <div class="grid2" id="mood-grid">
-        <div class="selcard" onclick="pickCard(this,'mood-grid',true)" style="padding:1.8rem;text-align:center;">
+        <div class="selcard" onclick="toggleCard(this)" style="padding:1.8rem;text-align:center;">
           <div style="font-size:2.2rem;">🌿</div>
           <div class="cl" style="font-size:1.05rem;">Détente</div>
           <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Farniente, spa & bien-être</p>
         </div>
-        <div class="selcard" onclick="pickCard(this,'mood-grid',true)" style="padding:1.8rem;text-align:center;">
+        <div class="selcard" onclick="toggleCard(this)" style="padding:1.8rem;text-align:center;">
           <div style="font-size:2.2rem;">🧭</div>
           <div class="cl" style="font-size:1.05rem;">Découverte</div>
           <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Visites, culture & aventure</p>
         </div>
       </div>
-      <span class="field-error" id="mood-err">Veuillez sélectionner un rythme</span>
+      <div class="multi-hint">Plusieurs choix possibles</div>
+      <span class="field-error" id="mood-err">Veuillez sélectionner au moins un rythme</span>
       <div class="nav-row"><button class="btn-back" onclick="goTo(9)">← Retour</button><button class="btn-next" onclick="validate(10)">Continuer →</button></div>
     </div>
   </div>
@@ -693,12 +726,12 @@
     <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
     <div class="overlay-light"></div>
     <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;height:100%;">
-      <div style="padding:1.2rem 2.2rem 0.6rem;text-align:center;flex-shrink:0;">
-        <div class="step-tag" style="margin-bottom:0.4rem;">Récapitulatif — Vérifiez vos informations</div>
-        <h2 class="qtitle" style="font-size:1.3rem;">Votre voyage mystère en un coup d'œil</h2>
+      <div style="padding:1rem 2.2rem 0.5rem;text-align:center;flex-shrink:0;">
+        <div class="step-tag" style="margin-bottom:0.3rem;">Récapitulatif — Vérifiez vos informations</div>
+        <h2 class="qtitle" style="font-size:1.2rem;">Votre voyage mystère en un coup d'œil</h2>
       </div>
-      <div id="recap-content" style="flex:1;overflow-y:auto;padding:0 2.2rem 0.5rem;display:flex;flex-direction:column;gap:0.55rem;"></div>
-      <div style="padding:0.8rem 2.2rem 1.2rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0.5rem;border-top:1px solid var(--border);background:rgba(250,249,247,0.97);">
+      <div id="recap-content" style="flex:1;overflow-y:auto;padding:0 1.4rem 0.5rem;"></div>
+      <div style="padding:0.7rem 2.2rem 1rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0.4rem;border-top:1px solid var(--border);background:rgba(250,249,247,0.97);">
         <p class="recap-note">Si tout est correct, confirmez votre demande ci-dessous.</p>
         <div class="nav-row" style="margin-top:0;">
           <button class="btn-back" onclick="goTo(11)">← Modifier</button>
@@ -714,7 +747,6 @@
       <div class="plane-anim">✈️</div>
       <div class="final-gold">Nous recherchons votre<br>voyage mystère parfait<br>mais… 🤫</div>
       <p class="final-sub">Votre demande a été transmise à nos experts.<br>Vous recevrez votre proposition sous <strong>48h</strong>.</p>
-      <div class="status-msg" id="status-msg"></div>
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.5rem;max-width:380px;">
         <p style="font-size:0.82rem;color:#c5bfb0;line-height:1.7;">En cas de questions, n'hésitez pas à nous écrire :</p>
         <button class="btn-wa" onclick="sendWhatsApp()" style="margin:0.7rem auto 0;display:flex;">
@@ -823,7 +855,7 @@ function validate(page) {
 
   if(page === 10) {
     clearErr('mood-err');
-    if(!document.querySelector('#mood-grid .selcard.sel')) { showErr('mood-err'); showToast('Veuillez sélectionner un rythme de voyage.'); return; }
+    if(!document.querySelector('#mood-grid .selcard.sel')) { showErr('mood-err'); showToast('Veuillez sélectionner au moins un rythme de voyage.'); return; }
   }
 
   if(page === 11) {
@@ -876,9 +908,13 @@ function updateBudget(v) {
   v = parseInt(v);
   document.getElementById('budget-val').textContent = v.toLocaleString('fr-FR')+' €';
   const d = document.getElementById('budget-desc');
-  if(v < 2000) d.textContent = 'On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.';
-  else if(v < 10000) d.textContent = 'On ne se refuse rien — expériences premium et hôtels 5 étoiles.';
-  else d.textContent = '💎 Voyage mémorable en vue — le grand luxe vous attend.';
+  if(v <= 5000) {
+    d.textContent = 'On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.';
+  } else if(v < 20000) {
+    d.textContent = 'On ne se refuse rien — expériences premium et hôtels 5 étoiles.';
+  } else {
+    d.textContent = '✨ Des étoiles pleins les yeux — le grand luxe vous attend.';
+  }
 }
 
 // ──────────────────────────────────────────────
@@ -973,16 +1009,16 @@ function renderPersonForms() {
 }
 
 // ──────────────────────────────────────────────
-//  RECAP
+//  RECAP — grille 2 colonnes
 // ──────────────────────────────────────────────
 function getVal(id) { const e=document.getElementById(id); return e?(e.value||'—'):'—'; }
 function getSelCard(gridId) {
   const cards=[...document.querySelectorAll('#'+gridId+' .selcard.sel')];
-  return cards.map(c=>(c.querySelector('.cl')||c.querySelector('.card-label')||{}).textContent||'').filter(Boolean).join(', ')||'—';
+  return cards.map(c=>(c.querySelector('.cl')||{}).textContent||'').filter(Boolean).join(', ')||'—';
 }
 function getRadio(grpId) {
   const sel=document.querySelector('#'+grpId+' .radio-btn.sel');
-  return sel?sel.textContent:'—';
+  return sel?sel.textContent.trim():'—';
 }
 
 function renderRecap() {
@@ -995,69 +1031,87 @@ function renderRecap() {
     const em=(document.getElementById('p'+i+'-email')||{}).value||'';
     persons.push({fn,ln,dob,em});
   }
-  const themes=getSelCard('theme-grid');
-  const hotel=getSelCard('hotel-grid');
-  const board=getSelCard('board-grid');
-  const mood=getSelCard('mood-grid');
-  const group=getSelCard('group-grid');
-  const budget=document.getElementById('budget-val').textContent;
-  const dep=selStart?fmtDate(selStart):'—';
-  const ret=selEnd?fmtDate(selEnd):'—';
-  const volDur=(document.getElementById('vol-val')||{}).textContent||'—';
-  const avoid=getVal('avoid-cities');
-  const res=getRadio('res-grp');
-  const city=getVal('city-dep');
-  const apt=getVal('airport-dep');
-  const nbChildren=getVal('nb-children');
-  const bagTxt=bagEnabled?('Oui · '+getVal('bag-count')+' bagage(s)'):'Non';
 
-  const sections=[
-    { icon:'💶', title:'Budget & Dates', rows:[
-      ['Budget / personne', budget],
-      ['Départ', dep], ['Retour', ret],
-    ]},
-    { icon:'✈️', title:'Vol & Départ', rows:[
-      ['Durée de vol max', volDur],
-      ['Ville de départ', city], ['Aéroport', apt],
-      ['À éviter', avoid||'Aucun'], ['Résidence', res],
-    ]},
-    { icon:'👥', title:'Groupe', rows:[
-      ['Type de groupe', group],
-      ['Voyageurs', getVal('nb-persons')+' pers.'],
-      ['Enfants', nbChildren],
-      ['Bagage soute', bagTxt],
-    ]},
-    { icon:'🌍', title:'Voyage', rows:[
-      ['Ambiance', themes],
-      ['Hébergement', hotel],
-      ['Restauration', board],
-      ['Rythme', mood],
-    ]},
-  ];
+  const budget = document.getElementById('budget-val').textContent;
+  const dep = selStart ? fmtDate(selStart) : '—';
+  const ret = selEnd ? fmtDate(selEnd) : '—';
+  const volDur = (document.getElementById('vol-val')||{}).textContent||'—';
+  const avoid = getVal('avoid-cities');
+  const res = getRadio('res-grp');
+  const passport = document.getElementById('passport-valid')?.checked ? 'Oui' : 'Non';
+  const city = getVal('city-dep');
+  const apt = getVal('airport-dep');
+  const transfer = getRadio('transfer-grp');
+  const group = getSelCard('group-grid');
+  const nbChildren = getVal('nb-children');
+  const bagTxt = bagEnabled ? ('Oui · '+getVal('bag-count')+' bagage(s)') : 'Non';
+  const themes = getSelCard('theme-grid');
+  const hotel = getSelCard('hotel-grid');
+  const board = getSelCard('board-grid');
+  const mood = getSelCard('mood-grid');
 
-  let html='';
-  sections.forEach(s=>{
-    html+=`<div class="recap-section">
-      <div class="recap-header">${s.icon} ${s.title}</div>
-      <div class="recap-body">`;
-    s.rows.forEach(r=>{
-      html+=`<div class="recap-row"><span class="recap-key">${r[0]}</span><span class="recap-val">${r[1]}</span></div>`;
+  function card(icon, title, rows, full) {
+    const cls = full ? 'recap-card recap-full' : 'recap-card';
+    let html = `<div class="${cls}">
+      <div class="recap-card-header">${icon} ${title}</div>
+      <div class="recap-card-body">`;
+    rows.forEach(([k,v]) => {
+      html += `<div class="recap-row"><span class="recap-key">${k}</span><span class="recap-val">${v}</span></div>`;
     });
-    html+=`</div></div>`;
-  });
+    html += `</div></div>`;
+    return html;
+  }
 
-  // Persons
-  html+=`<div class="recap-section"><div class="recap-header">👤 Participants</div><div class="recap-body">`;
-  persons.forEach((p,i)=>{
-    const dob=p.dob?new Date(p.dob).toLocaleDateString('fr-FR'):'—';
-    html+=`<div class="recap-row" style="border-bottom:1px solid var(--bg-2);padding-bottom:0.4rem;margin-bottom:0.4rem;">
+  let html = '<div class="recap-grid">';
+
+  html += card('💶', 'Budget & Dates', [
+    ['Budget / pers.', budget],
+    ['Départ', dep],
+    ['Retour', ret],
+  ]);
+
+  html += card('✈️', 'Vol & Départ', [
+    ['Vol max', volDur],
+    ['Depuis', city + ' (' + apt + ')'],
+    ['Transfert', transfer],
+    ['À éviter', avoid || 'Aucun'],
+  ]);
+
+  html += card('🛂', 'Résidence & Doc.', [
+    ['Résidence', res],
+    ['Passeport valide', passport],
+  ]);
+
+  html += card('👥', 'Groupe', [
+    ['Type', group],
+    ['Voyageurs', getVal('nb-persons') + ' pers.'],
+    ['Enfants', nbChildren],
+    ['Bagages soute', bagTxt],
+  ]);
+
+  html += card('🌍', 'Séjour', [
+    ['Ambiance', themes],
+    ['Hébergement', hotel],
+    ['Restauration', board],
+    ['Rythme', mood],
+  ]);
+
+  // Participants — pleine largeur
+  let persHtml = `<div class="recap-card recap-full">
+    <div class="recap-card-header">👤 Participants</div>
+    <div class="recap-card-body">`;
+  persons.forEach((p, i) => {
+    const dob = p.dob ? new Date(p.dob).toLocaleDateString('fr-FR') : '—';
+    persHtml += `<div class="recap-row" style="padding-bottom:0.3rem;margin-bottom:0.3rem;border-bottom:1px solid var(--bg-2);">
       <span class="recap-key">${i+1}. ${p.fn} ${p.ln}</span>
-      <span class="recap-val" style="font-size:0.78rem;">${dob}${p.em?' · '+p.em:''}</span>
+      <span class="recap-val">${dob}${p.em ? ' · ' + p.em : ''}</span>
     </div>`;
   });
-  html+=`</div></div>`;
+  persHtml += `</div></div>`;
+  html += persHtml;
 
-  document.getElementById('recap-content').innerHTML=html;
+  html += '</div>';
+  document.getElementById('recap-content').innerHTML = html;
 }
 
 // ──────────────────────────────────────────────
@@ -1085,8 +1139,10 @@ function buildSummary() {
   const volDur=(document.getElementById('vol-val')||{}).textContent||'—';
   const avoid=getVal('avoid-cities');
   const res=getRadio('res-grp');
+  const passport=document.getElementById('passport-valid')?.checked?'Oui':'Non';
   const city=getVal('city-dep');
   const apt=getVal('airport-dep');
+  const transfer=getRadio('transfer-grp');
   const nbChildren=getVal('nb-children');
   const bagTxt=bagEnabled?('Oui · '+getVal('bag-count')+' bagage(s)'):'Non';
 
@@ -1095,7 +1151,8 @@ function buildSummary() {
   txt+=`💶 Budget : ${budget} / personne\n`;
   txt+=`📅 Départ : ${dep} → Retour : ${ret}\n`;
   txt+=`✈️ Vol max : ${volDur} | Départ de : ${city} (${apt})\n`;
-  txt+=`🚫 À éviter : ${avoid||'Aucun'} | Résidence : ${res}\n\n`;
+  txt+=`🚗 Transfert aéroport : ${transfer}\n`;
+  txt+=`🚫 À éviter : ${avoid||'Aucun'} | Résidence : ${res} | Passeport valide : ${passport}\n\n`;
   txt+=`👥 Groupe : ${group} | ${n} pers. | Enfants : ${nbChildren}\n`;
   txt+=`🧳 Bagages soute : ${bagTxt}\n\n`;
   txt+=`🏖️ Ambiance : ${themes}\n`;
@@ -1119,21 +1176,15 @@ function sendWhatsApp() {
 }
 
 async function submitEmail() {
-  const status=document.getElementById('status-msg');
-  status.textContent='Transmission de votre demande en cours…';
   const em=(document.getElementById('p0-email')||{}).value||'';
   const body=buildSummary();
   try {
-    const r=await fetch('https://formspree.io/f/xdaynpav',{
+    await fetch('https://formspree.io/f/xdaynpav',{
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({message:body,_replyto:em,email:em,_subject:'Nouvelle demande Voyage Mystère — '+((document.getElementById('p0-fn')||{}).value||'')})
     });
-    if(r.ok) status.textContent='✓ Demande bien reçue — nos experts reviennent vers vous sous 48h.';
-    else status.textContent='';
-  } catch(e) {
-    status.textContent='';
-  }
+  } catch(e) {}
 }
 
 // ──────────────────────────────────────────────
