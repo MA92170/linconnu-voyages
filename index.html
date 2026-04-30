@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Voyage Mystère — L'aventure commence</title>
+<title>Voyage Mystère — Mobile Edition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -13,39 +13,33 @@
         --gold: #c9a84c;
         --gold-light: #e8d08a;
         --gold-pale: #fdf8ee;
-        --gold-border: #e2d0a0;
         --dark: #1a1814;
         --text: #2c2a25;
         --text-muted: #6b6355;
         --text-hint: #9a9180;
         --bg: #faf9f7;
         --border: #e0dace;
+        --error: #c0392b;
         --font-display: 'Cormorant Garamond', serif;
         --font-body: 'Jost', sans-serif;
         --radius: 12px;
-        --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Prevents bounce scroll on iOS */
     html, body { 
         height: 100dvh; 
         overflow: hidden; 
         background: var(--dark);
         font-family: var(--font-body);
-        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    body { display: flex; align-items: center; justify-content: center; }
 
-    /* ── Shell adaptatif ── */
+    /* ── Shell Adaptatif ── */
     .shell {
         width: 100%;
-        max-width: 780px;
-        height: 100dvh; /* Mobile full screen */
+        max-width: 600px;
+        height: 100dvh;
         background: var(--bg);
         display: flex;
         flex-direction: column;
@@ -53,15 +47,10 @@
     }
 
     @media (min-width: 600px) {
-        .shell {
-            height: 90dvh;
-            max-height: 850px;
-            border-radius: 24px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-        }
+        .shell { height: 90dvh; border-radius: 20px; overflow: hidden; }
     }
 
-    /* ── Top bar ── */
+    /* ── Header ── */
     .topbar {
         background: var(--dark);
         padding: 1rem;
@@ -69,115 +58,81 @@
         align-items: center;
         gap: 1rem;
         z-index: 10;
+        flex-shrink: 0;
     }
-    .logo {
-        font-family: var(--font-display);
-        font-size: 0.9rem;
-        letter-spacing: 0.15em;
-        color: var(--gold);
-        text-transform: uppercase;
-    }
-    .prog-wrap { flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
-    .prog-fill { height: 100%; background: var(--gold); width: 8%; transition: width 0.6s ease; }
-    .step-num { font-size: 0.7rem; color: #fff; opacity: 0.6; }
+    .logo { font-family: var(--font-display); font-size: 0.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+    .prog-wrap { flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+    .prog-fill { height: 100%; background: var(--gold); width: 10%; transition: width 0.4s ease; }
 
-    /* ── Pages & Content ── */
+    /* ── Pages ── */
     .page {
         display: none;
         flex: 1;
         flex-direction: column;
         overflow-y: auto;
-        padding-bottom: 100px; /* Espace pour le bouton fixe */
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        padding-bottom: 110px; /* Espace pour le menu fixe */
+        position: relative;
+        overscroll-behavior: contain;
     }
-    .page.active { display: flex; animation: fadeIn 0.4s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .page.active { display: flex; animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .content {
-        padding: 2rem 1.5rem;
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        flex-shrink: 0;
-    }
-
+    .content { padding: 1.5rem; width: 100%; display: flex; flex-direction: column; gap: 1.2rem; z-index: 2; position: relative; }
     .bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
-    .overlay { position: absolute; inset: 0; z-index: 1; }
-    .overlay-light { background: rgba(250, 249, 247, 0.94); }
-    .overlay-dark { background: rgba(26, 24, 20, 0.7); }
-
-    .relative-content { position: relative; z-index: 2; width: 100%; }
-
-    /* ── Typography ── */
-    h1.hero { font-family: var(--font-display); font-size: 2.2rem; color: #fff; text-align: center; line-height: 1.2; }
-    h2.qtitle { font-family: var(--font-display); font-size: 1.6rem; color: var(--text); text-align: center; }
-    .step-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gold); text-align: center; font-weight: 600; }
+    .overlay-light { position: absolute; inset: 0; background: rgba(250,249,247,0.95); z-index: 1; }
+    .overlay-dark { position: absolute; inset: 0; background: rgba(20,18,12,0.6); z-index: 1; }
 
     /* ── UI Elements ── */
-    .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; width: 100%; }
+    h1.hero { font-family: var(--font-display); font-size: 1.8rem; color: #fff; text-align: center; line-height: 1.2; }
+    h2.qtitle { font-family: var(--font-display); font-size: 1.4rem; color: var(--text); text-align: center; }
+    .step-tag { font-size: 0.7rem; text-transform: uppercase; color: var(--gold); text-align: center; font-weight: 600; letter-spacing: 1px; }
+
+    .scard { background: #fff; padding: 1rem; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
     
     .selcard {
-        background: #fff;
         border: 1.5px solid var(--border);
         border-radius: var(--radius);
+        background: #fff;
         overflow: hidden;
         cursor: pointer;
-        transition: var(--transition);
-        text-align: center;
+        transition: 0.2s;
     }
-    .selcard img { width: 100%; height: 100px; object-fit: cover; }
-    .selcard.sel { border-color: var(--gold); background: var(--gold-pale); transform: scale(0.98); }
-    .selcard .cl { padding: 0.8rem; font-size: 0.9rem; font-weight: 500; }
+    .selcard.sel { border-color: var(--gold); background: var(--gold-pale); }
+    .selcard img { width: 100%; height: 80px; object-fit: cover; }
+    .selcard .cl { padding: 0.6rem; font-size: 0.85rem; text-align: center; font-weight: 500; }
 
-    .scard { background: #fff; padding: 1.2rem; border-radius: var(--radius); border: 1px solid var(--border); }
-    .scard-title { font-size: 0.75rem; color: var(--text-hint); text-transform: uppercase; margin-bottom: 1rem; display: block; }
+    /* ── Form Inputs ── */
+    .fg { display: flex; flex-direction: column; gap: 0.4rem; }
+    .fg label { font-size: 0.7rem; color: var(--text-hint); text-transform: uppercase; }
+    .fg input, .fg select {
+        padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border);
+        font-family: var(--font-body); font-size: 0.95rem; background: #fff;
+    }
 
-    /* ── Fixed Footer Navigation ── */
+    /* ── Navigation Fixe ── */
     .nav-fixed {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 1.2rem 1.5rem;
-        background: linear-gradient(to top, var(--bg) 80%, transparent);
+        bottom: 0; left: 0; right: 0;
+        padding: 1rem 1.5rem;
+        background: white;
+        border-top: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        z-index: 20;
+        z-index: 100;
     }
-
     .btn-next {
-        background: var(--dark);
-        color: var(--gold);
-        border: 1px solid var(--gold);
-        padding: 0.9rem 2rem;
-        border-radius: 50px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: var(--transition);
+        background: var(--dark); color: var(--gold);
+        border: 1px solid var(--gold); padding: 0.8rem 1.8rem;
+        border-radius: 50px; font-weight: 600; text-transform: uppercase;
     }
-    .btn-next:active { transform: scale(0.95); }
+    .btn-back { background: none; border: none; color: var(--text-hint); text-decoration: underline; }
 
-    .btn-back { background: none; border: none; color: var(--text-hint); text-decoration: underline; cursor: pointer; }
+    /* Slider */
+    .slider-val { font-size: 1.8rem; font-family: var(--font-display); text-align: center; color: var(--gold); }
+    input[type=range] { width: 100%; accent-color: var(--gold); height: 6px; }
 
-    /* Slider Custom */
-    input[type=range] { width: 100%; height: 4px; accent-color: var(--gold); margin: 1rem 0; }
-    .slider-val { font-size: 2rem; font-family: var(--font-display); text-align: center; color: var(--gold); }
-
-    /* ── Page 1 spécifique ── */
-    #p1 .content { height: 100%; justify-content: center; padding-bottom: 2rem; }
-
-    @media (max-width: 400px) {
-        h1.hero { font-size: 1.8rem; }
-        h2.qtitle { font-size: 1.4rem; }
-        .grid-cards { grid-template-columns: 1fr 1fr; }
-    }
 </style>
 </head>
 <body>
@@ -186,35 +141,28 @@
     <div class="topbar">
         <div class="logo">✦ Voyage Mystère</div>
         <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
-        <div class="step-num" id="step-counter">1 / 8</div>
     </div>
 
-    <!-- PAGE 1: INTRO -->
-    <div class="page active" id="p1" style="padding-bottom:0;">
-        <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=85')"></div>
-        <div class="overlay overlay-dark"></div>
-        <div class="content relative-content">
-            <div class="step-tag">L'aventure commence</div>
-            <h1 class="hero">Partez sans savoir<br>où vous allez.</h1>
-            <p style="color:rgba(255,255,255,0.7); text-align:center; font-style:italic;">Une destination inconnue. Une surprise totale.</p>
-            <button class="btn-next" style="margin-top:2rem; width:100%;" onclick="goTo(2)">Commencer l'expérience</button>
+    <!-- P1: INTRO -->
+    <div class="page active" id="p1" style="justify-content: center;">
+        <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800')"></div>
+        <div class="overlay-dark"></div>
+        <div class="content">
+            <h1 class="hero">Prêt pour l'inconnu ?</h1>
+            <p style="color: #fff; text-align: center; opacity: 0.8;">Répondez à quelques questions, nous préparons votre voyage mystère.</p>
+            <button class="btn-next" style="width: 100%; margin-top: 2rem;" onclick="goTo(2)">Commencer</button>
         </div>
     </div>
 
-    <!-- PAGE 2: BUDGET -->
+    <!-- P2: BUDGET -->
     <div class="page" id="p2">
         <div class="content">
-            <div class="step-tag">Étape 1 — Budget</div>
-            <h2 class="qtitle">Quel est votre budget par personne ?</h2>
+            <div class="step-tag">Étape 1</div>
+            <h2 class="qtitle">Votre budget par personne ?</h2>
             <div class="scard">
                 <div class="slider-val" id="budget-val">3 000 €</div>
-                <input type="range" id="budget" min="500" max="15000" step="100" value="3000" oninput="updateBudget(this.value)">
-                <div style="display:flex; justify-content: space-between; font-size:0.8rem; color:var(--text-hint);">
-                    <span>500 €</span>
-                    <span>15 000 €</span>
-                </div>
+                <input type="range" min="500" max="10000" step="100" value="3000" oninput="document.getElementById('budget-val').innerText = this.value + ' €'">
             </div>
-            <p id="budget-desc" style="text-align:center; font-size:0.9rem; color:var(--text-muted);">Un voyage confortable avec de belles prestations.</p>
         </div>
         <div class="nav-fixed">
             <button class="btn-back" onclick="goTo(1)">Retour</button>
@@ -222,26 +170,26 @@
         </div>
     </div>
 
-    <!-- PAGE 3: AMBIANCE -->
+    <!-- P3: AMBIANCE -->
     <div class="page" id="p3">
         <div class="content">
-            <div class="step-tag">Étape 2 — Ambiance</div>
-            <h2 class="qtitle">Quel décor pour votre mystère ?</h2>
-            <div class="grid-cards">
+            <div class="step-tag">Étape 2</div>
+            <h2 class="qtitle">Quelle ambiance ?</h2>
+            <div class="grid2">
                 <div class="selcard" onclick="toggleCard(this)">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" alt="Plage">
-                    <div class="cl">Plage & Soleil</div>
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300">
+                    <div class="cl">Plage</div>
                 </div>
                 <div class="selcard" onclick="toggleCard(this)">
-                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400" alt="Montagne">
-                    <div class="cl">Nature sauvage</div>
+                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300">
+                    <div class="cl">Montagne</div>
                 </div>
                 <div class="selcard" onclick="toggleCard(this)">
-                    <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400" alt="Ville">
-                    <div class="cl">City Trip</div>
+                    <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=300">
+                    <div class="cl">Ville</div>
                 </div>
                 <div class="selcard" onclick="toggleCard(this)">
-                    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400" alt="Aventure">
+                    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300">
                     <div class="cl">Aventure</div>
                 </div>
             </div>
@@ -252,7 +200,83 @@
         </div>
     </div>
 
-    <!-- Ajoutez les autres pages ici sur le même modèle -->
+    <!-- P4: VOL & CONTRAINTES -->
+    <div class="page" id="p4">
+        <div class="content">
+            <div class="step-tag">Étape 3</div>
+            <h2 class="qtitle">Vos contraintes</h2>
+            <div class="scard">
+                <div class="fg">
+                    <label>Villes / Pays à éviter</label>
+                    <input type="text" placeholder="Ex: Dubaï, New York...">
+                </div>
+            </div>
+            <div class="scard">
+                <div class="fg">
+                    <label>Durée de vol max</label>
+                    <select>
+                        <option>3h</option>
+                        <option selected>6h</option>
+                        <option>10h+</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="nav-fixed">
+            <button class="btn-back" onclick="goTo(3)">Retour</button>
+            <button class="btn-next" onclick="goTo(5)">Continuer</button>
+        </div>
+    </div>
+
+    <!-- P5: GROUPE -->
+    <div class="page" id="p5">
+        <div class="content">
+            <div class="step-tag">Étape 4</div>
+            <h2 class="qtitle">Avec qui partez-vous ?</h2>
+            <div class="fg">
+                <label>Nombre de voyageurs</label>
+                <select id="nb-persons">
+                    <option value="1">1 personne</option>
+                    <option value="2" selected>2 personnes</option>
+                    <option value="3">3 personnes</option>
+                    <option value="4+">4+ personnes</option>
+                </select>
+            </div>
+            <div class="scard">
+                <div class="fg">
+                    <label>Bagages en soute</label>
+                    <select>
+                        <option>Cabine uniquement</option>
+                        <option>Avec bagages en soute</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="nav-fixed">
+            <button class="btn-back" onclick="goTo(4)">Retour</button>
+            <button class="btn-next" onclick="goTo(6)">Continuer</button>
+        </div>
+    </div>
+
+    <!-- P6: DÉPART -->
+    <div class="page" id="p6">
+        <div class="content">
+            <div class="step-tag">Étape 5</div>
+            <h2 class="qtitle">Point de départ</h2>
+            <div class="fg">
+                <label>Ville de départ</label>
+                <input type="text" placeholder="Ex: Paris, Lyon...">
+            </div>
+            <div class="fg">
+                <label>Aéroport préféré</label>
+                <input type="text" placeholder="Ex: CDG, ORY...">
+            </div>
+        </div>
+        <div class="nav-fixed">
+            <button class="btn-back" onclick="goTo(5)">Retour</button>
+            <button class="btn-next" onclick="alert('Formulaire terminé !');">Terminer</button>
+        </div>
+    </div>
 
 </div>
 
@@ -260,26 +284,21 @@
     function goTo(step) {
         // Cacher toutes les pages
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        // Afficher la page demandée
+        
+        // Afficher la cible
         const target = document.getElementById('p' + step);
         if(target) {
             target.classList.add('active');
-            target.scrollTop = 0; // Reset scroll
+            // Scroll en haut de la nouvelle page
+            target.scrollTop = 0;
+        } else {
+            console.error("La page p" + step + " n'existe pas dans le HTML.");
         }
 
-        // Update Progress
-        const total = 8;
-        document.getElementById('prog').style.width = (step / total * 100) + '%';
-        document.getElementById('step-counter').innerText = step + ' / ' + total;
-    }
-
-    function updateBudget(val) {
-        document.getElementById('budget-val').innerText = parseInt(val).toLocaleString() + ' €';
-        let desc = "";
-        if(val < 1500) desc = "Petit budget, grandes découvertes.";
-        else if(val < 5000) desc = "Le parfait équilibre entre confort et évasion.";
-        else desc = "L'expérience premium sans compromis.";
-        document.getElementById('budget-desc').innerText = desc;
+        // Progression (sur 6 étapes ici)
+        const totalSteps = 6;
+        const progress = (step / totalSteps) * 100;
+        document.getElementById('prog').style.width = progress + '%';
     }
 
     function toggleCard(el) {
