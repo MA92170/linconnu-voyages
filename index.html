@@ -1697,6 +1697,228 @@
     .cal-tab.active { background: rgba(255,255,255,0.06); color: var(--ink); }
   }
 
+  /* ════════════════════════════════════════════
+     MOBILE FULL-PAGE LOCK — No body scroll, each page = 1 viewport
+     ════════════════════════════════════════════ */
+  @media (max-width: 860px) {
+    /* Lock the whole document — no body scroll at all */
+    html, body {
+      height: 100dvh;
+      height: 100vh;
+      max-height: 100dvh;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+    .shell {
+      height: 100dvh;
+      height: 100vh;
+      min-height: 0;
+      max-height: 100dvh;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .topbar { flex-shrink: 0; }
+
+    /* Each page fills remaining space exactly, no overflow on page itself */
+    .page, .q-page, .recap-page, .howit-page, .final-bg {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    /* ── HERO ── fit viewport, content scrolls ONLY internally if needed */
+    .hero-page { overflow: hidden; display: none; }
+    .hero-page.active { display: flex; align-items: center; justify-content: center; }
+    .hero-content {
+      width: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 1.4rem 1.2rem calc(1.4rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* ── QUESTION pages ── hide visual banner, content fills, nav-row pinned */
+    .q-visual { display: none !important; }
+    .q-layout {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: 1fr !important;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .q-content {
+      height: 100%;
+      min-height: 0;
+      max-height: 100% !important;
+      padding: 0 !important;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .q-content-inner {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 1.1rem 1rem 0;
+      gap: 0.7rem !important;
+      scroll-behavior: smooth;
+    }
+    /* nav-row — pinned at bottom, not part of scrolling content */
+    .q-content-inner .nav-row {
+      position: sticky;
+      bottom: 0;
+      margin: 0.6rem -1rem 0 !important;
+      padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom, 0px)) !important;
+      background: rgba(251,247,238,0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      border-bottom: none;
+      z-index: 50;
+      flex-shrink: 0;
+      box-shadow: 0 -6px 16px rgba(13,47,51,0.06);
+    }
+
+    /* Compact typography & spacing for fitting one viewport */
+    h2.qtitle { font-size: 1.25rem; line-height: 1.2; }
+    .q-hint { font-size: 0.85rem; margin-top: -0.25rem; }
+    .step-tag { font-size: 0.62rem; letter-spacing: 0.22em; }
+    .scard { padding: 0.85rem 1rem; }
+    .scard-title { margin-bottom: 0.55rem; font-size: 0.64rem; }
+    .slider-val { font-size: 1.9rem; padding: 0.2rem 0; }
+    .slider-wrap { gap: 0.5rem; }
+    .slider-desc { font-size: 0.82rem; min-height: 1.2rem; }
+    .grid3 { gap: 0.55rem; }
+    .grid2 { gap: 0.55rem; }
+    .selcard img { height: 78px; }
+    .selcard .cl { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
+    .selcard .ce { font-size: 1.4rem; padding: 0.6rem 0 0.05rem; }
+    .date-pills { gap: 0.5rem; }
+    .date-pill { padding: 0.55rem 0.7rem; }
+    .pill-val { font-size: 0.86rem; }
+    .cal-wrap { padding: 0.7rem 0.6rem; }
+    .cal-day { font-size: 0.78rem; padding: 4px 2px; min-height: 36px; }
+    .cal-dname { font-size: 0.62rem; padding: 2px 0 4px; }
+    .fg label { font-size: 0.66rem; letter-spacing: 0.12em; }
+    .fg input, .fg select { padding: 0.72rem 0.9rem; }
+    .frow2 { gap: 0.7rem; }
+    .frow3 { gap: 0.6rem; }
+    .radio-row { gap: 0.5rem; }
+    .radio-btn { font-size: 0.8rem; padding: 0.65rem 0.4rem; min-height: 44px; }
+    .multi-hint { font-size: 0.7rem; }
+    .estim-pill { font-size: 0.76rem; padding: 0.45rem 0.85rem 0.45rem 0.6rem; }
+
+    /* Participant forms — strict inner scroll if many */
+    #persons-scroll {
+      max-height: none;
+      flex: 1;
+      overflow-y: auto;
+      gap: 0.55rem;
+    }
+    .person-block { padding: 0.8rem; }
+    .person-lbl { margin-bottom: 0.55rem; font-size: 0.66rem; }
+
+    /* ── RECAP ── fit screen, only body scrolls */
+    .recap-page {
+      display: none;
+    }
+    .recap-page.active {
+      display: flex !important;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .recap-header {
+      flex-shrink: 0;
+      padding: 1.1rem 1.1rem 0.6rem;
+    }
+    .recap-header h2 { font-size: 1.2rem !important; }
+    .recap-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 1rem 0.6rem;
+    }
+    .recap-grid { gap: 0.6rem; }
+    .recap-card-header { padding: 0.55rem 0.85rem; font-size: 0.64rem; }
+    .recap-card-body { padding: 0.7rem 0.85rem; gap: 0.3rem; }
+    .recap-key { font-size: 0.7rem; }
+    .recap-val { font-size: 0.76rem; }
+    .recap-footer {
+      flex-shrink: 0;
+      padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+    }
+    .recap-footer .nav-row {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      gap: 0.7rem;
+    }
+
+    /* ── HOW-IT ── content scrolls internally, no body scroll */
+    .howit-page {
+      display: none;
+      flex-direction: column;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .howit-page.active { display: flex; }
+    .howit-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1.6rem 1.1rem calc(1.6rem + env(safe-area-inset-bottom, 0px));
+    }
+    .howit-header { margin-bottom: 1.6rem; }
+    .howit-header h2 { font-size: 1.7rem; }
+    .howit-header p { font-size: 0.92rem; }
+    .howit-steps { gap: 0.8rem; margin-bottom: 1.4rem; }
+    .howit-step { padding: 1.2rem 1.1rem; }
+    .howit-num { font-size: 2.4rem; margin-bottom: 0.3rem; }
+    .howit-step-title { font-size: 1.05rem; }
+    .howit-step-desc { font-size: 0.85rem; }
+    .howit-faq { padding: 1.2rem 1.3rem; margin-bottom: 1.4rem; }
+    .howit-faq h3 { font-size: 1.1rem; margin-bottom: 0.6rem; }
+    .howit-faq summary { font-size: 0.88rem; }
+
+    /* ── FINAL ── fit screen, center content */
+    .final-bg {
+      padding: 1.2rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom, 0px));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .final-content { gap: 1rem; }
+    .plane-anim { font-size: 2.4rem; }
+    .final-gold { font-size: 1.25rem; }
+    .final-sub { font-size: 0.85rem; }
+    .teaser-title { font-size: 0.85rem; margin-bottom: 0.6rem; }
+    .teaser-grid { gap: 0.4rem; }
+    .teaser-hint { font-size: 0.65rem; margin-top: 0.45rem; }
+    .final-card { padding: 1rem 1.1rem; }
+    .final-card p { font-size: 0.8rem; margin-bottom: 0.7rem; }
+    .btn-wa { padding: 0.85rem 1.6rem; font-size: 0.8rem; }
+    .final-footer { font-size: 0.62rem; margin-top: 0.4rem; }
+  }
+
+  @media (max-width: 420px) {
+    h2.qtitle { font-size: 1.15rem; }
+    .slider-val { font-size: 1.7rem; }
+    .selcard img { height: 68px; }
+    .selcard .cl { font-size: 0.76rem; }
+    .final-gold { font-size: 1.1rem; }
+    .teaser-img { border-radius: 8px; }
+  }
+
   /* Reduce motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
