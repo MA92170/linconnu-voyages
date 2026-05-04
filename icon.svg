@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d2f33"/>
+      <stop offset="100%" stop-color="#163e42"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d66a3f"/>
+      <stop offset="100%" stop-color="#e8a472"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="96" ry="96" fill="url(#bg)"/>
+  <!-- Compass rose (abstract) -->
+  <g transform="translate(256 256)">
+    <circle r="168" fill="none" stroke="rgba(245,239,228,0.12)" stroke-width="2"/>
+    <circle r="132" fill="none" stroke="rgba(245,239,228,0.18)" stroke-width="1.5"/>
+    <!-- Four-point compass -->
+    <polygon points="0,-150 24,0 0,150 -24,0" fill="url(#accent)" opacity="0.95"/>
+    <polygon points="-150,0 0,-24 150,0 0,24" fill="rgba(245,239,228,0.85)"/>
+    <circle r="10" fill="#0d2f33" stroke="#d66a3f" stroke-width="3"/>
+  </g>
+  <!-- Tiny stars for mystery feel -->
+  <g fill="#f3c7a6" opacity="0.85">
+    <circle cx="128" cy="104" r="3"/>
+    <circle cx="384" cy="140" r="2.2"/>
+    <circle cx="100" cy="400" r="2.6"/>
+    <circle cx="410" cy="380" r="3"/>
+    <circle cx="72" cy="240" r="2"/>
+    <circle cx="440" cy="256" r="2.2"/>
+  </g>
+</svg>

@@ -1,0 +1,22 @@
+{
+  "name": "Voyage Mystère — L'Inconnu Voyages",
+  "short_name": "Voyage Mystère",
+  "description": "Un questionnaire. Une surprise. Une destination inconnue — pensée pour vous, révélée à la dernière minute.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf7ee",
+  "theme_color": "#0d2f33",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["travel", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
