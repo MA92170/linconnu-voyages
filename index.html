@@ -1194,6 +1194,270 @@
     .grid3 { grid-template-columns: repeat(2, 1fr); }
   }
 
+  /* ── Resume banner ── */
+  .resume-banner {
+    position: fixed;
+    top: 68px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-140%);
+    z-index: 200;
+    background: var(--paper-elev);
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--terra);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.1rem;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    max-width: min(92vw, 460px);
+    transition: transform 0.5s var(--ease-out), opacity 0.3s, visibility 0s linear 0.3s;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .resume-banner.show { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; transition: transform 0.5s var(--ease-out), opacity 0.3s, visibility 0s; }
+  .resume-banner-text { flex: 1; font-size: 0.85rem; color: var(--ink); line-height: 1.4; }
+  .resume-banner-text strong { font-family: var(--font-display); font-weight: 500; display: block; font-size: 0.95rem; margin-bottom: 2px; }
+  .resume-banner-text span { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+  .resume-btn {
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-body);
+    transition: all 0.25s;
+  }
+  .resume-btn.primary { background: var(--terra); color: #fff; }
+  .resume-btn.primary:hover { background: var(--terra-deep); }
+  .resume-btn.ghost { background: transparent; color: var(--muted); }
+  .resume-btn.ghost:hover { color: var(--ink); }
+
+  /* ── Estimation pill (live) ── */
+  .estim-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1rem 0.55rem 0.7rem;
+    background: linear-gradient(135deg, rgba(214,106,63,0.08), rgba(244,211,193,0.25));
+    border: 1px solid rgba(214,106,63,0.25);
+    border-radius: var(--radius-pill);
+    font-size: 0.82rem;
+    color: var(--terra-deep);
+    font-family: var(--font-display);
+    font-style: italic;
+    line-height: 1.3;
+    align-self: flex-start;
+    animation: fadeUp 0.5s var(--ease-out);
+  }
+  .estim-pill::before {
+    content: "✦";
+    color: var(--terra);
+    font-style: normal;
+    font-size: 0.95rem;
+  }
+  .estim-pill strong { font-style: normal; font-weight: 600; color: var(--terra-deep); font-family: var(--font-body); }
+
+  /* ── Teaser gallery (final) ── */
+  .teaser-block {
+    width: 100%;
+    max-width: 460px;
+    margin-top: 0.5rem;
+  }
+  .teaser-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.92rem;
+    color: rgba(245,239,228,0.75);
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+  }
+  .teaser-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  .teaser-img {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(6px) saturate(0.85) brightness(0.75);
+    opacity: 0.85;
+    border: 1px solid rgba(214,106,63,0.15);
+    transform: scale(1.02);
+    transition: filter 0.6s, transform 0.6s;
+    animation: teaserFloat 5s ease-in-out infinite alternate;
+  }
+  .teaser-img:nth-child(2) { animation-delay: 0.6s; }
+  .teaser-img:nth-child(3) { animation-delay: 1.2s; }
+  .teaser-img:nth-child(4) { animation-delay: 1.8s; }
+  @keyframes teaserFloat {
+    to { transform: scale(1.06) translateY(-3px); }
+  }
+  .teaser-hint {
+    font-size: 0.72rem;
+    color: rgba(245,239,228,0.45);
+    text-align: center;
+    margin-top: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── "Comment ça marche" page ── */
+  .howit-page {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+    min-height: calc(100vh - 56px);
+    padding: 3rem 1.5rem 2.5rem;
+    overflow-y: auto;
+  }
+  .howit-page.active { display: flex; animation: fadeUp 0.6s var(--ease-out) both; }
+  .howit-wrap { max-width: 900px; margin: 0 auto; width: 100%; }
+  .howit-header { text-align: center; margin-bottom: 3rem; }
+  .howit-header .step-tag { justify-content: center; margin-bottom: 0.6rem; }
+  .howit-header h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.7rem;
+  }
+  .howit-header h2 em { font-style: italic; color: var(--terra-deep); font-weight: 400; }
+  .howit-header p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .howit-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (max-width: 780px) { .howit-steps { grid-template-columns: 1fr; } }
+  .howit-step {
+    background: var(--paper-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+  .howit-step:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--terra-soft); }
+  .howit-num {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 3.4rem;
+    color: var(--terra);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.6rem;
+    opacity: 0.9;
+  }
+  .howit-step-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .howit-step-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .howit-step-time {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra-deep);
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    background: var(--terra-soft);
+    border-radius: var(--radius-pill);
+  }
+  .howit-faq {
+    background: var(--paper-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.6rem 1.8rem;
+    margin-bottom: 2rem;
+  }
+  .howit-faq h3 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .howit-faq details {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .howit-faq details:last-child { border-bottom: none; }
+  .howit-faq summary {
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.2rem 0;
+  }
+  .howit-faq summary::-webkit-details-marker { display: none; }
+  .howit-faq summary::after {
+    content: "+";
+    font-size: 1.3rem;
+    color: var(--terra);
+    font-weight: 300;
+    transition: transform 0.3s;
+    line-height: 1;
+  }
+  .howit-faq details[open] summary::after { transform: rotate(45deg); }
+  .howit-faq details p {
+    margin-top: 0.6rem;
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .howit-cta {
+    text-align: center;
+    padding: 1.5rem 0 0.5rem;
+  }
+  .howit-back {
+    margin-top: 1rem;
+    display: inline-block;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
+  }
+  .howit-back:hover { color: var(--ink); }
+
   /* Reduce motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1227,6 +1491,97 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" data-testid="toast"></div>
 
+  <!-- ═══════════ RESUME BANNER ═══════════ -->
+  <div class="resume-banner" id="resume-banner" role="status" aria-live="polite">
+    <div class="resume-banner-text">
+      <strong>Vous étiez presque là-bas ✈️</strong>
+      <span id="resume-info">Reprendre votre voyage mystère ?</span>
+    </div>
+    <button class="resume-btn primary" onclick="resumeSession()" data-testid="resume-btn">Reprendre</button>
+    <button class="resume-btn ghost" onclick="discardSession()" data-testid="discard-btn">Recommencer</button>
+  </div>
+
+  <!-- ═══════════ PAGE "COMMENT ÇA MARCHE" ═══════════ -->
+  <section class="howit-page" id="howit" data-testid="howit-page">
+    <div class="howit-wrap">
+      <div class="howit-header">
+        <div class="step-tag">Comment ça marche</div>
+        <h2>Une aventure en <em>3 étapes</em>,<br>orchestrée sur mesure.</h2>
+        <p>Pas de destination choisie à l'avance. Juste vos envies, notre expertise, et la magie de la surprise.</p>
+      </div>
+
+      <div class="howit-steps">
+        <div class="howit-step">
+          <div class="howit-num">01</div>
+          <div class="howit-step-title">Répondez au questionnaire</div>
+          <div class="howit-step-desc">Budget, dates, ambiance, rythme, contraintes… 13 étapes guidées pour cerner précisément vos envies — sans jamais deviner votre destination.</div>
+          <div class="howit-step-time">≈ 10 minutes</div>
+        </div>
+
+        <div class="howit-step">
+          <div class="howit-num">02</div>
+          <div class="howit-step-title">Nos experts cherchent votre perle rare</div>
+          <div class="howit-step-desc">Vols, hôtels, transferts : nous construisons un voyage complet qui correspond à vos critères. Vous recevez une proposition détaillée par email.</div>
+          <div class="howit-step-time">Sous 48 heures</div>
+        </div>
+
+        <div class="howit-step">
+          <div class="howit-num">03</div>
+          <div class="howit-step-title">Révélation &amp; départ</div>
+          <div class="howit-step-desc">Validez la proposition, préparez vos valises. La destination vous est <strong>dévoilée à J-7</strong> pour que vous puissiez vous équiper — tout en gardant l'effet de surprise jusqu'au bout.</div>
+          <div class="howit-step-time">Dévoilée à J-7</div>
+        </div>
+      </div>
+
+      <div class="howit-faq">
+        <h3>Questions fréquentes</h3>
+
+        <details>
+          <summary>Et si la destination proposée ne me plaît pas ?</summary>
+          <p>Aucun engagement avant validation. Vous recevez une proposition complète (thématique, niveau d'hôtel, durée de vol, activités) et vous êtes libre de la refuser ou demander des ajustements. Nous retravaillons jusqu'à ce que ça vous corresponde.</p>
+        </details>
+
+        <details>
+          <summary>Comment se passe le paiement ?</summary>
+          <p>Aucun paiement au moment du questionnaire. Après validation de la proposition, un acompte permet de bloquer vols et hôtels. Le solde est réglé avant le départ. Tous les moyens classiques sont acceptés (CB, virement).</p>
+        </details>
+
+        <details>
+          <summary>Puis-je annuler ou modifier après réservation ?</summary>
+          <p>Les conditions d'annulation dépendent des prestataires (compagnies aériennes, hôtels). Nous vous les communiquons clairement avec la proposition. Une assurance annulation optionnelle peut être ajoutée pour plus de sérénité.</p>
+        </details>
+
+        <details>
+          <summary>Quelles destinations sont possibles ?</summary>
+          <p>Tout est possible : Europe, Amériques, Asie, Afrique, Océanie. Nous adaptons à votre budget, votre durée de vol maximale, vos contraintes (passeport, visa) et vos villes à éviter. Plus vous êtes ouvert, plus la surprise peut être grande.</p>
+        </details>
+
+        <details>
+          <summary>Voyage-t-on seul, en couple, en famille, entre amis ?</summary>
+          <p>Toutes les configurations sont possibles, de 1 à 8+ personnes. Le questionnaire adapte les questions selon votre groupe. Pour les familles, les enfants sont pris en compte (activités, hébergements adaptés).</p>
+        </details>
+
+        <details>
+          <summary>L'assurance voyage est-elle incluse ?</summary>
+          <p>L'assurance de base (rapatriement) est incluse. Des options supplémentaires (annulation, bagages, multirisque) peuvent être ajoutées à la proposition selon vos besoins.</p>
+        </details>
+
+        <details>
+          <summary>Quand est révélée la destination ?</summary>
+          <p>La destination est dévoilée <strong>7 jours avant le départ</strong> pour que vous puissiez préparer vos valises adaptées (climat, équipement). Jusque-là, seuls quelques indices (ambiance, climat général) vous sont communiqués — pour préserver la magie.</p>
+        </details>
+      </div>
+
+      <div class="howit-cta">
+        <button class="btn-start" onclick="closeHowIt();goTo(2);" data-testid="howit-start-btn">
+          Je me lance
+          <span class="arrow">→</span>
+        </button>
+        <div><button class="howit-back" onclick="closeHowIt()" data-testid="howit-back-btn">← Retour à l'accueil</button></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════ PAGE 1 — HERO ═══════════ -->
   <section class="page hero-page active" id="p1" data-testid="page-1">
     <div class="hero-bg" style="background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=85')"></div>
@@ -1247,7 +1602,7 @@
           Commencer l'expérience
           <span class="arrow">→</span>
         </button>
-        <a class="btn-ghost-light" href="#how" onclick="goTo(2);return false;" data-testid="howit-button">Comment ça marche</a>
+        <a class="btn-ghost-light" href="#how" onclick="openHowIt();return false;" data-testid="howit-button">Comment ça marche</a>
       </div>
       <div class="hero-meta">
         <div class="hero-meta-item">
@@ -1405,6 +1760,7 @@
         <div class="q-content-inner stagger">
           <div class="step-tag">Étape 4 — Votre groupe</div>
           <h2 class="qtitle">Qui voyage avec vous ?</h2>
+          <div class="estim-pill" id="estim-pill-5" style="display:none;" data-testid="estim-pill"></div>
 
           <div class="grid3" id="group-grid">
             <div class="selcard" onclick="pickCard(this,'group-grid',true)" data-testid="group-family"><div class="ce">👨‍👩‍👧‍👦</div><div class="cl">Famille</div></div>
@@ -1688,6 +2044,18 @@
         Votre demande a été transmise à nos experts.<br>
         Vous recevrez votre proposition sous <strong>48h</strong>.
       </p>
+
+      <div class="teaser-block" data-testid="teaser-block">
+        <div class="teaser-title">Votre destination se cache peut-être<br>parmi <em>celles-ci</em>…</div>
+        <div class="teaser-grid">
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=60')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=60')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&q=60')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=60')"></div>
+        </div>
+        <div class="teaser-hint">· Dévoilée à J-7 ·</div>
+      </div>
+
       <div class="final-card">
         <p>En cas de questions, n'hésitez pas à nous écrire :</p>
         <button class="btn-wa" onclick="sendWhatsApp()" data-testid="whatsapp-button">
@@ -1863,9 +2231,10 @@ function pickCard(el, grpId, single) {
   if(single) document.querySelectorAll('#'+grpId+' .selcard').forEach(c=>c.classList.remove('sel'));
   el.classList.toggle('sel');
   if(single) el.classList.add('sel');
+  if(typeof updateEstimation === 'function') updateEstimation();
 }
 
-function toggleCard(el) { el.classList.toggle('sel'); }
+function toggleCard(el) { el.classList.toggle('sel'); if(typeof updateEstimation === 'function') updateEstimation(); }
 
 function toggleBag(v) {
   bagEnabled = v;
@@ -1893,10 +2262,12 @@ function updateBudget(v) {
     d.textContent = '✨ Des étoiles plein les yeux — le grand luxe vous attend.';
   }
   updateSliderFill(el);
+  if(typeof updateEstimation === 'function') updateEstimation();
 }
 function updateVol(v) {
   document.getElementById('vol-val').textContent = v + 'h';
   updateSliderFill(document.getElementById('vol-dur'));
+  if(typeof updateEstimation === 'function') updateEstimation();
 }
 
 // ──────────────────────────────────────────────
@@ -1962,7 +2333,7 @@ function fmtDate(d) {
 // ──────────────────────────────────────────────
 //  PERSON FORMS
 // ──────────────────────────────────────────────
-function updatePersonsCount() {}
+function updatePersonsCount() { if(typeof updateEstimation === 'function') updateEstimation(); }
 function renderPersonForms() {
   const n = parseInt(document.getElementById('nb-persons').value) || 2;
   const nk = parseInt(document.getElementById('nb-children').value) || 0;
@@ -2214,17 +2585,246 @@ function renderStars() {
 }
 
 // ──────────────────────────────────────────────
+//  HOW-IT-WORKS PAGE
+// ──────────────────────────────────────────────
+function openHowIt() {
+  document.querySelectorAll('.page, .q-page, .recap-page, .final-bg, .howit-page').forEach(p => {
+    p.classList.remove('active', 'enter-right', 'enter-left');
+  });
+  document.getElementById('howit').classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+function closeHowIt() {
+  document.getElementById('howit').classList.remove('active');
+  document.getElementById('p1').classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+
+// ──────────────────────────────────────────────
+//  LIVE ESTIMATION — destinations count
+// ──────────────────────────────────────────────
+function updateEstimation() {
+  const pill = document.getElementById('estim-pill-5');
+  if(!pill) return;
+  const budget = parseInt(document.getElementById('budget').value) || 0;
+  const vol    = parseInt(document.getElementById('vol-dur').value) || 6;
+  const nbp    = parseInt(document.getElementById('nb-persons').value) || 0;
+  const grp    = document.querySelectorAll('#group-grid .selcard.sel').length;
+  if(!nbp || !grp) { pill.style.display = 'none'; return; }
+
+  // Pseudo-computation — simulated count based on criteria
+  let base = 12;
+  if(budget >= 20000) base += 6;
+  else if(budget >= 10000) base += 4;
+  else if(budget >= 5000) base += 2;
+  else if(budget < 1500) base -= 4;
+  if(vol >= 12) base += 4;
+  else if(vol >= 8) base += 2;
+  else if(vol <= 3) base -= 4;
+  if(nbp >= 6) base -= 2;
+  const low = Math.max(2, base - 2);
+  const high = base + 3;
+  pill.innerHTML = `Environ <strong>${low}&nbsp;à&nbsp;${high} destinations</strong> correspondent à vos critères`;
+  pill.style.display = '';
+}
+
+// ──────────────────────────────────────────────
+//  LOCALSTORAGE — Save / Resume session
+// ──────────────────────────────────────────────
+const STORAGE_KEY = 'linconnu_voyage_state_v1';
+const STORAGE_TTL_DAYS = 7;
+let saveTimer = null;
+let suppressSave = false;
+
+function collectState() {
+  const state = { t: Date.now(), page: currentPage };
+  // Scalar fields
+  const ids = ['budget','vol-dur','avoid-cities','nb-persons','nb-children',
+               'city-dep','airport-dep','bag-count','passport-valid'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(el.type === 'checkbox') state[id] = el.checked;
+    else state[id] = el.value;
+  });
+  // Radios
+  ['res-grp','bag-grp','transfer-grp'].forEach(g => {
+    const sel = document.querySelector('#'+g+' .radio-btn.sel');
+    if(sel) state[g] = [...document.querySelectorAll('#'+g+' .radio-btn')].indexOf(sel);
+  });
+  // Selected cards (by index)
+  ['group-grid','theme-grid','hotel-grid','board-grid','mood-grid'].forEach(g => {
+    const all = [...document.querySelectorAll('#'+g+' .selcard')];
+    state[g] = all.map((c,i)=> c.classList.contains('sel') ? i : -1).filter(i=>i>=0);
+  });
+  // Dates
+  if(selStart) state.selStart = selStart.toISOString();
+  if(selEnd)   state.selEnd   = selEnd.toISOString();
+  state.bagEnabled = bagEnabled;
+  // Persons
+  const n = parseInt((document.getElementById('nb-persons')||{}).value) || 2;
+  const nk = parseInt((document.getElementById('nb-children')||{}).value) || 0;
+  const persons = [];
+  for(let i=0;i<n;i++) persons.push({
+    fn:(document.getElementById('p'+i+'-fn')||{}).value||'',
+    ln:(document.getElementById('p'+i+'-ln')||{}).value||'',
+    dob:(document.getElementById('p'+i+'-dob')||{}).value||'',
+    em:(document.getElementById('p'+i+'-email')||{}).value||''
+  });
+  const children = [];
+  for(let j=0;j<nk;j++) children.push({
+    fn:(document.getElementById('k'+j+'-fn')||{}).value||'',
+    ln:(document.getElementById('k'+j+'-ln')||{}).value||'',
+    dob:(document.getElementById('k'+j+'-dob')||{}).value||''
+  });
+  state.persons = persons;
+  state.children = children;
+  return state;
+}
+
+function saveState() {
+  if(suppressSave) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      const s = collectState();
+      // Only save if user has done something meaningful
+      if(s.page < 2 && !s.selStart && !s['city-dep']) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+    } catch(e) {}
+  }, 400);
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    const ageDays = (Date.now() - s.t) / (1000*60*60*24);
+    if(ageDays > STORAGE_TTL_DAYS) { localStorage.removeItem(STORAGE_KEY); return null; }
+    return s;
+  } catch(e) { return null; }
+}
+
+function applyState(s) {
+  suppressSave = true;
+  try {
+    // Scalar
+    const ids = ['budget','vol-dur','avoid-cities','nb-persons','nb-children',
+                 'city-dep','airport-dep','bag-count','passport-valid'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if(!el || s[id] === undefined) return;
+      if(el.type === 'checkbox') el.checked = !!s[id];
+      else el.value = s[id];
+    });
+    // Radios
+    ['res-grp','bag-grp','transfer-grp'].forEach(g => {
+      if(s[g] === undefined) return;
+      const btns = document.querySelectorAll('#'+g+' .radio-btn');
+      btns.forEach(b => b.classList.remove('sel'));
+      if(btns[s[g]]) btns[s[g]].classList.add('sel');
+    });
+    // Selected cards
+    ['group-grid','theme-grid','hotel-grid','board-grid','mood-grid'].forEach(g => {
+      if(!Array.isArray(s[g])) return;
+      const all = document.querySelectorAll('#'+g+' .selcard');
+      all.forEach(c => c.classList.remove('sel'));
+      s[g].forEach(i => { if(all[i]) all[i].classList.add('sel'); });
+    });
+    // Dates
+    if(s.selStart) selStart = new Date(s.selStart);
+    if(s.selEnd)   selEnd   = new Date(s.selEnd);
+    if(selStart) document.getElementById('dep-display').textContent = fmtDate(selStart);
+    if(selEnd)   document.getElementById('ret-display').textContent = fmtDate(selEnd);
+    bagEnabled = !!s.bagEnabled;
+    toggleBag(bagEnabled);
+    if(bagEnabled) {
+      const bg = document.querySelectorAll('#bag-grp .radio-btn');
+      bg.forEach(b => b.classList.remove('sel'));
+      if(bg[1]) bg[1].classList.add('sel');
+    }
+    // Re-run budget/vol UI updates
+    updateBudget(document.getElementById('budget').value);
+    updateVol(document.getElementById('vol-dur').value);
+    // Rebuild person forms with restored data
+    renderPersonForms();
+    (s.persons||[]).forEach((p,i) => {
+      const map = {fn:'p'+i+'-fn',ln:'p'+i+'-ln',dob:'p'+i+'-dob',em:'p'+i+'-email'};
+      Object.entries(map).forEach(([k,id]) => { const el=document.getElementById(id); if(el) el.value = p[k]||''; });
+    });
+    (s.children||[]).forEach((c,j) => {
+      const map = {fn:'k'+j+'-fn',ln:'k'+j+'-ln',dob:'k'+j+'-dob'};
+      Object.entries(map).forEach(([k,id]) => { const el=document.getElementById(id); if(el) el.value = c[k]||''; });
+    });
+    // Navigate to saved page (capped to 11 — don't land on recap/final automatically)
+    const target = Math.min(Math.max(2, s.page||2), 11);
+    goTo(target);
+  } catch(e) { console.warn('Resume failed', e); }
+  setTimeout(() => { suppressSave = false; saveState(); }, 100);
+}
+
+function showResumeBanner(state) {
+  const b = document.getElementById('resume-banner');
+  const info = document.getElementById('resume-info');
+  const daysAgo = Math.floor((Date.now() - state.t) / (1000*60*60*24));
+  const stepTxt = 'Étape ' + (state.page-1) + ' / 12';
+  info.textContent = daysAgo === 0 ? 'Reprise possible — ' + stepTxt : 'Sauvegarde il y a ' + daysAgo + ' j · ' + stepTxt;
+  setTimeout(() => b.classList.add('show'), 600);
+}
+function hideResumeBanner() {
+  document.getElementById('resume-banner').classList.remove('show');
+}
+function resumeSession() {
+  const s = loadState();
+  hideResumeBanner();
+  if(s) applyState(s);
+}
+function discardSession() {
+  localStorage.removeItem(STORAGE_KEY);
+  hideResumeBanner();
+}
+
+// Attach save-on-change to all fields
+function attachAutoSave() {
+  const root = document;
+  const handler = () => saveState();
+  root.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('input', handler);
+    el.addEventListener('change', handler);
+  });
+  // Delegated clicks for .selcard and .radio-btn
+  root.addEventListener('click', (e) => {
+    if(e.target.closest('.selcard') || e.target.closest('.radio-btn') || e.target.closest('.cal-day')) {
+      setTimeout(saveState, 50);
+    }
+  });
+}
+
+// Hook: update estimation pill when entering relevant pages
+const _origGoTo = goTo;
+goTo = function(n) {
+  _origGoTo(n);
+  if(n >= 5) updateEstimation();
+  saveState();
+};
+
+// ──────────────────────────────────────────────
 //  INIT
 // ──────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
   updateBudget(3000);
   updateVol(6);
   renderPersonForms();
-});
-// Immediate in case DOMContentLoaded already passed
-updateBudget(3000);
-updateVol(6);
-renderPersonForms();
+  attachAutoSave();
+  const saved = loadState();
+  if(saved && saved.page >= 2) showResumeBanner(saved);
+}
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
