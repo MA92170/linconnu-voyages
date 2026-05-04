@@ -2,9 +2,18 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d2f33">
-<title>L'Inconnu — L'aventure commence là-bas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
+<meta name="theme-color" content="#0d2f33" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#061215" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Voyage Mystère">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<title>Voyage Mystère — L'aventure commence sans savoir où</title>
 <meta name="description" content="Un questionnaire, une surprise, une destination inconnue. Partez sans savoir où vous allez.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1458,6 +1467,236 @@
   }
   .howit-back:hover { color: var(--ink); }
 
+  /* ════════════════════════════════════════════
+     MOBILE PREMIUM PACK — Points 1-17
+     ════════════════════════════════════════════ */
+
+  /* P4 — Disable pull-to-refresh and rubber-band */
+  html, body { overscroll-behavior: contain; }
+
+  /* P3 — Safe areas iPhone notch + home indicator */
+  .topbar {
+    padding-top: calc(0.85rem + env(safe-area-inset-top, 0px));
+    padding-left: calc(1.6rem + env(safe-area-inset-left, 0px));
+    padding-right: calc(1.6rem + env(safe-area-inset-right, 0px));
+  }
+  @media (max-width: 640px) {
+    .topbar {
+      padding-top: calc(0.7rem + env(safe-area-inset-top, 0px));
+      padding-left: calc(1rem + env(safe-area-inset-left, 0px));
+      padding-right: calc(1rem + env(safe-area-inset-right, 0px));
+    }
+  }
+  .final-bg, .howit-page, .recap-page {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* P1 — iOS zoom bug: inputs must be ≥16px on mobile */
+  @media (max-width: 860px) {
+    .fg input, .fg select,
+    input[type=text], input[type=email], input[type=date], input[type=search], select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* P5 — Tap targets ≥44×44px on mobile (Apple HIG) */
+  @media (max-width: 860px) {
+    .chk-row {
+      padding: 10px 4px;
+      min-height: 44px;
+      gap: 0.8rem;
+    }
+    .chk-row input[type=checkbox] { width: 22px; height: 22px; }
+    .radio-btn { min-height: 48px; display: flex; align-items: center; justify-content: center; padding: 0.7rem 0.5rem; }
+    .btn-back { min-height: 44px; padding: 0.75rem 0.9rem; }
+    .btn-next { min-height: 48px; padding: 0.9rem 1.6rem; }
+    .date-pill { min-height: 52px; }
+    .cal-day { min-height: 40px; display: flex; align-items: center; justify-content: center; padding: 6px 2px; }
+    .cal-hdr button { width: 36px; height: 36px; font-size: 1.2rem; }
+    .selcard { min-height: 60px; }
+  }
+
+  /* P8 — Compact visual banner on mobile (180 → 120px) */
+  @media (max-width: 860px) {
+    .q-layout {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: 128px 1fr !important;
+    }
+    .q-visual-inner {
+      padding: 0.8rem 1rem !important;
+    }
+    .q-visual-tag {
+      font-size: 0.6rem !important;
+      letter-spacing: 0.26em !important;
+      margin-bottom: 0.3rem;
+    }
+    .q-visual-title {
+      font-size: 1.05rem !important;
+      line-height: 1.15 !important;
+    }
+  }
+
+  /* P2 — Sticky bottom action bar on mobile */
+  @media (max-width: 860px) {
+    .q-content { padding-bottom: 0 !important; }
+    .q-content-inner { padding-bottom: 0.4rem; }
+    .nav-row {
+      position: sticky;
+      bottom: 0;
+      margin: 1rem -1rem 0;
+      padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom, 0px));
+      background: rgba(251,247,238,0.97);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      border-bottom: none;
+      z-index: 50;
+      justify-content: space-between;
+      box-shadow: 0 -8px 20px rgba(13,47,51,0.05);
+    }
+    .recap-footer {
+      padding-bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+    }
+    .howit-page {
+      padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  /* P15 — Better typography scale on very small screens */
+  @media (max-width: 420px) {
+    h1.hero-title { font-size: 2rem; line-height: 1.08; }
+    .hero-sub { font-size: 0.95rem; margin-bottom: 1.4rem; }
+    h2.qtitle { font-size: 1.35rem; }
+    .hero-content { padding: 2.2rem 1.3rem; }
+    .hero-meta-num { font-size: 1.25rem; }
+    .hero-meta-lbl { font-size: 0.62rem; }
+    .howit-num { font-size: 2.6rem; }
+    .howit-step-title { font-size: 1.1rem; }
+    .howit-step { padding: 1.4rem 1.2rem; }
+  }
+
+  /* P17 — Scroll snap pour lisser le scroll vertical sur mobile */
+  @media (max-width: 860px) {
+    .recap-body { scroll-snap-type: y proximity; }
+    .recap-card { scroll-snap-align: start; scroll-margin-top: 70px; }
+    .howit-step { scroll-snap-align: start; scroll-margin-top: 70px; }
+  }
+
+  /* P13 — Lazy image fade-in animation */
+  img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  img[loading="lazy"].loaded,
+  img[loading="lazy"][complete] {
+    opacity: 1;
+  }
+
+  /* P16 — Clear button on text inputs (uses type=search) */
+  input[type="search"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px; width: 20px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236a6156'><circle cx='12' cy='12' r='11' fill='%23e3dcc9'/><path d='M15 9l-6 6M9 9l6 6' stroke='%23d66a3f' stroke-width='2' stroke-linecap='round'/></svg>");
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  /* P9 — Calendar tabs on mobile (month switcher) */
+  @media (max-width: 720px) {
+    .cal-grid { grid-template-columns: 1fr; }
+    .cal-grid > div:first-child[data-cal-idx="0"] { display: block; }
+    .cal-tabs {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
+      padding: 0.2rem;
+      background: var(--cream);
+      border-radius: var(--radius-pill);
+    }
+    .cal-tab {
+      flex: 1;
+      padding: 0.55rem 0.6rem;
+      text-align: center;
+      border-radius: var(--radius-pill);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      letter-spacing: 0.04em;
+    }
+    .cal-tab.active {
+      background: var(--paper-elev);
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+    }
+    #cal0[data-hidden="1"], #cal1[data-hidden="1"] { display: none; }
+  }
+  @media (min-width: 721px) {
+    .cal-tabs { display: none; }
+  }
+
+  /* P14 — Automatic Dark Mode */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0d2226;
+      --paper-elev: #13333779;
+      --cream: #1a3a3f;
+      --cream-2: #214d53;
+      --ink: #f5efe4;
+      --ink-2: #e8dfcc;
+      --ink-soft: #d4c9b2;
+      --muted: #a89d87;
+      --hint: #7a6f5f;
+      --border: #2f5257;
+      --border-strong: #48767c;
+      --terra-soft: #4a2818;
+    }
+    .topbar { background: rgba(6,18,21,0.96); }
+    body { background: #061215; }
+    .shell { background: var(--paper); }
+    .scard, .person-block, .cal-wrap, .recap-card, .howit-step, .howit-faq, .fg input, .fg select {
+      background: rgba(255,255,255,0.03);
+      color: var(--ink);
+    }
+    .radio-btn { background: rgba(255,255,255,0.03); color: var(--ink); }
+    .radio-btn.sel {
+      background: linear-gradient(135deg, rgba(214,106,63,0.22), rgba(214,106,63,0.10));
+      color: #f3c7a6;
+    }
+    .selcard { background: rgba(255,255,255,0.03); }
+    .selcard:has(img) .cl { color: #fff; }
+    .recap-page { background: linear-gradient(180deg, var(--paper) 0%, #061215 100%); }
+    .recap-footer { background: rgba(13,34,38,0.96); }
+    .howit-page { background: linear-gradient(180deg, var(--paper) 0%, #061215 100%); }
+    .resume-banner { background: #0e2a2e; color: var(--ink); }
+    .resume-banner-text { color: var(--ink); }
+    .cal-hdr button { background: rgba(255,255,255,0.05); color: var(--ink); border-color: var(--border); }
+    .cal-day:hover:not(.empty):not(.past) { background: rgba(214,106,63,0.25); }
+    .cal-day.in-range { background: rgba(214,106,63,0.18); color: #f3c7a6; }
+    .slider-desc { color: #c2b8a6; }
+    .hero-ctas .btn-ghost-light { color: var(--ink); }
+    .howit-faq summary { color: var(--ink); }
+    .fg input::placeholder { color: #7a6f5f; }
+    input[type=range] {
+      background: linear-gradient(to right, var(--terra) var(--slider-pct, 10%), rgba(255,255,255,0.1) var(--slider-pct, 10%));
+    }
+    input[type=range]::-webkit-slider-thumb { background: var(--paper); }
+    .cal-tab { color: var(--muted); }
+    .cal-tab.active { background: rgba(255,255,255,0.06); color: var(--ink); }
+  }
+
   /* Reduce motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1481,7 +1720,7 @@
           <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
         </svg>
       </span>
-      L'Inconnu
+      Voyage Mystère
     </div>
     <div class="prog-wrap" aria-label="Progression">
       <div class="prog-track"><div class="prog-fill" id="prog" data-testid="progress-fill"></div></div>
@@ -1584,15 +1823,15 @@
 
   <!-- ═══════════ PAGE 1 — HERO ═══════════ -->
   <section class="page hero-page active" id="p1" data-testid="page-1">
-    <div class="hero-bg" style="background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=85')"></div>
+    <div class="hero-bg" style="background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=85&fm=webp&auto=format')"></div>
     <div class="hero-overlay"></div>
     <div class="hero-vignette"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">L'aventure commence là-bas</div>
+      <div class="hero-eyebrow">L'aventure commence</div>
       <h1 class="hero-title">
         Vous adorez voyager<br>
         mais vous ne savez jamais où&nbsp;?
-        <em>Osez l'Inconnu.</em>
+        <em>Partez sans savoir où.</em>
       </h1>
       <p class="hero-sub">
         Un questionnaire. Une surprise. Une destination inconnue — pensée pour vous, révélée à la dernière minute.
@@ -1625,7 +1864,7 @@
   <section class="q-page" id="p2" data-testid="page-2">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">01 · Budget</div>
           <div class="q-visual-title">L'investissement de<br>votre <em>évasion.</em></div>
@@ -1660,7 +1899,7 @@
   <section class="q-page" id="p3" data-testid="page-3">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">02 · Dates</div>
           <div class="q-visual-title">Le moment idéal<br>pour <em>s'évader.</em></div>
@@ -1693,7 +1932,7 @@
   <section class="q-page" id="p4" data-testid="page-4">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">03 · Préférences de vol</div>
           <div class="q-visual-title">Les contours de<br><em>votre voyage.</em></div>
@@ -1719,7 +1958,7 @@
           <div class="scard">
             <div class="scard-title">Villes / pays à éviter</div>
             <div class="fg">
-              <input type="text" id="avoid-cities" placeholder="Ex : Dubaï, Maroc, États-Unis… (ou laisser vide)" data-testid="avoid-input">
+              <input type="search" id="avoid-cities" placeholder="Ex : Dubaï, Maroc, États-Unis… (ou laisser vide)" data-testid="avoid-input" autocomplete="off">
             </div>
           </div>
 
@@ -1750,7 +1989,7 @@
   <section class="q-page" id="p5" data-testid="page-5">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">04 · Votre groupe</div>
           <div class="q-visual-title">Qui partage<br><em>l'aventure ?</em></div>
@@ -1818,7 +2057,7 @@
   <section class="q-page" id="p6" data-testid="page-6">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">05 · Point de départ</div>
           <div class="q-visual-title">Le début de<br><em>l'histoire.</em></div>
@@ -1832,12 +2071,12 @@
           <div class="frow2">
             <div class="fg">
               <label>Ville de départ *</label>
-              <input type="text" id="city-dep" placeholder="Ex : Paris, Lyon, Bordeaux…" data-testid="city-input">
+              <input type="search" id="city-dep" placeholder="Ex : Paris, Lyon, Bordeaux…" data-testid="city-input" autocomplete="address-level2">
               <span class="field-error" id="city-err">Ce champ est obligatoire</span>
             </div>
             <div class="fg">
               <label>Aéroport le plus proche *</label>
-              <input type="text" id="airport-dep" placeholder="Ex : CDG, ORY, LYS…" data-testid="airport-input">
+              <input type="search" id="airport-dep" placeholder="Ex : CDG, ORY, LYS…" data-testid="airport-input" autocomplete="off">
               <span class="field-error" id="airport-err">Ce champ est obligatoire</span>
             </div>
           </div>
@@ -1863,7 +2102,7 @@
   <section class="q-page" id="p7" data-testid="page-7">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">06 · Ambiance</div>
           <div class="q-visual-title">Le décor de<br><em>votre mystère.</em></div>
@@ -1875,9 +2114,9 @@
           <h2 class="qtitle">Quel décor pour votre mystère ?</h2>
           <div class="multi-hint">Plusieurs choix possibles</div>
           <div class="grid3" id="theme-grid">
-            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=75" alt="Plage"><div class="cl">Plage</div></div>
-            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=75" alt="Montagne"><div class="cl">Montagne</div></div>
-            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=75" alt="Ville"><div class="cl">Centre-ville</div></div>
+            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=75&fm=webp&auto=format" alt="Plage" loading="lazy" decoding="async"><div class="cl">Plage</div></div>
+            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=75&fm=webp&auto=format" alt="Montagne" loading="lazy" decoding="async"><div class="cl">Montagne</div></div>
+            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=75&fm=webp&auto=format" alt="Ville" loading="lazy" decoding="async"><div class="cl">Centre-ville</div></div>
           </div>
           <span class="field-error" id="theme-err">Veuillez sélectionner au moins une ambiance</span>
           <div class="nav-row">
@@ -1893,7 +2132,7 @@
   <section class="q-page" id="p8" data-testid="page-8">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">07 · Hébergement</div>
           <div class="q-visual-title">Votre cocon<br><em>pour la nuit.</em></div>
@@ -1904,9 +2143,9 @@
           <div class="step-tag">Étape 7 — Hébergement</div>
           <h2 class="qtitle">Votre niveau d'hébergement idéal ?</h2>
           <div class="grid3" id="hotel-grid">
-            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=75" alt="Classique"><div class="cl">Classique</div></div>
-            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=75" alt="Premium"><div class="cl">Premium</div></div>
-            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=75" alt="Luxe"><div class="cl">Luxe</div></div>
+            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=75&fm=webp&auto=format" alt="Classique" loading="lazy" decoding="async"><div class="cl">Classique</div></div>
+            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=75&fm=webp&auto=format" alt="Premium" loading="lazy" decoding="async"><div class="cl">Premium</div></div>
+            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=75&fm=webp&auto=format" alt="Luxe" loading="lazy" decoding="async"><div class="cl">Luxe</div></div>
           </div>
           <span class="field-error" id="hotel-err">Veuillez sélectionner un type d'hébergement</span>
           <div class="nav-row">
@@ -1922,7 +2161,7 @@
   <section class="q-page" id="p9" data-testid="page-9">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">08 · Restauration</div>
           <div class="q-visual-title">La table<br><em>qui vous attend.</em></div>
@@ -1958,7 +2197,7 @@
   <section class="q-page" id="p10" data-testid="page-10">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">09 · Rythme</div>
           <div class="q-visual-title">Votre tempo<br><em>de voyageur.</em></div>
@@ -1995,7 +2234,7 @@
   <section class="q-page" id="p11" data-testid="page-11">
     <div class="q-layout">
       <div class="q-visual">
-        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80')"></div>
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80&fm=webp&auto=format')"></div>
         <div class="q-visual-inner">
           <div class="q-visual-tag">10 · Voyageurs</div>
           <div class="q-visual-title">Les héros<br><em>de l'aventure.</em></div>
@@ -2048,10 +2287,10 @@
       <div class="teaser-block" data-testid="teaser-block">
         <div class="teaser-title">Votre destination se cache peut-être<br>parmi <em>celles-ci</em>…</div>
         <div class="teaser-grid">
-          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=60')"></div>
-          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=60')"></div>
-          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&q=60')"></div>
-          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=60')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=60&fm=webp&auto=format')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=60&fm=webp&auto=format')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&q=60&fm=webp&auto=format')"></div>
+          <div class="teaser-img" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=60&fm=webp&auto=format')"></div>
         </div>
         <div class="teaser-hint">· Dévoilée à J-7 ·</div>
       </div>
@@ -2810,6 +3049,119 @@ goTo = function(n) {
 };
 
 // ──────────────────────────────────────────────
+//  MOBILE PREMIUM — Swipe, Haptic, Calendar tabs, SW
+// ──────────────────────────────────────────────
+
+// P7 — Haptic feedback (Android only, silent no-op on iOS)
+function haptic(ms) {
+  try { if(navigator.vibrate) navigator.vibrate(ms || 10); } catch(e) {}
+}
+
+// P6 — Swipe left/right navigation on mobile
+function initSwipeNav() {
+  let touchStartX = 0, touchStartY = 0, touchStartT = 0;
+  document.addEventListener('touchstart', (e) => {
+    if(e.touches.length !== 1) return;
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+    touchStartT = Date.now();
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if(!touchStartX) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    const dt = Date.now() - touchStartT;
+    touchStartX = 0;
+    // Must be mostly horizontal, fast enough, and of sufficient magnitude
+    if(Math.abs(dx) < 70) return;
+    if(Math.abs(dy) > Math.abs(dx) * 0.6) return;
+    if(dt > 600) return;
+    // Ignore swipes starting on interactive elements, calendar or scrollable areas
+    if(e.target.closest('input, select, textarea, button, .cal-wrap, .selcard, .radio-btn, .teaser-grid, .howit-faq, #persons-scroll')) return;
+    // Not on hero or final
+    if(currentPage === 1 || currentPage === 13) return;
+    // Left swipe → next, Right swipe → previous
+    if(dx < 0) {
+      // Next page: use validate if it exists for the current page (same as Continue button)
+      const validated = [2,3,5,6,7,8,9,10,11].includes(currentPage);
+      if(validated) { validate(currentPage); haptic(12); }
+      else if(currentPage < 13) { goTo(currentPage + 1); haptic(12); }
+    } else {
+      if(currentPage === 12) { goTo(11); haptic(8); return; }
+      if(currentPage > 1) { goTo(currentPage - 1); haptic(8); }
+    }
+  }, { passive: true });
+}
+
+// Haptic on selcard / radio / cal-day / buttons
+function initHapticTouches() {
+  document.addEventListener('click', (e) => {
+    if(e.target.closest('.selcard, .radio-btn, .cal-day:not(.empty):not(.past), .date-pill')) haptic(10);
+    else if(e.target.closest('.btn-next, .btn-start')) haptic(14);
+    else if(e.target.closest('.btn-back, .btn-wa')) haptic(8);
+  }, { passive: true });
+}
+
+// P9 — Calendar tabs (mobile month switcher)
+let activeCalIdx = 0;
+function renderCalTabs() {
+  const wrap = document.querySelector('.cal-wrap');
+  if(!wrap) return;
+  let existing = wrap.querySelector('.cal-tabs');
+  if(existing) existing.remove();
+  const tabs = document.createElement('div');
+  tabs.className = 'cal-tabs';
+  const m1 = calBase.getMonth(), y1 = calBase.getFullYear();
+  const m2 = (m1 + 1) % 12, y2 = m1 === 11 ? y1 + 1 : y1;
+  tabs.innerHTML = `
+    <button class="cal-tab ${activeCalIdx===0?'active':''}" data-idx="0">${MONTHS[m1].slice(0,3)} ${y1}</button>
+    <button class="cal-tab ${activeCalIdx===1?'active':''}" data-idx="1">${MONTHS[m2].slice(0,3)} ${y2}</button>
+  `;
+  wrap.insertBefore(tabs, wrap.firstChild);
+  tabs.querySelectorAll('.cal-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCalIdx = parseInt(btn.dataset.idx);
+      applyCalVisibility();
+      renderCalTabs();
+      haptic(8);
+    });
+  });
+  applyCalVisibility();
+}
+function applyCalVisibility() {
+  if(window.matchMedia('(max-width: 720px)').matches) {
+    const c0 = document.getElementById('cal0');
+    const c1 = document.getElementById('cal1');
+    if(c0) c0.dataset.hidden = activeCalIdx === 0 ? '0' : '1';
+    if(c1) c1.dataset.hidden = activeCalIdx === 1 ? '0' : '1';
+  } else {
+    const c0 = document.getElementById('cal0');
+    const c1 = document.getElementById('cal1');
+    if(c0) c0.dataset.hidden = '0';
+    if(c1) c1.dataset.hidden = '0';
+  }
+}
+
+// Hook into calendar rendering
+const _origRenderCalendars = renderCalendars;
+renderCalendars = function() {
+  _origRenderCalendars();
+  renderCalTabs();
+};
+
+// P12 — Service Worker registration (offline cache)
+function registerSW() {
+  if('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+}
+
+// ──────────────────────────────────────────────
 //  INIT
 // ──────────────────────────────────────────────
 function init() {
@@ -2817,8 +3169,13 @@ function init() {
   updateVol(6);
   renderPersonForms();
   attachAutoSave();
+  initSwipeNav();
+  initHapticTouches();
+  registerSW();
   const saved = loadState();
   if(saved && saved.page >= 2) showResumeBanner(saved);
+  // On orientation change, re-apply calendar visibility
+  window.addEventListener('resize', () => { applyCalVisibility(); });
 }
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
