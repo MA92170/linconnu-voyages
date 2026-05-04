@@ -2,842 +2,1705 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d2f33">
 <title>Voyage Mystère — L'aventure commence sans savoir où</title>
+<meta name="description" content="Un questionnaire, une surprise, une destination inconnue. Partez sans savoir où vous allez.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold: #c9a84c;
-    --gold-light: #e8d08a;
-    --gold-pale: #fdf8ee;
-    --gold-border: #e2d0a0;
-    --dark: #1a1814;
-    --dark-2: #2e2a20;
-    --text: #2c2a25;
-    --text-muted: #6b6355;
-    --text-hint: #9a9180;
-    --bg: #faf9f7;
-    --bg-2: #f3f0e8;
-    --border: #e0dace;
-    --border-focus: #c9a84c;
-    --error: #c0392b;
-    --error-bg: #fdf0ee;
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'Jost', sans-serif;
-    --radius: 12px;
-    --radius-lg: 16px;
-    --transition: 0.22s ease;
+    /* Palette — Cinematic travel, warm + deep teal + terracotta */
+    --ink: #0d2f33;           /* deep teal ink */
+    --ink-2: #163e42;
+    --ink-soft: #284a4e;
+    --cream: #f5efe4;         /* warm ivory */
+    --cream-2: #ede5d5;
+    --paper: #fbf7ee;
+    --paper-elev: #ffffff;
+    --terra: #d66a3f;         /* sunset terracotta */
+    --terra-deep: #b85426;
+    --terra-soft: #f4d3c1;
+    --sage: #7a8f7a;
+    --muted: #6a6156;
+    --hint: #9a9285;
+    --border: #e3dcc9;
+    --border-strong: #cfc5ab;
+    --error: #c64a2c;
+    --error-bg: #fbe9e1;
+
+    --font-display: 'Fraunces', 'Times New Roman', serif;
+    --font-body: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 14px;
+    --radius-lg: 22px;
+    --radius-pill: 999px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --shadow-sm: 0 1px 2px rgba(13,47,51,0.06), 0 2px 8px rgba(13,47,51,0.04);
+    --shadow-md: 0 8px 24px rgba(13,47,51,0.08), 0 2px 6px rgba(13,47,51,0.04);
+    --shadow-lg: 0 24px 60px rgba(13,47,51,0.18);
   }
 
-  html { scroll-behavior: smooth; }
-
-  html, body { height: 100%; overflow: hidden; }
-  @media (max-width: 600px) {
-    html, body { overflow: auto; height: auto; min-height: 100%; }
-  }
-
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html, body { height: 100%; }
   body {
     font-family: var(--font-body);
-    background: var(--dark);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.6rem;
-  }
-  @media (max-width: 600px) {
-    body { padding: 0; background: var(--dark); align-items: flex-start; }
+    color: var(--ink);
+    background: var(--ink);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
   }
 
-  /* ── Shell ── */
+  /* Ambient grain overlay for richness */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  ::selection { background: var(--terra); color: var(--paper); }
+
+  /* ── App Shell ── */
   .shell {
     width: 100%;
-    max-width: 780px;
-    height: calc(100vh - 1.2rem);
-    max-height: 860px;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.18);
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
-  }
-  @media (max-width: 600px) {
-    .shell {
-      height: auto;
-      min-height: 100vh;
-      max-height: none;
-      border-radius: 0;
-      overflow: visible;
-    }
+    background: var(--paper);
+    position: relative;
+    overflow-x: hidden;
   }
 
   /* ── Top bar ── */
   .topbar {
-    background: var(--dark);
-    padding: 0.7rem 1.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,47,51,0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 0.85rem 1.6rem;
     display: flex;
     align-items: center;
-    gap: 1.2rem;
-    border-bottom: 1px solid rgba(201,168,76,0.15);
+    gap: 1.4rem;
+    border-bottom: 1px solid rgba(245,239,228,0.08);
     flex-shrink: 0;
   }
-  @media (max-width: 600px) {
-    .topbar { padding: 0.6rem 1rem; }
-    .logo { font-size: 0.85rem; }
-  }
+  @media (max-width: 640px) { .topbar { padding: 0.7rem 1rem; gap: 0.9rem; } }
+
   .logo {
     font-family: var(--font-display);
-    font-size: 1rem;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    font-weight: 300;
-    text-transform: uppercase;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--cream);
+    letter-spacing: 0.01em;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
   }
-  .prog-wrap { flex: 1; }
-  .prog-track { height: 2px; background: rgba(201,168,76,0.15); border-radius: 2px; }
+  .logo-mark {
+    width: 22px; height: 22px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    color: var(--terra);
+    animation: compass 14s linear infinite;
+  }
+  @keyframes compass { to { transform: rotate(360deg); } }
+  @media (max-width: 640px) { .logo { font-size: 0.92rem; } .logo-mark { width: 18px; height: 18px; } }
+
+  .prog-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .prog-track {
+    flex: 1;
+    height: 3px;
+    background: rgba(245,239,228,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
   .prog-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    background: linear-gradient(90deg, var(--terra), #e8a472);
     border-radius: 2px;
-    transition: width 0.5s cubic-bezier(.4,0,.2,1);
     width: 8.33%;
+    transition: width 0.7s var(--ease-out);
+    box-shadow: 0 0 12px rgba(214,106,63,0.5);
   }
-  .step-num { font-size: 0.72rem; color: var(--text-hint); letter-spacing: 0.08em; white-space: nowrap; }
+  .prog-fill::after {
+    content: "";
+    position: absolute;
+    right: -2px; top: -3px;
+    width: 9px; height: 9px;
+    background: var(--terra);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(214,106,63,0.25);
+  }
+  .step-num {
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.72rem;
+    color: var(--cream-2);
+    opacity: 0.75;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    background: var(--ink);
+    color: var(--cream);
+    border-left: 3px solid var(--terra);
+    padding: 0.9rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    z-index: 9999;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transition: transform 0.45s var(--ease-out), opacity 0.3s;
+    max-width: min(90vw, 420px);
+    line-height: 1.4;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
   /* ── Pages ── */
   .page {
     display: none;
     flex: 1;
-    min-height: 0; /* CRITICAL: allows flex child to scroll on iOS */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+    min-height: calc(100vh - 56px);
+    min-height: calc(100dvh - 56px);
     position: relative;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    width: 100%;
   }
-  .page.center-content {
+  .page.active { display: flex; }
+
+  /* Directional transitions */
+  .page.enter-right { animation: enterRight 0.55s var(--ease-out) both; }
+  .page.enter-left  { animation: enterLeft 0.55s var(--ease-out) both; }
+  @keyframes enterRight {
+    from { opacity: 0; transform: translate3d(36px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+  @keyframes enterLeft {
+    from { opacity: 0; transform: translate3d(-36px, 0, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  /* Hero page backdrop */
+  .hero-page {
+    min-height: calc(100vh - 56px);
+    min-height: calc(100dvh - 56px);
+    position: relative;
+    overflow: hidden;
+    align-items: center;
     justify-content: center;
   }
-  .page.active { display: flex; animation: fadeSlide 0.38s cubic-bezier(.4,0,.2,1); }
-  @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-  .bg-img {
+  .page.hero-page.active { display: flex; }
+  .hero-bg {
     position: absolute; inset: 0;
     background-size: cover;
     background-position: center;
     z-index: 0;
+    transform: scale(1.04);
+    animation: heroZoom 18s ease-in-out infinite alternate;
   }
-  @media (max-width: 600px) {
-    .bg-img { position: fixed; }
+  @keyframes heroZoom { to { transform: scale(1.12); } }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(13,47,51,0.25) 0%, rgba(13,47,51,0.55) 60%, rgba(13,47,51,0.88) 100%);
+    z-index: 1;
   }
-  .overlay-dark { position: absolute; inset: 0; background: rgba(20,18,12,0.52); z-index: 1; }
-  .overlay-light { position: absolute; inset: 0; background: rgba(250,249,247,0.93); z-index: 1; }
-  @media (max-width: 600px) {
-    .overlay-light { position: fixed; }
-    .overlay-dark { position: fixed; }
+  .hero-vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(13,47,51,0.55) 100%);
+    z-index: 2;
   }
 
-  .content {
+  /* Standard content page (with image backdrop side) */
+  .q-page {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    background: var(--paper);
+    position: relative;
+    min-height: calc(100vh - 56px);
+  }
+  .q-page.active { display: flex; animation: fadeUp 0.55s var(--ease-out) both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 2-column layout for question pages */
+  .q-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 420px) 1fr;
+    min-height: calc(100vh - 56px);
+    min-height: calc(100dvh - 56px);
+  }
+  @media (max-width: 860px) {
+    .q-layout { grid-template-columns: 1fr; grid-template-rows: 180px 1fr; }
+  }
+  .q-visual {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .q-visual .q-bg {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.02);
+    transition: transform 8s ease;
+  }
+  .q-page.active .q-visual .q-bg { transform: scale(1.1); }
+  .q-visual::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(13,47,51,0.2), rgba(13,47,51,0.55));
+  }
+  .q-visual-inner {
     position: relative; z-index: 2;
-    width: 100%; max-width: 680px;
-    padding: 1.4rem 2.2rem 2rem;
+    height: 100%;
+    padding: 2.4rem 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.9rem;
-    flex-shrink: 0; /* content doesn't compress — page scrolls instead */
+    justify-content: flex-end;
+    color: var(--cream);
   }
-
-  /* ── Typography ── */
-  .step-tag {
-    font-size: 0.7rem;
-    letter-spacing: 0.18em;
-    color: var(--gold);
+  @media (max-width: 860px) {
+    .q-visual-inner { padding: 1rem 1.2rem; justify-content: flex-end; }
+  }
+  .q-visual-tag {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
+    color: var(--terra-soft);
+    margin-bottom: 0.6rem;
     font-weight: 500;
   }
-  h1.hero {
+  .q-visual-title {
     font-family: var(--font-display);
-    font-size: 2.2rem;
     font-weight: 300;
-    color: #fff;
-    text-align: center;
-    line-height: 1.32;
+    font-size: 1.8rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 300px;
   }
-  h1.hero em { font-style: italic; color: var(--gold-light); }
+  .q-visual-title em { font-style: italic; color: #f3c7a6; font-weight: 300; }
+  @media (max-width: 860px) { .q-visual-title { font-size: 1.2rem; max-width: none; } }
+
+  /* Right: content panel */
+  .q-content {
+    padding: 3rem 3rem 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.2rem;
+    max-height: calc(100vh - 56px);
+    max-height: calc(100dvh - 56px);
+  }
+  @media (max-width: 860px) {
+    .q-content { padding: 1.6rem 1.2rem 2rem; max-height: none; }
+  }
+  .q-content-inner {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  /* Hero content */
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 3rem 1.5rem;
+    max-width: 820px;
+    width: 100%;
+    text-align: left;
+    color: var(--cream);
+  }
+  @media (min-width: 780px) { .hero-content { padding: 4rem 3rem; } }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.38rem 0.9rem 0.38rem 0.6rem;
+    border: 1px solid rgba(245,239,228,0.25);
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: rgba(245,239,228,0.05);
+    backdrop-filter: blur(8px);
+    margin-bottom: 1.6rem;
+    animation: fadeUp 0.8s var(--ease-out) 0.1s both;
+  }
+  .hero-eyebrow::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--terra);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(214,106,63,0.25);
+  }
+
+  h1.hero-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 5.6vw, 4.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.9s var(--ease-out) 0.25s both;
+  }
+  h1.hero-title em {
+    font-style: italic;
+    color: #f3c7a6;
+    font-weight: 300;
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    color: rgba(245,239,228,0.78);
+    max-width: 540px;
+    line-height: 1.5;
+    margin-bottom: 2.4rem;
+    animation: fadeUp 1s var(--ease-out) 0.45s both;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.2rem;
+    animation: fadeUp 1.1s var(--ease-out) 0.6s both;
+  }
+
+  .hero-meta {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem 2.6rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(245,239,228,0.15);
+    animation: fadeUp 1.2s var(--ease-out) 0.8s both;
+  }
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .hero-meta-num {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: var(--terra-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-meta-lbl {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,239,228,0.6);
+  }
+
+  /* ── Typography for questions ── */
+  .step-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    color: var(--terra-deep);
+    text-transform: uppercase;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .step-tag::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--terra);
+  }
+
   h2.qtitle {
     font-family: var(--font-display);
-    font-size: 1.7rem;
-    font-weight: 400;
-    color: var(--text);
-    text-align: center;
-    line-height: 1.35;
+    font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
   }
-  h2.qtitle em { font-style: italic; color: var(--gold); }
+  h2.qtitle em { font-style: italic; color: var(--terra-deep); font-weight: 400; }
+
+  .q-hint {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: -0.4rem;
+  }
 
   /* ── Buttons ── */
   .btn-start {
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    color: var(--dark);
+    position: relative;
+    background: var(--terra);
+    color: var(--paper);
     border: none;
-    padding: 1rem 3rem;
-    border-radius: 50px;
+    padding: 1.05rem 2.2rem;
+    border-radius: var(--radius-pill);
     font-family: var(--font-body);
-    font-size: 0.88rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    overflow: hidden;
+    transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), background 0.3s;
+    box-shadow: 0 10px 30px rgba(214,106,63,0.35), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .btn-start::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s var(--ease);
+  }
+  .btn-start:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(214,106,63,0.45); background: var(--terra-deep); }
+  .btn-start:hover::before { transform: translateX(100%); }
+  .btn-start .arrow {
+    display: inline-flex;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .btn-start:hover .arrow { transform: translateX(5px); }
+
+  .btn-ghost-light {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(245,239,228,0.35);
+    padding: 1.02rem 2rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 0.84rem;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    transition: all 0.3s var(--ease);
   }
-  .btn-start:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(201,168,76,0.4); }
+  .btn-ghost-light:hover { background: rgba(245,239,228,0.08); border-color: var(--cream); }
 
   .btn-next {
-    background: transparent;
-    border: 1.5px solid var(--gold);
-    color: var(--gold);
-    padding: 0.72rem 2.2rem;
-    border-radius: 50px;
+    position: relative;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    padding: 0.85rem 1.8rem;
+    border-radius: var(--radius-pill);
     font-family: var(--font-body);
-    font-size: 0.83rem;
-    letter-spacing: 0.09em;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s;
+    box-shadow: 0 6px 18px rgba(13,47,51,0.22);
   }
-  .btn-next:hover { background: var(--gold); color: #fff; }
+  .btn-next:hover { transform: translateY(-2px); background: var(--terra); box-shadow: 0 12px 28px rgba(214,106,63,0.35); }
+  .btn-next .arrow { transition: transform 0.3s; }
+  .btn-next:hover .arrow { transform: translateX(4px); }
+
   .btn-back {
-    background: none; border: none;
-    color: var(--text-hint); font-size: 0.8rem;
-    cursor: pointer; font-family: var(--font-body);
-    letter-spacing: 0.05em; text-decoration: underline;
-    transition: color var(--transition);
+    background: none;
+    border: none;
+    color: var(--hint);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: var(--font-body);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.25s, transform 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.6rem;
   }
-  .btn-back:hover { color: var(--text-muted); }
-  .nav-row { display: flex; align-items: center; gap: 1.2rem; margin-top: 0.4rem; }
+  .btn-back:hover { color: var(--ink); transform: translateX(-3px); }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px dashed var(--border);
+  }
 
   /* ── Validation ── */
-  .field-error { color: var(--error); font-size: 0.75rem; margin-top: 3px; display: none; }
-  .field-error.show { display: block; }
-  input.err, select.err { border-color: var(--error) !important; background: var(--error-bg) !important; }
-  .toast {
-    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
-    background: var(--dark); color: #fff; border-left: 3px solid var(--error);
-    padding: 0.85rem 1.5rem; border-radius: var(--radius); font-size: 0.85rem;
-    font-family: var(--font-body); z-index: 9999; letter-spacing: 0.03em;
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
-    opacity: 0; pointer-events: none;
+  .field-error {
+    color: var(--error);
+    font-size: 0.75rem;
+    margin-top: 3px;
+    display: none;
+    letter-spacing: 0.02em;
   }
-  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .field-error.show { display: block; animation: shakeErr 0.4s; }
+  @keyframes shakeErr {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  input.err, select.err { border-color: var(--error) !important; background: var(--error-bg) !important; }
 
   /* ── Slider ── */
-  .slider-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
+  .slider-wrap { width: 100%; display: flex; flex-direction: column; gap: 0.7rem; }
   .slider-row { display: flex; align-items: center; gap: 1rem; }
-  .slider-lbl { font-size: 0.75rem; color: var(--text-hint); min-width: 36px; }
+  .slider-lbl { font-size: 0.72rem; color: var(--hint); min-width: 40px; letter-spacing: 0.05em; font-variant-numeric: tabular-nums; }
   .slider-val {
     font-family: var(--font-display);
-    font-size: 2.2rem; font-weight: 300;
-    color: var(--text); text-align: center;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    font-weight: 300;
+    color: var(--ink);
+    text-align: center;
     line-height: 1;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    padding: 0.5rem 0;
+    transition: color 0.3s;
   }
   .slider-desc {
-    font-style: italic; font-size: 0.88rem;
-    color: var(--text-muted); text-align: center;
-    min-height: 1.5rem; transition: opacity 0.25s;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--muted);
+    text-align: center;
+    min-height: 1.5rem;
+    transition: opacity 0.3s;
     font-family: var(--font-display);
+    line-height: 1.5;
   }
   input[type=range] {
-    flex: 1; -webkit-appearance: none; appearance: none;
-    height: 3px; background: var(--border); border-radius: 2px; outline: none;
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: linear-gradient(to right, var(--terra) var(--slider-pct, 10%), var(--border) var(--slider-pct, 10%));
+    border-radius: 4px;
+    outline: none;
     cursor: pointer;
   }
   input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 20px; height: 20px;
-    border-radius: 50%; background: var(--gold);
-    box-shadow: 0 2px 8px rgba(201,168,76,0.4); cursor: pointer;
-    transition: transform 0.15s;
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--terra);
+    box-shadow: 0 3px 10px rgba(214,106,63,0.4);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease);
   }
-  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.18); }
+  input[type=range]::-webkit-slider-thumb:active { transform: scale(1.3); }
+  input[type=range]::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--terra);
+    box-shadow: 0 3px 10px rgba(214,106,63,0.4);
+    cursor: pointer;
+  }
 
   /* ── Calendar ── */
   .cal-wrap {
-    background: #fff; border-radius: var(--radius-lg);
-    border: 1px solid var(--border); padding: 1.2rem;
+    background: var(--paper-elev);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 1.2rem;
+    box-shadow: var(--shadow-sm);
     width: 100%;
   }
-  .cal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-  .cal-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
-  .cal-hdr span { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+  .cal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; }
+  @media (max-width: 640px) { .cal-grid { grid-template-columns: 1fr; gap: 1rem; } }
+  .cal-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.7rem;
+  }
+  .cal-hdr > span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    font-family: var(--font-display);
+  }
   .cal-hdr button {
-    background: none; border: none; cursor: pointer;
-    color: var(--gold); font-size: 1.1rem; line-height: 1;
-    width: 26px; height: 26px; border-radius: 50%;
-    transition: background var(--transition);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .cal-hdr button:hover { background: var(--gold-pale); }
+  .cal-hdr button:hover { background: var(--terra); color: var(--paper); border-color: var(--terra); transform: scale(1.08); }
   .cal-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-  .cal-dname { text-align: center; font-size: 0.68rem; color: var(--text-hint); padding: 2px 0; font-weight: 500; }
+  .cal-dname {
+    text-align: center;
+    font-size: 0.66rem;
+    color: var(--hint);
+    padding: 4px 0 6px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
   .cal-day {
-    text-align: center; font-size: 0.78rem; padding: 5px 2px;
-    border-radius: 5px; cursor: pointer; color: var(--text);
-    transition: background var(--transition), color var(--transition);
-    line-height: 1.6;
+    text-align: center;
+    font-size: 0.82rem;
+    padding: 7px 2px;
+    border-radius: 7px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
   }
-  @media (max-width: 600px) {
-    .cal-day { font-size: 0.82rem; padding: 7px 2px; line-height: 1.5; }
-    .cal-wrap { padding: 0.7rem 0.5rem; }
-    .cal-grid { gap: 1rem; }
+  .cal-day:hover:not(.empty):not(.past) { background: var(--terra-soft); transform: scale(1.05); }
+  .cal-day.sel { background: var(--terra) !important; color: var(--paper) !important; font-weight: 600; box-shadow: 0 4px 12px rgba(214,106,63,0.35); }
+  .cal-day.in-range { background: rgba(214,106,63,0.14); color: var(--terra-deep); }
+  .cal-day.empty, .cal-day.past { color: #c5bba8; cursor: default; opacity: 0.55; }
 
-  }
-  .cal-day:hover:not(.empty):not(.past) { background: var(--gold-pale); }
-  .cal-day.sel { background: var(--gold) !important; color: #fff !important; border-radius: 5px; }
-  .cal-day.in-range { background: #fdf0d0; }
-  .cal-day.empty, .cal-day.past { color: #ccc; cursor: default; }
   .date-pills { display: flex; gap: 0.8rem; width: 100%; }
   .date-pill {
-    flex: 1; padding: 0.6rem 1rem; background: var(--bg-2);
-    border-radius: 8px; text-align: center;
-    border: 1px solid var(--border);
+    flex: 1;
+    padding: 0.85rem 1.1rem;
+    background: var(--paper-elev);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    transition: border-color 0.3s, background 0.3s;
   }
-  .date-pill .pill-lbl { font-size: 0.68rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
-  .date-pill .pill-val { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+  .date-pill:hover { border-color: var(--border-strong); }
+  .pill-lbl {
+    font-size: 0.66rem;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  .pill-val {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+  }
   .date-pill.err-pill { border-color: var(--error); background: var(--error-bg); }
 
   /* ── Section cards ── */
   .scard {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.1rem 1.3rem; width: 100%;
-  }
-  .scard-title { font-size: 0.72rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8rem; }
-
-  /* ── Radio buttons ── */
-  .radio-row { display: flex; gap: 0.8rem; width: 100%; }
-  .radio-btn {
-    flex: 1; padding: 0.7rem 0.5rem; border: 1.5px solid var(--border);
-    border-radius: 9px; text-align: center; font-size: 0.83rem;
-    cursor: pointer; background: var(--bg); color: var(--text);
-    transition: all var(--transition); font-family: var(--font-body);
-  }
-  .radio-btn:hover { border-color: var(--gold); }
-  .radio-btn.sel { border-color: var(--gold); background: var(--gold-pale); color: #9a6c10; font-weight: 500; }
-
-  /* ── Selectable cards ── */
-  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.9rem; width: 100%; }
-  .grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.9rem; width: 100%; }
-  .selcard {
-    border: 1.5px solid var(--border); border-radius: var(--radius);
-    background: var(--bg); overflow: hidden; cursor: pointer;
-    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
-  }
-  .selcard:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
-  .selcard.sel { border-color: var(--gold); background: var(--gold-pale); box-shadow: 0 4px 16px rgba(201,168,76,0.2); }
-  .selcard img { width: 100%; height: 96px; object-fit: cover; display: block; }
-  .selcard .cl { padding: 0.55rem 0.6rem; text-align: center; font-size: 0.83rem; color: var(--text); font-weight: 500; }
-  .selcard .ce { font-size: 1.5rem; padding: 0.6rem 0 0.1rem; text-align: center; }
-  .selcard.sel .cl { color: #9a6c10; }
-  .multi-hint { font-size: 0.73rem; color: var(--text-hint); font-style: italic; }
-
-  /* ── Forms ── */
-  .fg { display: flex; flex-direction: column; gap: 0.35rem; }
-  .fg label { font-size: 0.72rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.08em; }
-  .fg input, .fg select {
-    width: 100%; padding: 0.68rem 0.9rem;
-    border: 1px solid var(--border); border-radius: 8px;
-    font-size: 0.88rem; background: #fff; color: var(--text);
-    font-family: var(--font-body); outline: none;
-    transition: border-color var(--transition);
-  }
-  .fg input:focus, .fg select:focus { border-color: var(--gold); }
-  .frow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; }
-  .frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; width: 100%; }
-
-  /* ── Person blocks ── */
-  .person-block {
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1rem; width: 100%;
-    transition: border-color var(--transition);
-  }
-  .person-block.err { border-color: var(--error); }
-  .person-lbl {
-    font-size: 0.72rem; font-weight: 500; color: var(--gold);
-    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8rem;
-  }
-  #persons-scroll { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; max-height: 45vh; overflow-y: auto; padding-right: 4px; }
-  #persons-scroll::-webkit-scrollbar { width: 4px; }
-  #persons-scroll::-webkit-scrollbar-track { background: var(--bg-2); border-radius: 2px; }
-  #persons-scroll::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
-
-  /* ── Récapitulatif ── */
-  .recap-grid {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.7rem;
-  }
-  .recap-card {
-    background: #fff;
+    background: var(--paper-elev);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+    padding: 1.15rem 1.3rem;
+    width: 100%;
+    transition: border-color 0.3s;
+  }
+  .scard:hover { border-color: var(--border-strong); }
+  .scard-title {
+    font-size: 0.68rem;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 0.85rem;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+
+  /* ── Radio buttons ── */
+  .radio-row { display: flex; gap: 0.7rem; width: 100%; }
+  .radio-btn {
+    flex: 1;
+    padding: 0.78rem 0.6rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    text-align: center;
+    font-size: 0.83rem;
+    cursor: pointer;
+    background: var(--paper);
+    color: var(--ink);
+    transition: all 0.3s var(--ease);
+    font-family: var(--font-body);
+    font-weight: 500;
+    position: relative;
     overflow: hidden;
   }
-  .recap-card-header {
-    background: var(--dark);
-    padding: 0.5rem 0.8rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
+  .radio-btn:hover { border-color: var(--terra); transform: translateY(-1px); }
+  .radio-btn.sel {
+    border-color: var(--terra);
+    background: linear-gradient(135deg, var(--terra-soft), rgba(244,211,193,0.6));
+    color: var(--terra-deep);
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(214,106,63,0.2);
+  }
+
+  /* ── Selectable cards ── */
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.8rem; width: 100%; }
+  .grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.8rem; width: 100%; }
+  .selcard {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--paper-elev);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    position: relative;
+  }
+  .selcard::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(13,47,51,0.45) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .selcard:has(img)::after { opacity: 1; }
+  .selcard:hover { border-color: var(--terra); transform: translateY(-3px); box-shadow: 0 12px 26px rgba(13,47,51,0.12); }
+  .selcard.sel {
+    border-color: var(--terra);
+    box-shadow: 0 10px 30px rgba(214,106,63,0.25);
+  }
+  .selcard.sel::before {
+    content: "✓";
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 26px; height: 26px;
+    background: var(--terra);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 3;
+    animation: popIn 0.3s var(--ease-out);
+    box-shadow: 0 4px 10px rgba(214,106,63,0.4);
+  }
+  @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+  .selcard img { width: 100%; height: 110px; object-fit: cover; display: block; transition: transform 0.6s var(--ease); }
+  .selcard:hover img { transform: scale(1.08); }
+  .selcard .cl {
+    padding: 0.6rem 0.7rem;
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--ink);
     font-weight: 500;
+    position: relative;
+    z-index: 2;
+  }
+  .selcard:has(img) .cl {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    color: var(--paper);
+    font-weight: 600;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    letter-spacing: 0.01em;
+  }
+  .selcard .ce { font-size: 1.7rem; padding: 0.9rem 0 0.2rem; text-align: center; }
+  .multi-hint {
+    font-size: 0.75rem;
+    color: var(--hint);
+    font-style: italic;
     display: flex;
     align-items: center;
     gap: 0.4rem;
   }
-  .recap-card-body {
-    padding: 0.7rem 0.8rem;
+  .multi-hint::before { content: "◆"; color: var(--terra); font-size: 0.6rem; }
+  @media (max-width: 640px) {
+    .selcard img { height: 90px; }
+  }
+
+  /* ── Forms ── */
+  .fg { display: flex; flex-direction: column; gap: 0.4rem; }
+  .fg label {
+    font-size: 0.7rem;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+    opacity: 0.75;
+  }
+  .fg input, .fg select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    background: var(--paper-elev);
+    color: var(--ink);
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  }
+  .fg input::placeholder { color: var(--hint); }
+  .fg input:focus, .fg select:focus {
+    border-color: var(--terra);
+    box-shadow: 0 0 0 4px rgba(214,106,63,0.12);
+  }
+  .fg select { cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%236a6156' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 2.2rem; }
+  .frow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; }
+  .frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; width: 100%; }
+  @media (max-width: 640px) {
+    .frow2 { grid-template-columns: 1fr; gap: 0.7rem; }
+    .frow3 { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  }
+
+  /* Checkbox */
+  .chk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.88rem;
+    color: var(--ink);
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-row input[type=checkbox] {
+    accent-color: var(--terra);
+    width: 18px; height: 18px;
+    cursor: pointer;
+  }
+
+  /* Person blocks */
+  .person-block {
+    background: var(--paper-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem;
+    width: 100%;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .person-block:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+  .person-block.err { border-color: var(--error); }
+  .person-lbl {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--terra-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .person-lbl::before {
+    content: "";
+    width: 14px;
+    height: 1px;
+    background: var(--terra);
+  }
+  #persons-scroll {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.8rem;
+    width: 100%;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 4px;
   }
-  .recap-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
-  .recap-key { font-size: 0.73rem; color: var(--text-hint); flex-shrink: 0; }
-  .recap-val { font-size: 0.76rem; color: var(--text); font-weight: 500; text-align: right; }
+  #persons-scroll::-webkit-scrollbar { width: 5px; }
+  #persons-scroll::-webkit-scrollbar-track { background: var(--cream); border-radius: 3px; }
+  #persons-scroll::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  /* ── Récap page ── */
+  .recap-page {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+    min-height: calc(100vh - 56px);
+  }
+  .recap-page.active { display: flex; animation: fadeUp 0.55s var(--ease-out) both; }
+  .recap-header {
+    padding: 2.4rem 1.5rem 1.2rem;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .recap-header .step-tag { justify-content: center; }
+  .recap-header h2 { margin-top: 0.8rem; }
+  .recap-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.6rem 1.2rem 1rem;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .recap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+  }
+  @media (max-width: 720px) { .recap-grid { grid-template-columns: 1fr; } .recap-full { grid-column: 1; } }
+  .recap-card {
+    background: var(--paper-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .recap-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .recap-card-header {
+    background: var(--ink);
+    padding: 0.65rem 1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra-soft);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .recap-card-body {
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .recap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.2rem 0;
+  }
+  .recap-key { font-size: 0.74rem; color: var(--muted); flex-shrink: 0; }
+  .recap-val { font-size: 0.82rem; color: var(--ink); font-weight: 500; text-align: right; font-family: var(--font-display); }
   .recap-full { grid-column: 1 / -1; }
-  .recap-note { font-size: 0.78rem; color: var(--text-hint); font-style: italic; text-align: center; }
+  .recap-note { font-size: 0.82rem; color: var(--muted); font-style: italic; text-align: center; font-family: var(--font-display); }
+  .recap-footer {
+    padding: 1rem 1.5rem 1.4rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    border-top: 1px solid var(--border);
+    background: rgba(251,247,238,0.98);
+    backdrop-filter: blur(10px);
+  }
 
   /* ── Final page ── */
   .final-bg {
-    background: radial-gradient(ellipse at 30% 40%, #2e2818 0%, var(--dark) 55%);
-    align-items: center; justify-content: center;
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 30% 30%, #1d4a4f 0%, var(--ink) 55%, #061a1d 100%);
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - 56px);
+    padding: 2rem 1.4rem;
   }
-  .final-bg.active { display: flex; }
-  .plane-anim { font-size: 2.8rem; animation: fly 2.2s ease-in-out infinite; display: inline-block; }
+  .final-bg.active { display: flex; animation: fadeUp 0.6s var(--ease-out) both; }
+  .final-bg::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 20% 30%, rgba(214,106,63,0.08) 0%, transparent 40%),
+                      radial-gradient(circle at 80% 70%, rgba(243,199,166,0.06) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  /* Starfield */
+  .stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--cream);
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle 4s infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0; transform: scale(0.6); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+  }
+
+  .final-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .plane-anim {
+    font-size: 3rem;
+    animation: fly 3s ease-in-out infinite;
+    display: inline-block;
+    filter: drop-shadow(0 6px 20px rgba(214,106,63,0.35));
+  }
   @keyframes fly {
-    0%,100% { transform: translateX(-10px) translateY(2px) rotate(-5deg); }
-    50% { transform: translateX(10px) translateY(-6px) rotate(3deg); }
+    0%,100% { transform: translateX(-12px) translateY(2px) rotate(-8deg); }
+    50% { transform: translateX(12px) translateY(-10px) rotate(4deg); }
   }
-  .final-gold { font-family: var(--font-display); font-size: 1.6rem; font-weight: 300; color: var(--gold-light); line-height: 1.4; }
-  .final-sub { font-size: 0.85rem; color: #9a9180; line-height: 1.8; }
-  .final-sub strong { color: var(--gold-light); font-weight: 500; }
-  .status-msg { font-size: 0.82rem; font-style: italic; color: var(--text-hint); text-align: center; min-height: 1.2rem; }
+
+  .final-gold {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .final-gold em { font-style: italic; color: #f3c7a6; }
+
+  .final-sub {
+    font-size: 0.95rem;
+    color: rgba(245,239,228,0.72);
+    line-height: 1.7;
+    max-width: 400px;
+  }
+  .final-sub strong { color: #f3c7a6; font-weight: 500; }
+
+  .final-card {
+    background: rgba(245,239,228,0.04);
+    border: 1px solid rgba(214,106,63,0.22);
+    border-radius: var(--radius-lg);
+    padding: 1.3rem 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+  .final-card p {
+    font-size: 0.85rem;
+    color: rgba(245,239,228,0.7);
+    line-height: 1.6;
+    margin-bottom: 0.9rem;
+  }
+
   .btn-wa {
-    background: #25d366; color: #fff; border: none;
-    padding: 0.85rem 2rem; border-radius: 50px;
-    font-family: var(--font-body); font-size: 0.83rem; font-weight: 500;
-    letter-spacing: 0.07em; cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-    display: flex; align-items: center; gap: 0.5rem;
+    background: #25d366;
+    color: #fff;
+    border: none;
+    padding: 0.95rem 2rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
   }
-  .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,211,102,0.35); }
-  .btn-email {
-    background: transparent; border: 1.5px solid var(--gold);
-    color: var(--gold); padding: 0.85rem 2rem; border-radius: 50px;
-    font-family: var(--font-body); font-size: 0.83rem; font-weight: 500;
-    letter-spacing: 0.07em; cursor: pointer;
-    transition: all var(--transition);
+  .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(37,211,102,0.4); }
+
+  .final-footer {
+    font-size: 0.7rem;
+    color: rgba(245,239,228,0.35);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-top: 0.8rem;
   }
-  .btn-email:hover { background: var(--gold); color: #fff; }
-  .action-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
 
-  /* Checkbox */
-  .chk-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text); cursor: pointer; }
-  .chk-row input[type=checkbox] { accent-color: var(--gold); width: 15px; height: 15px; cursor: pointer; }
-
-  /* Scrollbar global */
-  ::-webkit-scrollbar { width: 5px; }
+  /* ── Scrollbar global ── */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-  @media (max-width: 600px) {
-    /* Layout */
-    .cal-grid { grid-template-columns: 1fr; gap: 0.8rem; }
-    .grid3 { grid-template-columns: repeat(2,1fr); }
-    .grid2 { grid-template-columns: 1fr 1fr; }
-    .frow2 { grid-template-columns: 1fr; gap: 0.7rem; }
-    .frow3 { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-    .recap-grid { grid-template-columns: 1fr; }
-    .recap-full { grid-column: 1; }
+  /* Stagger animations */
+  .stagger > * { opacity: 0; transform: translateY(12px); animation: staggerIn 0.5s var(--ease-out) forwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.2s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.28s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.36s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.44s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.52s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.6s; }
+  @keyframes staggerIn { to { opacity: 1; transform: translateY(0); } }
 
-    /* Typography */
-    h1.hero { font-size: 1.45rem; line-height: 1.28; }
-    h2.qtitle { font-size: 1.2rem; }
-    .step-tag { font-size: 0.65rem; }
+  @media (max-width: 640px) {
+    h1.hero-title { font-size: 2.1rem; }
+    .hero-sub { font-size: 1rem; margin-bottom: 1.6rem; }
+    .hero-meta { gap: 1rem; margin-top: 1.8rem; padding-top: 1rem; }
+    .hero-meta-num { font-size: 1.4rem; }
+    .btn-start { padding: 0.9rem 1.7rem; font-size: 0.84rem; }
+    .btn-ghost-light { padding: 0.9rem 1.7rem; font-size: 0.78rem; }
+    .q-content { padding: 1.4rem 1rem 1.6rem; }
+    .grid3 { grid-template-columns: repeat(2, 1fr); }
+  }
 
-    /* Content & spacing */
-    .content { padding: 0.9rem 0.9rem 1.8rem; gap: 0.65rem; }
-    .scard { padding: 0.8rem 0.9rem; }
-    .scard-title { font-size: 0.68rem; }
-    #recap-content { padding: 0 0.7rem 0.5rem; }
-    .person-block { padding: 0.75rem; }
-
-    /* Buttons */
-    .nav-row { gap: 0.8rem; justify-content: center; }
-    .btn-next { padding: 0.7rem 1.8rem; font-size: 0.82rem; }
-    .btn-back { font-size: 0.78rem; }
-
-    /* Slider */
-    .slider-val { font-size: 1.8rem; }
-
-    /* Cards */
-    .selcard img { height: 70px; }
-    .selcard .cl { font-size: 0.78rem; padding: 0.4rem 0.4rem; }
-
-    /* Calendar */
-    .cal-wrap { padding: 0.7rem 0.6rem; }
-    .cal-day { font-size: 0.8rem; padding: 6px 2px; }
-    .cal-dname { font-size: 0.65rem; }
-    .cal-hdr span { font-size: 0.8rem; }
-
-    /* Date pills */
-    .date-pills { gap: 0.5rem; }
-    .date-pill { padding: 0.45rem 0.5rem; }
-    .date-pill .pill-val { font-size: 0.82rem; }
-
-    /* Radio */
-    .radio-row { flex-wrap: nowrap; gap: 0.5rem; }
-    .radio-btn { font-size: 0.78rem; padding: 0.6rem 0.3rem; }
-
-    /* Final page */
-    .final-gold { font-size: 1.25rem; }
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
 <body>
 
 <div class="shell">
-  <!-- Top Bar -->
-  <div class="topbar">
-    <div class="logo">✦ Voyage Mystère</div>
-    <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="prog"></div></div></div>
-    <div class="step-num" id="step-counter">1 / 13</div>
-  </div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
-
-  <!-- ════════════════ PAGE 1 ════════════════ -->
-  <div class="page center-content active" id="p1">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=85')"></div>
-    <div class="overlay-dark"></div>
-    <div class="content" style="text-align:center;">
-      <div class="step-tag">L'aventure commence</div>
-      <h1 class="hero">Vous adorez voyager<br>mais vous ne savez jamais où partir ?<br><em>Partez sans savoir où vous allez.</em></h1>
-      <p style="color:rgba(255,255,255,0.6);font-size:0.88rem;font-style:italic;font-family:'Cormorant Garamond',serif;">Un questionnaire. Une surprise. Une destination inconnue.</p>
-      <button class="btn-start" onclick="goTo(2)">Commencer l'expérience →</button>
+  <!-- ═══════════ TOP BAR ═══════════ -->
+  <header class="topbar" data-testid="top-bar">
+    <div class="logo" data-testid="brand-logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+      </span>
+      Voyage Mystère
     </div>
-  </div>
+    <div class="prog-wrap" aria-label="Progression">
+      <div class="prog-track"><div class="prog-fill" id="prog" data-testid="progress-fill"></div></div>
+    </div>
+    <div class="step-num" id="step-counter" data-testid="step-counter">01 / 13</div>
+  </header>
 
-  <!-- ════════════════ PAGE 2 — Budget ════════════════ -->
-  <div class="page center-content" id="p2">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 1 — Budget</div>
-      <h2 class="qtitle">Quel est votre budget par personne ?</h2>
-      <div class="slider-wrap">
-        <div class="slider-val" id="budget-val">3 000 €</div>
-        <div class="slider-row">
-          <span class="slider-lbl">500 €</span>
-          <input type="range" id="budget" min="500" max="30000" step="100" value="3000" oninput="updateBudget(this.value)">
-          <span class="slider-lbl" style="text-align:right">30 000 €</span>
+  <div class="toast" id="toast" role="status" aria-live="polite" data-testid="toast"></div>
+
+  <!-- ═══════════ PAGE 1 — HERO ═══════════ -->
+  <section class="page hero-page active" id="p1" data-testid="page-1">
+    <div class="hero-bg" style="background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=85')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-vignette"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">L'aventure commence</div>
+      <h1 class="hero-title">
+        Vous adorez voyager<br>
+        mais vous ne savez jamais où&nbsp;?
+        <em>Partez sans savoir où.</em>
+      </h1>
+      <p class="hero-sub">
+        Un questionnaire. Une surprise. Une destination inconnue — pensée pour vous, révélée à la dernière minute.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-start" onclick="goTo(2)" data-testid="start-button">
+          Commencer l'expérience
+          <span class="arrow">→</span>
+        </button>
+        <a class="btn-ghost-light" href="#how" onclick="goTo(2);return false;" data-testid="howit-button">Comment ça marche</a>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="hero-meta-num">13</div>
+          <div class="hero-meta-lbl">Étapes guidées</div>
         </div>
-        <div class="slider-desc" id="budget-desc">On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.</div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(1)">← Retour</button><button class="btn-next" onclick="validate(2)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 3 — Dates ════════════════ -->
-  <div class="page" id="p3">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 2 — Dates</div>
-      <h2 class="qtitle">Quand partez-vous pour <em>je-ne-sais-où</em> ?</h2>
-      <div class="date-pills">
-        <div class="date-pill" id="dep-pill"><div class="pill-lbl">✈ Départ</div><div class="pill-val" id="dep-display">Sélectionner</div></div>
-        <div class="date-pill" id="ret-pill"><div class="pill-lbl">↩ Retour</div><div class="pill-val" id="ret-display">Sélectionner</div></div>
-      </div>
-      <div class="cal-wrap">
-        <div class="cal-grid">
-          <div id="cal0"></div>
-          <div id="cal1"></div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-num">48h</div>
+          <div class="hero-meta-lbl">Proposition sur mesure</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-num">∞</div>
+          <div class="hero-meta-lbl">Destinations possibles</div>
         </div>
       </div>
-      <div class="nav-row p3-nav"><button class="btn-back" onclick="goTo(2)">← Retour</button><button class="btn-next" onclick="validate(3)">Continuer →</button></div>
     </div>
-  </div>
+  </section>
 
-  <!-- ════════════════ PAGE 4 — Vol & Contraintes ════════════════ -->
-  <div class="page center-content" id="p4">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 3 — Préférences de vol</div>
-      <h2 class="qtitle">Vos contraintes de voyage</h2>
-      <div class="scard">
-        <div class="scard-title">Durée de vol maximale souhaitée</div>
-        <div class="slider-wrap">
-          <div class="slider-val" id="vol-val" style="font-size:1.6rem;">6h</div>
-          <div class="slider-row">
-            <span class="slider-lbl">1h</span>
-            <input type="range" id="vol-dur" min="1" max="16" step="1" value="6" oninput="document.getElementById('vol-val').textContent=this.value+'h'">
-            <span class="slider-lbl" style="text-align:right">16h+</span>
+  <!-- ═══════════ PAGE 2 — BUDGET ═══════════ -->
+  <section class="q-page" id="p2" data-testid="page-2">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">01 · Budget</div>
+          <div class="q-visual-title">L'investissement de<br>votre <em>évasion.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 1 — Budget</div>
+          <h2 class="qtitle">Quel est votre budget <em>par personne</em> ?</h2>
+          <p class="q-hint">Toutes taxes et options incluses.</p>
+          <div class="scard">
+            <div class="slider-wrap">
+              <div class="slider-val" id="budget-val">3 000 €</div>
+              <div class="slider-row">
+                <span class="slider-lbl">500 €</span>
+                <input type="range" id="budget" min="500" max="30000" step="100" value="3000" oninput="updateBudget(this.value)" data-testid="budget-slider">
+                <span class="slider-lbl" style="text-align:right">30 000 €</span>
+              </div>
+              <div class="slider-desc" id="budget-desc">On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.</div>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(1)" data-testid="back-button-2"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(2)" data-testid="next-button-2">Continuer <span class="arrow">→</span></button>
           </div>
         </div>
       </div>
-      <div class="scard">
-        <div class="scard-title">Villes / pays à éviter</div>
-        <div class="fg"><input type="text" id="avoid-cities" placeholder="Ex : Dubaï, Maroc, États-Unis… (ou laisser vide)"></div>
-      </div>
-      <div class="scard">
-        <div class="scard-title">Résidence</div>
-        <div class="radio-row" id="res-grp">
-          <div class="radio-btn sel" onclick="pickRadio(this,'res-grp')">Résident UE</div>
-          <div class="radio-btn" onclick="pickRadio(this,'res-grp')">Hors UE</div>
-        </div>
-        <div style="margin-top:0.9rem;">
-          <label class="chk-row">
-            <input type="checkbox" id="passport-valid">
-            <span>Passeport valide</span>
-          </label>
-        </div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(3)">← Retour</button><button class="btn-next" onclick="validate(4)">Continuer →</button></div>
     </div>
-  </div>
+  </section>
 
-  <!-- ════════════════ PAGE 5 — Groupe ════════════════ -->
-  <div class="page center-content" id="p5">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 4 — Votre groupe</div>
-      <h2 class="qtitle">Qui voyage avec vous ?</h2>
-      <div class="grid3" id="group-grid">
-        <div class="selcard" onclick="pickCard(this,'group-grid',true)"><div class="ce">👨‍👩‍👧‍👦</div><div class="cl">Famille</div></div>
-        <div class="selcard" onclick="pickCard(this,'group-grid',true)"><div class="ce">👫</div><div class="cl">Amis</div></div>
-        <div class="selcard" onclick="pickCard(this,'group-grid',true)"><div class="ce">💑</div><div class="cl">Couple</div></div>
-      </div>
-      <span class="field-error" id="group-err">Veuillez sélectionner une option</span>
-      <div class="frow2">
-        <div class="fg"><label>Nombre de voyageurs *</label>
-          <select id="nb-persons" onchange="updatePersonsCount()">
-            <option value="">— Sélectionner —</option>
-            <option value="1">1 personne</option><option value="2" selected>2 personnes</option>
-            <option value="3">3 personnes</option><option value="4">4 personnes</option>
-            <option value="5">5 personnes</option><option value="6">6 personnes</option>
-            <option value="7">7 personnes</option><option value="8">8+ personnes</option>
-          </select>
-          <span class="field-error" id="nbp-err">Ce champ est obligatoire</span>
-        </div>
-        <div class="fg"><label>Nombre d'enfants</label>
-          <select id="nb-children">
-            <option value="0" selected>Aucun enfant</option>
-            <option value="1">1 enfant</option><option value="2">2 enfants</option>
-            <option value="3">3 enfants</option><option value="4">4 enfants</option>
-          </select>
+  <!-- ═══════════ PAGE 3 — DATES ═══════════ -->
+  <section class="q-page" id="p3" data-testid="page-3">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">02 · Dates</div>
+          <div class="q-visual-title">Le moment idéal<br>pour <em>s'évader.</em></div>
         </div>
       </div>
-      <div class="scard">
-        <div class="scard-title">Bagage en soute</div>
-        <div class="radio-row" id="bag-grp">
-          <div class="radio-btn sel" onclick="pickRadio(this,'bag-grp');toggleBag(false)">Cabine uniquement</div>
-          <div class="radio-btn" onclick="pickRadio(this,'bag-grp');toggleBag(true)">Avec bagage en soute</div>
-        </div>
-        <div id="bag-count-wrap" style="display:none;margin-top:0.8rem;">
-          <div class="fg"><label>Nombre de bagages en soute</label>
-            <select id="bag-count"><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 2 — Dates</div>
+          <h2 class="qtitle">Quand partez-vous pour <em>je-ne-sais-où</em> ?</h2>
+          <div class="date-pills">
+            <div class="date-pill" id="dep-pill" data-testid="dep-pill"><div class="pill-lbl">✈ Départ</div><div class="pill-val" id="dep-display">Sélectionner</div></div>
+            <div class="date-pill" id="ret-pill" data-testid="ret-pill"><div class="pill-lbl">↩ Retour</div><div class="pill-val" id="ret-display">Sélectionner</div></div>
+          </div>
+          <div class="cal-wrap">
+            <div class="cal-grid">
+              <div id="cal0"></div>
+              <div id="cal1"></div>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(2)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(3)" data-testid="next-button-3">Continuer <span class="arrow">→</span></button>
           </div>
         </div>
       </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(4)">← Retour</button><button class="btn-next" onclick="validate(5)">Continuer →</button></div>
     </div>
-  </div>
+  </section>
 
-  <!-- ════════════════ PAGE 6 — Départ ════════════════ -->
-  <div class="page center-content" id="p6">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 5 — Point de départ</div>
-      <h2 class="qtitle">D'où décollons-nous ?</h2>
-      <div class="frow2">
-        <div class="fg"><label>Votre ville de départ *</label>
-          <input type="text" id="city-dep" placeholder="Ex : Paris, Lyon, Bordeaux…">
-          <span class="field-error" id="city-err">Ce champ est obligatoire</span>
-        </div>
-        <div class="fg"><label>Aéroport le plus proche *</label>
-          <input type="text" id="airport-dep" placeholder="Ex : CDG, ORY, LYS…">
-          <span class="field-error" id="airport-err">Ce champ est obligatoire</span>
+  <!-- ═══════════ PAGE 4 — VOL ═══════════ -->
+  <section class="q-page" id="p4" data-testid="page-4">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">03 · Préférences de vol</div>
+          <div class="q-visual-title">Les contours de<br><em>votre voyage.</em></div>
         </div>
       </div>
-      <div class="scard">
-        <div class="scard-title">Transfert vers l'aéroport</div>
-        <div class="radio-row" id="transfer-grp">
-          <div class="radio-btn sel" onclick="pickRadio(this,'transfer-grp')">Mes propres moyens</div>
-          <div class="radio-btn" onclick="pickRadio(this,'transfer-grp')">Taxi privé <span style="font-size:0.72rem;opacity:0.7;display:block;margin-top:2px;">Supplément</span></div>
-        </div>
-      </div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(5)">← Retour</button><button class="btn-next" onclick="validate(6)">Continuer →</button></div>
-    </div>
-  </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 3 — Préférences de vol</div>
+          <h2 class="qtitle">Vos contraintes de voyage</h2>
 
-  <!-- ════════════════ PAGE 7 — Thème destination ════════════════ -->
-  <div class="page center-content" id="p7">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 6 — Ambiance</div>
-      <h2 class="qtitle">Quel décor pour votre mystère ?</h2>
-      <div class="grid3" id="theme-grid">
-        <div class="selcard" onclick="toggleCard(this)">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=75" alt="Plage">
-          <div class="cl">Plage</div>
-        </div>
-        <div class="selcard" onclick="toggleCard(this)">
-          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=75" alt="Montagne">
-          <div class="cl">Montagne</div>
-        </div>
-        <div class="selcard" onclick="toggleCard(this)">
-          <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&q=75" alt="Ville">
-          <div class="cl">Centre-ville</div>
-        </div>
-      </div>
-      <div class="multi-hint">Plusieurs choix possibles</div>
-      <span class="field-error" id="theme-err">Veuillez sélectionner au moins une ambiance</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(6)">← Retour</button><button class="btn-next" onclick="validate(7)">Continuer →</button></div>
-    </div>
-  </div>
+          <div class="scard">
+            <div class="scard-title">Durée de vol maximale souhaitée</div>
+            <div class="slider-wrap">
+              <div class="slider-val" id="vol-val" style="font-size:2rem;">6h</div>
+              <div class="slider-row">
+                <span class="slider-lbl">1h</span>
+                <input type="range" id="vol-dur" min="1" max="16" step="1" value="6" oninput="updateVol(this.value)" data-testid="flight-slider">
+                <span class="slider-lbl" style="text-align:right">16h+</span>
+              </div>
+            </div>
+          </div>
 
-  <!-- ════════════════ PAGE 8 — Hôtel ════════════════ -->
-  <div class="page center-content" id="p8">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 7 — Hébergement</div>
-      <h2 class="qtitle">Votre niveau d'hébergement idéal ?</h2>
-      <div class="grid3" id="hotel-grid">
-        <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
-          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=75" alt="Classique">
-          <div class="cl">Classique</div>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
-          <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=500&q=75" alt="Premium">
-          <div class="cl">Premium</div>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'hotel-grid',true)">
-          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500&q=75" alt="Luxe">
-          <div class="cl">Luxe</div>
-        </div>
-      </div>
-      <span class="field-error" id="hotel-err">Veuillez sélectionner un type d'hébergement</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(7)">← Retour</button><button class="btn-next" onclick="validate(8)">Continuer →</button></div>
-    </div>
-  </div>
+          <div class="scard">
+            <div class="scard-title">Villes / pays à éviter</div>
+            <div class="fg">
+              <input type="text" id="avoid-cities" placeholder="Ex : Dubaï, Maroc, États-Unis… (ou laisser vide)" data-testid="avoid-input">
+            </div>
+          </div>
 
-  <!-- ════════════════ PAGE 9 — Restauration ════════════════ -->
-  <div class="page center-content" id="p9">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 8 — Restauration</div>
-      <h2 class="qtitle">Quelle formule de restauration ?</h2>
-      <div class="grid2" id="board-grid">
-        <div class="selcard" onclick="pickCard(this,'board-grid',true)" style="padding:1.5rem;text-align:center;">
-          <div class="ce">🍳</div>
-          <div class="cl" style="font-size:1rem;">Petit-déjeuner</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Demi-pension légère</p>
-        </div>
-        <div class="selcard" onclick="pickCard(this,'board-grid',true)" style="padding:1.5rem;text-align:center;">
-          <div class="ce">🍽️</div>
-          <div class="cl" style="font-size:1rem;">All inclusive</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Tout compris, sans souci</p>
-        </div>
-      </div>
-      <span class="field-error" id="board-err">Veuillez sélectionner une formule</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(8)">← Retour</button><button class="btn-next" onclick="validate(9)">Continuer →</button></div>
-    </div>
-  </div>
+          <div class="scard">
+            <div class="scard-title">Résidence</div>
+            <div class="radio-row" id="res-grp">
+              <div class="radio-btn sel" onclick="pickRadio(this,'res-grp')" data-testid="res-eu">Résident UE</div>
+              <div class="radio-btn" onclick="pickRadio(this,'res-grp')" data-testid="res-noneu">Hors UE</div>
+            </div>
+            <div style="margin-top:0.9rem;">
+              <label class="chk-row">
+                <input type="checkbox" id="passport-valid" data-testid="passport-chk">
+                <span>Passeport valide</span>
+              </label>
+            </div>
+          </div>
 
-  <!-- ════════════════ PAGE 10 — Rythme ════════════════ -->
-  <div class="page center-content" id="p10">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content">
-      <div class="step-tag">Étape 9 — Rythme</div>
-      <h2 class="qtitle">Quel voyageur êtes-vous ?</h2>
-      <div class="grid2" id="mood-grid">
-        <div class="selcard" onclick="toggleCard(this)" style="padding:1.8rem;text-align:center;">
-          <div style="font-size:2.2rem;">🌿</div>
-          <div class="cl" style="font-size:1.05rem;">Détente</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Farniente, spa & bien-être</p>
-        </div>
-        <div class="selcard" onclick="toggleCard(this)" style="padding:1.8rem;text-align:center;">
-          <div style="font-size:2.2rem;">🧭</div>
-          <div class="cl" style="font-size:1.05rem;">Découverte</div>
-          <p style="font-size:0.75rem;color:var(--text-hint);font-style:italic;margin-top:4px;">Visites, culture & aventure</p>
-        </div>
-      </div>
-      <div class="multi-hint">Plusieurs choix possibles</div>
-      <span class="field-error" id="mood-err">Veuillez sélectionner au moins un rythme</span>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(9)">← Retour</button><button class="btn-next" onclick="validate(10)">Continuer →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 11 — Participants ════════════════ -->
-  <div class="page" id="p11">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div class="content" style="gap:1rem;">
-      <div class="step-tag">Étape 10 — Voyageurs</div>
-      <h2 class="qtitle">Informations des participants</h2>
-      <div id="persons-scroll"></div>
-      <div class="nav-row"><button class="btn-back" onclick="goTo(10)">← Retour</button><button class="btn-next" onclick="validate(11)">Voir le récapitulatif →</button></div>
-    </div>
-  </div>
-
-  <!-- ════════════════ PAGE 12 — Récapitulatif ════════════════ -->
-  <div class="page" id="p12">
-    <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1400&q=80')"></div>
-    <div class="overlay-light"></div>
-    <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;height:100%;">
-      <div style="padding:1rem 2.2rem 0.5rem;text-align:center;flex-shrink:0;">
-        <div class="step-tag" style="margin-bottom:0.3rem;">Récapitulatif — Vérifiez vos informations</div>
-        <h2 class="qtitle" style="font-size:1.2rem;">Votre voyage mystère en un coup d'œil</h2>
-      </div>
-      <div id="recap-content" style="flex:1;overflow-y:auto;padding:0 1.4rem 0.5rem;"></div>
-      <div style="padding:0.7rem 2.2rem 1rem;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0.4rem;border-top:1px solid var(--border);background:rgba(250,249,247,0.97);">
-        <p class="recap-note">Si tout est correct, confirmez votre demande ci-dessous.</p>
-        <div class="nav-row" style="margin-top:0;">
-          <button class="btn-back" onclick="goTo(11)">← Modifier</button>
-          <button class="btn-next" onclick="goTo(13)">Confirmer ma demande ✓</button>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(3)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(4)" data-testid="next-button-4">Continuer <span class="arrow">→</span></button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ════════════════ PAGE 13 — Finale ════════════════ -->
-  <div class="page final-bg center-content" id="p13">
-    <div class="content" style="text-align:center;gap:1.4rem;">
+  <!-- ═══════════ PAGE 5 — GROUPE ═══════════ -->
+  <section class="q-page" id="p5" data-testid="page-5">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">04 · Votre groupe</div>
+          <div class="q-visual-title">Qui partage<br><em>l'aventure ?</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 4 — Votre groupe</div>
+          <h2 class="qtitle">Qui voyage avec vous ?</h2>
+
+          <div class="grid3" id="group-grid">
+            <div class="selcard" onclick="pickCard(this,'group-grid',true)" data-testid="group-family"><div class="ce">👨‍👩‍👧‍👦</div><div class="cl">Famille</div></div>
+            <div class="selcard" onclick="pickCard(this,'group-grid',true)" data-testid="group-friends"><div class="ce">👫</div><div class="cl">Amis</div></div>
+            <div class="selcard" onclick="pickCard(this,'group-grid',true)" data-testid="group-couple"><div class="ce">💑</div><div class="cl">Couple</div></div>
+          </div>
+          <span class="field-error" id="group-err">Veuillez sélectionner une option</span>
+
+          <div class="frow2">
+            <div class="fg">
+              <label>Nombre de voyageurs *</label>
+              <select id="nb-persons" onchange="updatePersonsCount()" data-testid="nbp-select">
+                <option value="">— Sélectionner —</option>
+                <option value="1">1 personne</option><option value="2" selected>2 personnes</option>
+                <option value="3">3 personnes</option><option value="4">4 personnes</option>
+                <option value="5">5 personnes</option><option value="6">6 personnes</option>
+                <option value="7">7 personnes</option><option value="8">8+ personnes</option>
+              </select>
+              <span class="field-error" id="nbp-err">Ce champ est obligatoire</span>
+            </div>
+            <div class="fg">
+              <label>Nombre d'enfants</label>
+              <select id="nb-children" data-testid="nbc-select">
+                <option value="0" selected>Aucun enfant</option>
+                <option value="1">1 enfant</option><option value="2">2 enfants</option>
+                <option value="3">3 enfants</option><option value="4">4 enfants</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="scard">
+            <div class="scard-title">Bagage en soute</div>
+            <div class="radio-row" id="bag-grp">
+              <div class="radio-btn sel" onclick="pickRadio(this,'bag-grp');toggleBag(false)">Cabine uniquement</div>
+              <div class="radio-btn" onclick="pickRadio(this,'bag-grp');toggleBag(true)">Avec bagage en soute</div>
+            </div>
+            <div id="bag-count-wrap" style="display:none;margin-top:0.9rem;">
+              <div class="fg">
+                <label>Nombre de bagages en soute</label>
+                <select id="bag-count"><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(4)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(5)" data-testid="next-button-5">Continuer <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 6 — DÉPART ═══════════ -->
+  <section class="q-page" id="p6" data-testid="page-6">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">05 · Point de départ</div>
+          <div class="q-visual-title">Le début de<br><em>l'histoire.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 5 — Point de départ</div>
+          <h2 class="qtitle">D'où décollons-nous ?</h2>
+
+          <div class="frow2">
+            <div class="fg">
+              <label>Ville de départ *</label>
+              <input type="text" id="city-dep" placeholder="Ex : Paris, Lyon, Bordeaux…" data-testid="city-input">
+              <span class="field-error" id="city-err">Ce champ est obligatoire</span>
+            </div>
+            <div class="fg">
+              <label>Aéroport le plus proche *</label>
+              <input type="text" id="airport-dep" placeholder="Ex : CDG, ORY, LYS…" data-testid="airport-input">
+              <span class="field-error" id="airport-err">Ce champ est obligatoire</span>
+            </div>
+          </div>
+
+          <div class="scard">
+            <div class="scard-title">Transfert vers l'aéroport</div>
+            <div class="radio-row" id="transfer-grp">
+              <div class="radio-btn sel" onclick="pickRadio(this,'transfer-grp')">Mes propres moyens</div>
+              <div class="radio-btn" onclick="pickRadio(this,'transfer-grp')">Taxi privé <span style="font-size:0.7rem;opacity:0.7;display:block;margin-top:2px;">Supplément</span></div>
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(5)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(6)" data-testid="next-button-6">Continuer <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 7 — AMBIANCE ═══════════ -->
+  <section class="q-page" id="p7" data-testid="page-7">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">06 · Ambiance</div>
+          <div class="q-visual-title">Le décor de<br><em>votre mystère.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 6 — Ambiance</div>
+          <h2 class="qtitle">Quel décor pour votre mystère ?</h2>
+          <div class="multi-hint">Plusieurs choix possibles</div>
+          <div class="grid3" id="theme-grid">
+            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=75" alt="Plage"><div class="cl">Plage</div></div>
+            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=75" alt="Montagne"><div class="cl">Montagne</div></div>
+            <div class="selcard" onclick="toggleCard(this)"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=75" alt="Ville"><div class="cl">Centre-ville</div></div>
+          </div>
+          <span class="field-error" id="theme-err">Veuillez sélectionner au moins une ambiance</span>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(6)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(7)" data-testid="next-button-7">Continuer <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 8 — HÉBERGEMENT ═══════════ -->
+  <section class="q-page" id="p8" data-testid="page-8">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">07 · Hébergement</div>
+          <div class="q-visual-title">Votre cocon<br><em>pour la nuit.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 7 — Hébergement</div>
+          <h2 class="qtitle">Votre niveau d'hébergement idéal ?</h2>
+          <div class="grid3" id="hotel-grid">
+            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=75" alt="Classique"><div class="cl">Classique</div></div>
+            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=75" alt="Premium"><div class="cl">Premium</div></div>
+            <div class="selcard" onclick="pickCard(this,'hotel-grid',true)"><img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=75" alt="Luxe"><div class="cl">Luxe</div></div>
+          </div>
+          <span class="field-error" id="hotel-err">Veuillez sélectionner un type d'hébergement</span>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(7)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(8)" data-testid="next-button-8">Continuer <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 9 — RESTAURATION ═══════════ -->
+  <section class="q-page" id="p9" data-testid="page-9">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">08 · Restauration</div>
+          <div class="q-visual-title">La table<br><em>qui vous attend.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 8 — Restauration</div>
+          <h2 class="qtitle">Quelle formule de restauration ?</h2>
+          <div class="grid2" id="board-grid">
+            <div class="selcard" onclick="pickCard(this,'board-grid',true)" style="padding:1.4rem;text-align:center;">
+              <div class="ce">🍳</div>
+              <div class="cl" style="font-size:1rem;">Petit-déjeuner</div>
+              <p style="font-size:0.76rem;color:var(--hint);font-style:italic;margin-top:4px;font-family:var(--font-display);">Demi-pension légère</p>
+            </div>
+            <div class="selcard" onclick="pickCard(this,'board-grid',true)" style="padding:1.4rem;text-align:center;">
+              <div class="ce">🍽️</div>
+              <div class="cl" style="font-size:1rem;">All inclusive</div>
+              <p style="font-size:0.76rem;color:var(--hint);font-style:italic;margin-top:4px;font-family:var(--font-display);">Tout compris, sans souci</p>
+            </div>
+          </div>
+          <span class="field-error" id="board-err">Veuillez sélectionner une formule</span>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(8)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(9)" data-testid="next-button-9">Continuer <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 10 — RYTHME ═══════════ -->
+  <section class="q-page" id="p10" data-testid="page-10">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">09 · Rythme</div>
+          <div class="q-visual-title">Votre tempo<br><em>de voyageur.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 9 — Rythme</div>
+          <h2 class="qtitle">Quel voyageur êtes-vous ?</h2>
+          <div class="multi-hint">Plusieurs choix possibles</div>
+          <div class="grid2" id="mood-grid">
+            <div class="selcard" onclick="toggleCard(this)" style="padding:1.7rem;text-align:center;">
+              <div style="font-size:2.4rem;">🌿</div>
+              <div class="cl" style="font-size:1.05rem;">Détente</div>
+              <p style="font-size:0.78rem;color:var(--hint);font-style:italic;margin-top:4px;font-family:var(--font-display);">Farniente, spa &amp; bien-être</p>
+            </div>
+            <div class="selcard" onclick="toggleCard(this)" style="padding:1.7rem;text-align:center;">
+              <div style="font-size:2.4rem;">🧭</div>
+              <div class="cl" style="font-size:1.05rem;">Découverte</div>
+              <p style="font-size:0.78rem;color:var(--hint);font-style:italic;margin-top:4px;font-family:var(--font-display);">Visites, culture &amp; aventure</p>
+            </div>
+          </div>
+          <span class="field-error" id="mood-err">Veuillez sélectionner au moins un rythme</span>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(9)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(10)" data-testid="next-button-10">Continuer <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 11 — PARTICIPANTS ═══════════ -->
+  <section class="q-page" id="p11" data-testid="page-11">
+    <div class="q-layout">
+      <div class="q-visual">
+        <div class="q-bg" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1400&q=80')"></div>
+        <div class="q-visual-inner">
+          <div class="q-visual-tag">10 · Voyageurs</div>
+          <div class="q-visual-title">Les héros<br><em>de l'aventure.</em></div>
+        </div>
+      </div>
+      <div class="q-content">
+        <div class="q-content-inner stagger">
+          <div class="step-tag">Étape 10 — Voyageurs</div>
+          <h2 class="qtitle">Informations des participants</h2>
+          <div id="persons-scroll"></div>
+          <div class="nav-row">
+            <button class="btn-back" onclick="goTo(10)"><span class="arrow">←</span> Retour</button>
+            <button class="btn-next" onclick="validate(11)" data-testid="next-button-11">Voir le récapitulatif <span class="arrow">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 12 — RÉCAP ═══════════ -->
+  <section class="recap-page" id="p12" data-testid="page-12">
+    <div class="recap-header">
+      <div class="step-tag">Récapitulatif — Vérifiez vos informations</div>
+      <h2 class="qtitle" style="font-size:1.6rem;margin-top:0.5rem;">Votre voyage mystère <em>en un coup d'œil</em></h2>
+    </div>
+    <div class="recap-body" id="recap-content"></div>
+    <div class="recap-footer">
+      <p class="recap-note">Si tout est correct, confirmez votre demande ci-dessous.</p>
+      <div class="nav-row" style="margin-top:0; padding-top:0; border:none;">
+        <button class="btn-back" onclick="goTo(11)"><span class="arrow">←</span> Modifier</button>
+        <button class="btn-next" onclick="goTo(13)" data-testid="confirm-button">Confirmer ma demande <span class="arrow">✓</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PAGE 13 — FINAL ═══════════ -->
+  <section class="final-bg" id="p13" data-testid="page-13">
+    <div class="stars" id="stars"></div>
+    <div class="final-content">
       <div class="plane-anim">✈️</div>
-      <div class="final-gold">Nous recherchons votre<br>voyage mystère parfait<br>mais… 🤫</div>
-      <p class="final-sub">Votre demande a été transmise à nos experts.<br>Vous recevrez votre proposition sous <strong>48h</strong>.</p>
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:1rem 1.5rem;max-width:380px;">
-        <p style="font-size:0.82rem;color:#c5bfb0;line-height:1.7;">En cas de questions, n'hésitez pas à nous écrire :</p>
-        <button class="btn-wa" onclick="sendWhatsApp()" style="margin:0.7rem auto 0;display:flex;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.557 4.118 1.529 5.849L.057 23.571l5.886-1.543A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.002-1.372l-.358-.213-3.714.974.991-3.624-.234-.373A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+      <div class="final-gold">
+        Nous recherchons votre<br>voyage mystère parfait<br>
+        <em>mais… 🤫</em>
+      </div>
+      <p class="final-sub">
+        Votre demande a été transmise à nos experts.<br>
+        Vous recevrez votre proposition sous <strong>48h</strong>.
+      </p>
+      <div class="final-card">
+        <p>En cas de questions, n'hésitez pas à nous écrire :</p>
+        <button class="btn-wa" onclick="sendWhatsApp()" data-testid="whatsapp-button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.557 4.118 1.529 5.849L.057 23.571l5.886-1.543A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.002-1.372l-.358-.213-3.714.974.991-3.624-.234-.373A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+          </svg>
           Nous contacter sur WhatsApp
         </button>
       </div>
-      <p style="font-size:0.72rem;color:#4a4438;letter-spacing:0.05em;">✦ Voyage Mystère — L'aventure commence sans savoir où</p>
+      <div class="final-footer">✦ Voyage Mystère — L'aventure commence sans savoir où</div>
     </div>
-  </div>
+  </section>
 
 </div><!-- /shell -->
 
@@ -846,6 +1709,7 @@
 //  STATE
 // ──────────────────────────────────────────────
 const TOTAL = 13;
+let currentPage = 1;
 let calBase = new Date(); calBase.setDate(1);
 let selStart = null, selEnd = null, picking = 'start';
 let bagEnabled = false;
@@ -857,31 +1721,46 @@ const DAYS_SHORT = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
 //  NAVIGATION
 // ──────────────────────────────────────────────
 function goTo(n) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const dir = n > currentPage ? 'right' : 'left';
+  document.querySelectorAll('.page, .q-page, .recap-page, .final-bg').forEach(p => {
+    p.classList.remove('active', 'enter-right', 'enter-left');
+  });
   const page = document.getElementById('p'+n);
+  if(!page) return;
   page.classList.add('active');
+  // animate direction for question pages
+  page.classList.add(dir === 'right' ? 'enter-right' : 'enter-left');
+  currentPage = n;
+
+  // progress
   document.getElementById('prog').style.width = (n/TOTAL*100)+'%';
-  document.getElementById('step-counter').textContent = n+' / '+TOTAL;
-  // Scroll the page element itself (not window) — critical for mobile
-  page.scrollTop = 0;
+  document.getElementById('step-counter').textContent =
+    String(n).padStart(2,'0') + ' / ' + String(TOTAL).padStart(2,'0');
+
+  // scroll top (both window and inner scrollable content)
+  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  page.querySelectorAll('.q-content, .recap-body').forEach(el => el.scrollTop = 0);
+
   if(n === 3) renderCalendars();
   if(n === 11) renderPersonForms();
   if(n === 12) renderRecap();
-  if(n === 13) { setTimeout(submitEmail, 800); }
+  if(n === 13) { renderStars(); setTimeout(submitEmail, 800); }
 }
 
 // ──────────────────────────────────────────────
 //  TOAST
 // ──────────────────────────────────────────────
+let toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3200);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3400);
 }
 
 // ──────────────────────────────────────────────
-//  VALIDATION PER PAGE
+//  VALIDATION
 // ──────────────────────────────────────────────
 function validate(page) {
   let ok = true;
@@ -957,7 +1836,6 @@ function validate(page) {
       if(!pOk) { if(pb) pb.classList.add('err'); personOk=false; }
       else { if(pb) pb.classList.remove('err'); }
     }
-    // Enfants
     const nk = parseInt(document.getElementById('nb-children').value) || 0;
     for(let j=0;j<nk;j++) {
       const pb = document.getElementById('pb-k'+j);
@@ -967,7 +1845,7 @@ function validate(page) {
       if(!fn||!ln||!dob) { if(pb) pb.classList.add('err'); personOk=false; }
       else { if(pb) pb.classList.remove('err'); }
     }
-    if(!personOk) { showToast('Veuillez compléter les informations obligatoires pour chaque voyageur et enfant.'); return; }
+    if(!personOk) { showToast('Veuillez compléter les informations obligatoires pour chaque voyageur.'); return; }
   }
 
   goTo(page + 1);
@@ -991,23 +1869,34 @@ function toggleCard(el) { el.classList.toggle('sel'); }
 
 function toggleBag(v) {
   bagEnabled = v;
-  document.getElementById('bag-count-wrap').style.display = v?'':'none';
+  document.getElementById('bag-count-wrap').style.display = v ? '' : 'none';
 }
 
 // ──────────────────────────────────────────────
-//  BUDGET
+//  SLIDER — Budget & Vol fill
 // ──────────────────────────────────────────────
+function updateSliderFill(el) {
+  const min = +el.min, max = +el.max, val = +el.value;
+  const pct = ((val - min) / (max - min)) * 100;
+  el.style.setProperty('--slider-pct', pct + '%');
+}
 function updateBudget(v) {
+  const el = document.getElementById('budget');
   v = parseInt(v);
-  document.getElementById('budget-val').textContent = v.toLocaleString('fr-FR')+' €';
+  document.getElementById('budget-val').textContent = v.toLocaleString('fr-FR') + ' €';
   const d = document.getElementById('budget-desc');
   if(v <= 5000) {
     d.textContent = 'On sait se faire plaisir — belles découvertes au meilleur rapport qualité-prix.';
   } else if(v < 20000) {
     d.textContent = 'On ne se refuse rien — expériences premium et hôtels 5 étoiles.';
   } else {
-    d.textContent = '✨ Des étoiles pleins les yeux — le grand luxe vous attend.';
+    d.textContent = '✨ Des étoiles plein les yeux — le grand luxe vous attend.';
   }
+  updateSliderFill(el);
+}
+function updateVol(v) {
+  document.getElementById('vol-val').textContent = v + 'h';
+  updateSliderFill(document.getElementById('vol-dur'));
 }
 
 // ──────────────────────────────────────────────
@@ -1017,22 +1906,19 @@ function renderCalendars() {
   renderMonth(0, new Date(calBase.getFullYear(), calBase.getMonth(), 1));
   renderMonth(1, new Date(calBase.getFullYear(), calBase.getMonth()+1, 1));
 }
-
 function renderMonth(idx, d) {
   const el = document.getElementById('cal'+idx);
   const yr=d.getFullYear(), mo=d.getMonth();
   const first=(new Date(yr,mo,1).getDay()+6)%7;
   const days=new Date(yr,mo+1,0).getDate();
   const today=new Date(); today.setHours(0,0,0,0);
-  let h=`<div class="cal-hdr">`;
-  if(idx===0) h+=`<button onclick="shiftCal(-1)">‹</button>`;
-  else h+=`<span></span>`;
-  h+=`<span>${MONTHS[mo]} ${yr}</span>`;
-  if(idx===1) h+=`<button onclick="shiftCal(1)">›</button>`;
-  else h+=`<span></span>`;
-  h+=`</div><div class="cal-days-grid">`;
-  h+=DAYS_SHORT.map(d=>`<div class="cal-dname">${d}</div>`).join('');
-  for(let i=0;i<first;i++) h+=`<div class="cal-day empty"></div>`;
+  let h = `<div class="cal-hdr">`;
+  h += idx===0 ? `<button onclick="shiftCal(-1)" aria-label="Précédent">‹</button>` : `<span></span>`;
+  h += `<span>${MONTHS[mo]} ${yr}</span>`;
+  h += idx===1 ? `<button onclick="shiftCal(1)" aria-label="Suivant">›</button>` : `<span></span>`;
+  h += `</div><div class="cal-days-grid">`;
+  h += DAYS_SHORT.map(d=>`<div class="cal-dname">${d}</div>`).join('');
+  for(let i=0;i<first;i++) h += `<div class="cal-day empty"></div>`;
   for(let i=1;i<=days;i++) {
     const date=new Date(yr,mo,i);
     const past=date<today;
@@ -1043,17 +1929,15 @@ function renderMonth(idx, d) {
       else if(selEnd&&date.getTime()===selEnd.getTime()) cls+=' sel';
       else if(selStart&&selEnd&&date>selStart&&date<selEnd) cls+=' in-range';
     }
-    h+=`<div class="${cls}" onclick="${past?'':('pickDate('+yr+','+mo+','+i+')')}">${i}</div>`;
+    h += `<div class="${cls}" onclick="${past?'':('pickDate('+yr+','+mo+','+i+')')}">${i}</div>`;
   }
-  h+='</div>';
-  el.innerHTML=h;
+  h += '</div>';
+  el.innerHTML = h;
 }
-
 function shiftCal(dir) {
-  calBase=new Date(calBase.getFullYear(),calBase.getMonth()+dir,1);
+  calBase = new Date(calBase.getFullYear(), calBase.getMonth()+dir, 1);
   renderCalendars();
 }
-
 function pickDate(y,m,d) {
   const date=new Date(y,m,d);
   const today=new Date(); today.setHours(0,0,0,0);
@@ -1065,13 +1949,12 @@ function pickDate(y,m,d) {
     else selEnd=date;
     picking='start';
   }
-  document.getElementById('dep-display').textContent=selStart?fmtDate(selStart):'Sélectionner';
-  document.getElementById('ret-display').textContent=selEnd?fmtDate(selEnd):'Sélectionner';
+  document.getElementById('dep-display').textContent = selStart ? fmtDate(selStart) : 'Sélectionner';
+  document.getElementById('ret-display').textContent = selEnd ? fmtDate(selEnd) : 'Sélectionner';
   document.getElementById('dep-pill').classList.remove('err-pill');
   if(selEnd) document.getElementById('ret-pill').classList.remove('err-pill');
   renderCalendars();
 }
-
 function fmtDate(d) {
   return d.getDate().toString().padStart(2,'0')+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getFullYear();
 }
@@ -1080,15 +1963,13 @@ function fmtDate(d) {
 //  PERSON FORMS
 // ──────────────────────────────────────────────
 function updatePersonsCount() {}
-
 function renderPersonForms() {
   const n = parseInt(document.getElementById('nb-persons').value) || 2;
   const nk = parseInt(document.getElementById('nb-children').value) || 0;
   const c = document.getElementById('persons-scroll');
   c.innerHTML = '';
 
-  // Adultes
-  for(let i = 0; i < n; i++) {
+  for(let i=0; i<n; i++) {
     c.innerHTML += `<div class="person-block" id="pb-${i}">
       <div class="person-lbl">Voyageur ${i+1}${i===0?' · Responsable':''}</div>
       <div class="frow3">
@@ -1096,26 +1977,25 @@ function renderPersonForms() {
         <div class="fg"><label>Nom *</label><input type="text" id="p${i}-ln" placeholder="Nom"></div>
         <div class="fg"><label>Date de naissance *</label><input type="date" id="p${i}-dob"></div>
       </div>
-      <div class="fg" style="margin-top:0.5rem;">
+      <div class="fg" style="margin-top:0.6rem;">
         <label>Email ${i===0?'*':'(facultatif)'}</label>
-        <input type="email" id="p${i}-email" placeholder="${i===0?'Adresse email (obligatoire)':'Adresse email (facultatif)'}">
+        <input type="email" id="p${i}-email" placeholder="${i===0?'Adresse email (obligatoire)':'Adresse email (facultatif)'}" data-testid="${i===0?'email-main':''}">
       </div>
     </div>`;
   }
 
-  // Enfants
   if(nk > 0) {
     const sep = document.createElement('div');
-    sep.style.cssText = 'width:100%;display:flex;align-items:center;gap:0.6rem;';
+    sep.style.cssText = 'width:100%;display:flex;align-items:center;gap:0.7rem;margin:0.3rem 0;';
     sep.innerHTML = `<div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="font-size:0.7rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;font-weight:500;white-space:nowrap;">👶 Enfants</span>
+      <span style="font-size:0.7rem;color:var(--terra-deep);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;white-space:nowrap;">👶 Enfants</span>
       <div style="flex:1;height:1px;background:var(--border);"></div>`;
     c.appendChild(sep);
 
-    for(let j = 0; j < nk; j++) {
+    for(let j=0; j<nk; j++) {
       const id = `k${j}`;
-      c.innerHTML += `<div class="person-block" id="pb-k${j}" style="border-left:3px solid var(--gold-border);">
-        <div class="person-lbl" style="color:var(--text-muted);">Enfant ${j+1}</div>
+      c.innerHTML += `<div class="person-block" id="pb-k${j}" style="border-left:3px solid var(--terra);">
+        <div class="person-lbl" style="color:var(--muted);">Enfant ${j+1}</div>
         <div class="frow3">
           <div class="fg"><label>Prénom *</label><input type="text" id="${id}-fn" placeholder="Prénom"></div>
           <div class="fg"><label>Nom *</label><input type="text" id="${id}-ln" placeholder="Nom"></div>
@@ -1127,7 +2007,7 @@ function renderPersonForms() {
 }
 
 // ──────────────────────────────────────────────
-//  RECAP — grille 2 colonnes
+//  RECAP
 // ──────────────────────────────────────────────
 function getVal(id) { const e=document.getElementById(id); return e?(e.value||'—'):'—'; }
 function getSelCard(gridId) {
@@ -1136,7 +2016,7 @@ function getSelCard(gridId) {
 }
 function getRadio(grpId) {
   const sel=document.querySelector('#'+grpId+' .radio-btn.sel');
-  return sel?sel.textContent.trim():'—';
+  return sel?sel.childNodes[0].textContent.trim():'—';
 }
 
 function renderRecap() {
@@ -1177,9 +2057,7 @@ function renderRecap() {
 
   function card(icon, title, rows, full) {
     const cls = full ? 'recap-card recap-full' : 'recap-card';
-    let html = `<div class="${cls}">
-      <div class="recap-card-header">${icon} ${title}</div>
-      <div class="recap-card-body">`;
+    let html = `<div class="${cls}"><div class="recap-card-header">${icon} ${title}</div><div class="recap-card-body">`;
     rows.forEach(([k,v]) => {
       html += `<div class="recap-row"><span class="recap-key">${k}</span><span class="recap-val">${v}</span></div>`;
     });
@@ -1188,57 +2066,49 @@ function renderRecap() {
   }
 
   let html = '<div class="recap-grid">';
-
   const budgetNum = parseInt(document.getElementById('budget').value) || 0;
   const budgetTotal = (budgetNum * n).toLocaleString('fr-FR') + ' €';
   html += card('💶', 'Budget & Dates', [
+    ['Budget / personne', budget],
     ['Budget total', budgetTotal],
     ['Départ', dep],
     ['Retour', ret],
   ]);
-
   html += card('✈️', 'Vol & Départ', [
     ['Vol max', volDur],
     ['Depuis', city + ' (' + apt + ')'],
     ['Transfert', transfer],
     ['À éviter', avoid || 'Aucun'],
   ]);
-
   html += card('🛂', 'Résidence & Doc.', [
     ['Résidence', res],
     ['Passeport valide', passport],
   ]);
-
   html += card('👥', 'Groupe', [
     ['Type', group],
     ['Voyageurs', getVal('nb-persons') + ' pers.'],
     ['Enfants', nbChildren],
     ['Bagages soute', bagTxt],
   ]);
-
   html += card('🌍', 'Séjour', [
     ['Ambiance', themes],
     ['Hébergement', hotel],
     ['Restauration', board],
     ['Rythme', mood],
-  ]);
+  ], true);
 
-  // Participants — pleine largeur
-  let persHtml = `<div class="recap-card recap-full">
-    <div class="recap-card-header">👤 Participants</div>
-    <div class="recap-card-body">`;
+  let persHtml = `<div class="recap-card recap-full"><div class="recap-card-header">👤 Participants</div><div class="recap-card-body">`;
   persons.forEach((p, i) => {
     const dob = p.dob ? new Date(p.dob).toLocaleDateString('fr-FR') : '—';
     const label = p.child ? `👶 Enfant ${p.idx}` : `${i+1}. ${p.fn} ${p.ln}`;
     const detail = p.child ? `${p.fn} ${p.ln} · ${dob}` : `${dob}${p.em ? ' · ' + p.em : ''}`;
-    persHtml += `<div class="recap-row" style="padding-bottom:0.3rem;margin-bottom:0.3rem;border-bottom:1px solid var(--bg-2);">
+    persHtml += `<div class="recap-row" style="padding-bottom:0.4rem;margin-bottom:0.3rem;border-bottom:1px solid var(--cream-2);">
       <span class="recap-key">${label}</span>
       <span class="recap-val">${detail}</span>
     </div>`;
   });
   persHtml += `</div></div>`;
   html += persHtml;
-
   html += '</div>';
   document.getElementById('recap-content').innerHTML = html;
 }
@@ -1313,7 +2183,6 @@ function sendWhatsApp() {
   const msg=buildSummary();
   window.open('https://wa.me/33617572361?text='+encodeURIComponent(msg),'_blank');
 }
-
 async function submitEmail() {
   const em=(document.getElementById('p0-email')||{}).value||'';
   const body=buildSummary();
@@ -1327,9 +2196,34 @@ async function submitEmail() {
 }
 
 // ──────────────────────────────────────────────
+//  STARFIELD — Final page
+// ──────────────────────────────────────────────
+function renderStars() {
+  const wrap = document.getElementById('stars');
+  if(!wrap || wrap.childElementCount > 0) return;
+  const n = 50;
+  let html = '';
+  for(let i=0; i<n; i++) {
+    const x = Math.random()*100;
+    const y = Math.random()*100;
+    const delay = (Math.random()*4).toFixed(2);
+    const size = (Math.random()*2 + 1).toFixed(1);
+    html += `<div class="star" style="left:${x}%;top:${y}%;width:${size}px;height:${size}px;animation-delay:${delay}s;"></div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+// ──────────────────────────────────────────────
 //  INIT
 // ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  updateBudget(3000);
+  updateVol(6);
+  renderPersonForms();
+});
+// Immediate in case DOMContentLoaded already passed
 updateBudget(3000);
+updateVol(6);
 renderPersonForms();
 </script>
 </body>
